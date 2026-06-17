@@ -29,8 +29,7 @@
 ;; refresh your font settings. If Emacs still can't find your font, it likely
 ;; wasn't installed correctly. Font issues are rarely Doom issues!
 
-(setq doom-font (font-spec :family "GohuFont uni14 Nerd Font Mono" :size 14))
-(setq display-pixels-per-inch 192)
+(setq doom-font (font-spec :family "GohuFont uni14 Nerd Font Mono" :size 16.0))
 (add-to-list 'initial-frame-alist '(fullscreen . maximized))
 
 ;; There are two ways to load a theme. Both assume the theme is installed and
@@ -77,3 +76,31 @@
 ;;
 ;; You can also try 'gd' (or 'C-c c d') to jump to their definition and see how
 ;; they are implemented.
+
+;; GPTel configuration
+;; ─── BACKEND 1: GitHub Copilot ────────────────────────────────────────────
+;;
+;; gptel-make-gh-copilot is a first-class built-in backend — no API key needed.
+;; Auth is handled via OAuth. On first use (or run M-x gptel-gh-login manually),
+;; Emacs will open a browser page to authorize access to your Copilot subscription.
+;;
+;; The token is cached in ~/.emacs.d/.cache/copilot-chat/ so login persists.
+;;
+;; "Codex" in 2025 = gpt-5-codex available through Copilot — it's just a model
+;; name on this backend, not a separate service.
+
+;; (after! gptel
+;;   (gptel-make-gh-copilot "Copilot"
+;;     :stream t))   ; streaming so responses appear word-by-word
+
+;; ─── SWITCH BETWEEN BACKENDS EASILY ──────────────────────────────────────
+;;
+;; Set Copilot as the default. Switch any time with C-u M-x gptel-send or
+;; the gptel transient menu (C-c RET from a gptel buffer → change Backend).
+
+;; (setq gptel-backend (gptel-get-backend "Copilot")
+;;       gptel-model   'gpt-5.3-codex)    ; or 'gpt-5-codex, 'claude-sonnet-4-6, etc.
+(use-package! claude-code-ide
+  :bind ("C-c C-'" . claude-code-ide-menu) ; Set your favorite keybinding
+  :config
+  (claude-code-ide-emacs-tools-setup)) ; Optionally enable Emacs MCP tools
