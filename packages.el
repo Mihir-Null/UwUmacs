@@ -54,6 +54,7 @@
 ;; (unpin! t)
 (package! evil-tutor)
 (package! tldr)
+(package! nerd-icons)
 ;; Evil enhancements
 (package! evil-surround)     ; cs"' = change surrounding " to ' | ds" = delete surrounding " | ys motion
 (package! evil-commentary)   ; gcc = comment/uncomment line, gc<motion> for ranges
@@ -73,3 +74,8 @@
 (package! ws-butler)         ; trims trailing whitespace only on lines you actually edited
 
 (package! doom-themes)
+(package! claude-code-ide
+  :recipe (:host github :repo "manzaltu/claude-code-ide.el"))
+(package! shell-maker)
+(package! acp)
+(package! agent-shell)

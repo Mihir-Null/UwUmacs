@@ -29,11 +29,13 @@
 ;; refresh your font settings. If Emacs still can't find your font, it likely
 ;; wasn't installed correctly. Font issues are rarely Doom issues!
 
-(setq doom-font (font-spec :family "GohuFont uni14 Nerd Font Mono" :size 16.0))
+(setq doom-font (font-spec :family "GohuFont 14 Nerd Font Mono" :size 16.0))
+(setq doom-variable-pitch-font (font-spec :family "GohuFont 14 Nerd Font" :size 16.0))
+(setq doom-big-font (font-spec :family "GohuFont 11 Nerd Font" :size 16.0))
 (use-package! nerd-icons
 	      :config
-	      (setq nerd-icons-font-family "GohuFont uni14 Nerd Font Mono"))
-(add-to-list 'initial-frame-alist '(fullscreen . maximized))
+	      (setq nerd-icons-font-family "GohuFont 11 Nerd Font Mono"))
+;;(add-to-list 'initial-frame-alist '(fullscreen . maximized))
 
 ;; There are two ways to load a theme. Both assume the theme is installed and
 ;; available. You can either set `doom-theme' or manually load a theme with the
@@ -42,11 +44,11 @@
 
 ;; This determines the style of line numbers in effect. If set to `nil', line
 ;; numbers are disabled. For relative line numbers, set this to `relative'.
-(setq display-line-numbers-type t)
+(setq display-line-numbers-type `relative)
 
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
-(setq org-directory "~/org/")
+(setq org-directory "~/vault/")
 
 
 ;; Whenever you reconfigure a package, make sure to wrap your config in an
@@ -80,30 +82,80 @@
 ;; You can also try 'gd' (or 'C-c c d') to jump to their definition and see how
 ;; they are implemented.
 
-;; GPTel configuration
-;; ─── BACKEND 1: GitHub Copilot ────────────────────────────────────────────
-;;
-;; gptel-make-gh-copilot is a first-class built-in backend — no API key needed.
-;; Auth is handled via OAuth. On first use (or run M-x gptel-gh-login manually),
-;; Emacs will open a browser page to authorize access to your Copilot subscription.
-;;
-;; The token is cached in ~/.emacs.d/.cache/copilot-chat/ so login persists.
-;;
-;; "Codex" in 2025 = gpt-5-codex available through Copilot — it's just a model
-;; name on this backend, not a separate service.
+(after! org-roam
+  (setq org-roam-directory "~/vault/roam/")
+  (setq org-roam-capture-templates
+        '(("d" "default" plain
+           (file "~/vault/templates/roam/default.org")
+           :target (file+head "%<%Y%m%d%H%M%S>-${slug}.org"
+                              "#+title: ${title}\n#+date: %U\n#+filetags:\n")
+           :unnarrowed t)
 
-;; (after! gptel
-;;   (gptel-make-gh-copilot "Copilot"
-;;     :stream t))   ; streaming so responses appear word-by-word
+          ("r" "research" plain
+           (file "~/vault/templates/roam/research.org")
+           :target (file+head "research/%<%Y%m%d%H%M%S>-${slug}.org"
+                              "#+title: ${title}\n#+date: %U\n#+filetags: :research:\n")
+           :unnarrowed t)
 
-;; ─── SWITCH BETWEEN BACKENDS EASILY ──────────────────────────────────────
-;;
-;; Set Copilot as the default. Switch any time with C-u M-x gptel-send or
-;; the gptel transient menu (C-c RET from a gptel buffer → change Backend).
+          ("p" "paper" plain
+           (file "~/vault/templates/roam/paper.org")
+           :target (file+head "papers/%<%Y%m%d%H%M%S>-${slug}.org"
+                              "#+title: ${title}\n#+date: %U\n#+filetags: :paper:\n")
+           :unnarrowed t)
 
-;; (setq gptel-backend (gptel-get-backend "Copilot")
-;;       gptel-model   'gpt-5.3-codex)    ; or 'gpt-5-codex, 'claude-sonnet-4-6, etc.
+          ("m" "meeting" plain
+           (file "~/vault/templates/roam/meeting.org")
+           :target (file+head "meetings/%<%Y%m%d>-${slug}.org"
+                              "#+title: ${title}\n#+date: %U\n#+filetags: :meeting:\n")
+           :unnarrowed t)
+
+          ("c" "concept" plain
+           (file "~/vault/templates/roam/concept.org")
+           :target (file+head "concepts/${slug}.org"
+                              "#+title: ${title}\n#+date: %U\n#+filetags: :concept:\n")
+           :unnarrowed t)
+
+          ("P" "project" plain
+           (file "~/vault/templates/roam/project.org")
+           :target (file+head "projects/${slug}.org"
+                              "#+title: ${title}\n#+date: %U\n#+filetags: :project:\n")
+           :unnarrowed t)
+
+          ("C" "coursework" plain
+           (file "~/vault/templates/roam/coursework.org")
+           :target (file+head "coursework/%<%Y%m%d%H%M%S>-${slug}.org"
+                              "#+title: ${title}\n#+date: %U\n#+filetags: :coursework:\n")
+           :unnarrowed t)
+
+          ("l" "daily log" plain
+           (file "~/vault/templates/roam/log.org")
+           :target (file+head "log/%<%Y-%m-%d>.org"
+                              "#+title: %<%Y-%m-%d %A>\n#+date: %U\n#+filetags: :log:\n")
+           :unnarrowed t)
+
+          ("t" "planning / booking" plain
+           (file "~/vault/templates/roam/planning.org")
+           :target (file+head "planning/%<%Y%m%d>-${slug}.org"
+                              "#+title: ${title}\n#+date: %U\n#+filetags: :planning:\n")
+           :unnarrowed t)
+
+          ("w" "review" plain
+           (file "~/vault/templates/roam/review.org")
+           :target (file+head "reviews/%<%Y-%m-%d>-${slug}.org"
+                              "#+title: ${title}\n#+date: %U\n#+filetags: :review:\n")
+           :unnarrowed t)
+
+          ("n" "person / contact" plain
+           (file "~/vault/templates/roam/person.org")
+           :target (file+head "people/${slug}.org"
+                              "#+title: ${title}\n#+date: %U\n#+filetags: :person:\n")
+           :unnarrowed t))))
+
 (use-package! claude-code-ide
-  :bind ("C-c C-'" . claude-code-ide-menu) ; Set your favorite keybinding
-  :config
-  (claude-code-ide-emacs-tools-setup)) ; Optionally enable Emacs MCP tools
+	:bind ("C-c C-'" . claude-code-ide-menu) ; Set your favorite keybinding
+	:config
+	(claude-code-ide-emacs-tools-setup)) ; Optionally enable Emacs MCP tools
+
+(use-package evil-ghostel
+	     :after (ghostel evil)
+	     :hook (ghostel-mode . evil-ghostel-mode))
