@@ -34,7 +34,7 @@
 (setq doom-big-font (font-spec :family "GohuFont 14 Nerd Font Mono" :size 16.0 :weight 'medium))
 (use-package! nerd-icons
 	      :config
-	      (setq nerd-icons-font-family "GohuFont 14 Nerd Font Mono" :size 16.0 :weight 'medium))
+	      (setq nerd-icons-font-family "GohuFont 14 Nerd Font Mono"))
 (add-to-list 'initial-frame-alist '(fullscreen . maximized))
 
 ;; There are two ways to load a theme. Both assume the theme is installed and
@@ -157,25 +157,32 @@
                               "#+title: ${title}\n#+date: %U\n#+filetags: :person:\n")
            :unnarrowed t))))
 
+(use-package! texfrag
+  :hook ((markdown-mode . texfrag-mode)
+         (rst-mode      . texfrag-mode)))
+
+(use-package! org-fragtog
+  :hook (org-mode . org-fragtog-mode))
+
 (use-package! org-remark
   :after org
   :init
   (org-remark-global-tracking-mode +1)
   :config
   (setq org-remark-notes-file-name "~/vault/annotations.org")
-  :bind-keymap ("C-c n r" . org-remark-map)
-  :bind (:map org-remark-map
-         ("m" . org-remark-mark)
-         ("o" . org-remark-open)
-         ("n" . org-remark-next)
-         ("p" . org-remark-prev)
-         ("d" . org-remark-delete)
-         ("v" . org-remark-view)))
+  :bind (("C-c r m" . org-remark-mark)
+         ("C-c r o" . org-remark-open)
+         ("C-c r n" . org-remark-next)
+         ("C-c r p" . org-remark-prev)
+         ("C-c r d" . org-remark-delete)
+         ("C-c r v" . org-remark-view)))
 
 (use-package! claude-code-ide
 	:bind ("C-c C-'" . claude-code-ide-menu) ; Set your favorite keybinding
 	:config
 	(claude-code-ide-emacs-tools-setup)) ; Optionally enable Emacs MCP tools
+
+(load! "vault-silos")
 
 (use-package evil-ghostel
 	     :after (ghostel evil)
