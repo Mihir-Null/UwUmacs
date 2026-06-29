@@ -112,6 +112,7 @@
 
        :os
        (:if (featurep :system 'macos) macos)  ; improve compatibility with macOS
+       (:if (string= (system-name) "mcmissile") exwm)
        ;;tty               ; improve the terminal Emacs experience
 
        :lang

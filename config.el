@@ -145,11 +145,32 @@
                               "#+title: ${title}\n#+date: %U\n#+filetags: :review:\n")
            :unnarrowed t)
 
+          ("A" "annotation reading" plain
+           (file "~/vault/templates/roam/annotation.org")
+           :target (file+head "papers/%<%Y%m%d%H%M%S>-${slug}.org"
+                              "#+title: ${title}\n#+date: %U\n#+filetags: :annotation:reading:\n")
+           :unnarrowed t)
+
           ("n" "person / contact" plain
            (file "~/vault/templates/roam/person.org")
            :target (file+head "people/${slug}.org"
                               "#+title: ${title}\n#+date: %U\n#+filetags: :person:\n")
            :unnarrowed t))))
+
+(use-package! org-remark
+  :after org
+  :init
+  (org-remark-global-tracking-mode +1)
+  :config
+  (setq org-remark-notes-file-name "~/vault/annotations.org")
+  :bind-keymap ("C-c n r" . org-remark-map)
+  :bind (:map org-remark-map
+         ("m" . org-remark-mark)
+         ("o" . org-remark-open)
+         ("n" . org-remark-next)
+         ("p" . org-remark-prev)
+         ("d" . org-remark-delete)
+         ("v" . org-remark-view)))
 
 (use-package! claude-code-ide
 	:bind ("C-c C-'" . claude-code-ide-menu) ; Set your favorite keybinding

@@ -64,6 +64,7 @@
 (package! org-modern)        ; cleaner org look — unicode bullets, prettier dates, styled keywords
 (package! org-fragtog)       ; auto-previews LaTeX fragments in org when cursor leaves them
 (package! org-roam-ui)
+(package! org-remark)        ; annotate PDFs, webpages, and any text file with margin notes
 
 ;; Nix and related dev
 (package! direnv)
