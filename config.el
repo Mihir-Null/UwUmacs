@@ -31,10 +31,10 @@
 
 (setq doom-font (font-spec :family "GohuFont 14 Nerd Font Mono" :size 16.0))
 (setq doom-variable-pitch-font (font-spec :family "GohuFont 14 Nerd Font" :size 16.0))
-(setq doom-big-font (font-spec :family "GohuFont 11 Nerd Font" :size 16.0))
+(setq doom-big-font (font-spec :family "GohuFont 14 Nerd Font" :size 16.0))
 (use-package! nerd-icons
 	      :config
-	      (setq nerd-icons-font-family "GohuFont 11 Nerd Font Mono"))
+	      (setq nerd-icons-font-family "GohuFont 14 Nerd Font Mono"))
 ;;(add-to-list 'initial-frame-alist '(fullscreen . maximized))
 
 ;; There are two ways to load a theme. Both assume the theme is installed and
