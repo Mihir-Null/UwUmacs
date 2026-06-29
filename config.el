@@ -29,9 +29,9 @@
 ;; refresh your font settings. If Emacs still can't find your font, it likely
 ;; wasn't installed correctly. Font issues are rarely Doom issues!
 
-(setq doom-font (font-spec :family "GohuFont 14 Nerd Font Mono" :size 16.0))
-(setq doom-variable-pitch-font (font-spec :family "GohuFont 14 Nerd Font Mono" :size 16.0))
-(setq doom-big-font (font-spec :family "GohuFont 14 Nerd Font Mono" :size 16.0))
+(setq doom-font (font-spec :family "GohuFont 14 Nerd Font Mono"))
+(setq doom-variable-pitch-font (font-spec :family "GohuFont 14 Nerd Font Mono"))
+(setq doom-big-font (font-spec :family "GohuFont 14 Nerd Font Mono"))
 (use-package! nerd-icons
 	      :config
 	      (setq nerd-icons-font-family "GohuFont 14 Nerd Font Mono"))
