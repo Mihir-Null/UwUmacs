@@ -29,13 +29,13 @@
 ;; refresh your font settings. If Emacs still can't find your font, it likely
 ;; wasn't installed correctly. Font issues are rarely Doom issues!
 
-(setq doom-font (font-spec :family "GohuFont 14 Nerd Font Mono"))
-(setq doom-variable-pitch-font (font-spec :family "GohuFont 14 Nerd Font Mono"))
-(setq doom-big-font (font-spec :family "GohuFont 14 Nerd Font Mono"))
+(setq doom-font (font-spec :family "GohuFont 14 Nerd Font Mono" :size 16.0 :weight 'medium))
+(setq doom-variable-pitch-font (font-spec :family "GohuFont 14 Nerd Font Mono" :size 16.0 :weight 'medium))
+(setq doom-big-font (font-spec :family "GohuFont 14 Nerd Font Mono" :size 16.0 :weight 'medium))
 (use-package! nerd-icons
 	      :config
-	      (setq nerd-icons-font-family "GohuFont 14 Nerd Font Mono"))
-;;(add-to-list 'initial-frame-alist '(fullscreen . maximized))
+	      (setq nerd-icons-font-family "GohuFont 14 Nerd Font Mono" :size 16.0 :weight 'medium))
+(add-to-list 'initial-frame-alist '(fullscreen . maximized))
 
 ;; There are two ways to load a theme. Both assume the theme is installed and
 ;; available. You can either set `doom-theme' or manually load a theme with the
