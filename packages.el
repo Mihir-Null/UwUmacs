@@ -80,4 +80,59 @@
   :recipe (:host github :repo "manzaltu/claude-code-ide.el"))
 (package! shell-maker)
 (package! acp)
+
+;; agent-shell + ecosystem plugins
 (package! agent-shell)
+
+;; Skills for Claude Agent integration in Emacs (requires claude CLI on PATH)
+(package! emacs-skills
+  :recipe (:host github :repo "xenodium/emacs-skills"))
+
+;; Mobile/remote: interact with agent-shell sessions from Slack
+(package! agent-shell-to-go
+  :recipe (:host github :repo "ElleNajt/agent-shell-to-go"))
+
+;; UI
+(package! agent-shell-sidebar
+  :recipe (:host github :repo "cmacrae/agent-shell-sidebar"))
+(package! agent-shell-hud
+  :recipe (:host github :repo "nohzafk/agent-shell-hud"))
+
+;; Session management
+(package! agent-shell-bookmark
+  :recipe (:host github :repo "dcluna/agent-shell-bookmark"))
+(package! agent-shell-workspace
+  :recipe (:host github :repo "gveres/agent-shell-workspace"))
+(package! agent-shell-manager
+  :recipe (:host github :repo "jethrokuan/agent-shell-manager"))
+(package! agent-shell-desktop
+  :recipe (:host github :repo "timfel/agent-shell-desktop.el"
+           :files ("*.el")))
+
+;; Notifications (knockknock is the dep)
+(package! knockknock
+  :recipe (:host github :repo "konrad1977/knockknock"))
+(package! agent-shell-knockknock
+  :recipe (:host github :repo "xenodium/agent-shell-knockknock"))
+
+;; Multi-agent coordination
+(package! meta-agent-shell
+  :recipe (:host github :repo "ElleNajt/meta-agent-shell"))
+
+;; Org integration
+(package! ob-agent-shell              ; org-babel src blocks backed by agent-shell
+  :recipe (:host github :repo "eddof13/ob-agent-shell"))
+(package! agent-shell-org-transcript  ; save sessions as org-roam nodes
+  :recipe (:host github :repo "lllShamanlll/agent-shell-org-transcript"))
+
+;; Transcript search and resume
+(package! agent-recall
+  :recipe (:host github :repo "Marx-A00/agent-recall"))
+
+;; TRAMP: run agent-shell over remote connections
+(package! agent-shell-tramp
+  :recipe (:host github :repo "junyi-hou/agent-shell-tramp"))
+
+;; Code review interface
+(package! agent-review
+  :recipe (:host github :repo "nineluj/agent-review"))
