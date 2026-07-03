@@ -182,7 +182,7 @@
 	:config
 	(claude-code-ide-emacs-tools-setup)) ; Optionally enable Emacs MCP tools
 
-(load! "vault-silos")
+(load! "custom/vault-silos")
 
 (use-package evil-ghostel
 	     :after (ghostel evil)
