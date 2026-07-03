@@ -74,8 +74,9 @@
 
 ;; General QoL
 (package! ws-butler)         ; trims trailing whitespace only on lines you actually edited
-
 (package! doom-themes)
+
+;; Agentic coding
 (package! claude-code-ide
   :recipe (:host github :repo "manzaltu/claude-code-ide.el"))
 (package! shell-maker)

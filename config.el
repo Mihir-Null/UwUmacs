@@ -33,8 +33,8 @@
 (setq doom-variable-pitch-font (font-spec :family "GohuFont 14 Nerd Font Mono" :size 16.0 :weight 'medium))
 (setq doom-big-font (font-spec :family "GohuFont 14 Nerd Font Mono" :size 16.0 :weight 'medium))
 (use-package! nerd-icons
-	      :config
-	      (setq nerd-icons-font-family "GohuFont 14 Nerd Font Mono"))
+  :config
+  (setq nerd-icons-font-family "GohuFont 14 Nerd Font Mono"))
 (add-to-list 'initial-frame-alist '(fullscreen . maximized))
 
 ;; There are two ways to load a theme. Both assume the theme is installed and
@@ -178,12 +178,27 @@
          ("C-c r v" . org-remark-view)))
 
 (use-package! claude-code-ide
-	:bind ("C-c C-'" . claude-code-ide-menu) ; Set your favorite keybinding
-	:config
-	(claude-code-ide-emacs-tools-setup)) ; Optionally enable Emacs MCP tools
+  :bind ("C-c C-'" . claude-code-ide-menu) ; Set your favorite keybinding
+  :config
+  (claude-code-ide-emacs-tools-setup)) ; Optionally enable Emacs MCP tools
 
 (load! "custom/vault-silos")
 
 (use-package evil-ghostel
-	     :after (ghostel evil)
-	     :hook (ghostel-mode . evil-ghostel-mode))
+  :after (ghostel evil)
+  :hook (ghostel-mode . evil-ghostel-mode))
+
+(use-package indent-bars
+  :custom
+  (indent-bars-no-descend-lists 'skip) ; prevent extra bars in nested lists + skip intermediate bars
+  (indent-bars-treesit-support t)
+  (indent-bars-treesit-ignore-blank-lines-types '("module"))
+  ;; Add other languages as needed; check the wiki
+  (indent-bars-treesit-scope '((python function_definition class_definition for_statement
+	                        if_statement with_statement while_statement)))
+  ;; Note: wrap likely not be needed if no-descend-list is enough
+  ;;(indent-bars-treesit-wrap '((python argument_list parameters ; for python, as an example
+  ;;				      list list_comprehension
+  ;;				      dictionary dictionary_comprehension
+  ;;				      parenthesized_expression subscript)))
+  :hook ((python-base-mode yaml-mode) . indent-bars-mode))
