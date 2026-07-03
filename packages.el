@@ -94,6 +94,7 @@
   :recipe (:host github :repo "ElleNajt/agent-shell-to-go"))
 
 ;; UI
+(package! indent-bars)
 (package! agent-shell-sidebar
   :recipe (:host github :repo "cmacrae/agent-shell-sidebar"))
 (package! agent-shell-hud

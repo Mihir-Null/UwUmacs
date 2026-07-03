@@ -36,6 +36,19 @@
   :config
   (setq nerd-icons-font-family "GohuFont 14 Nerd Font Mono"))
 (add-to-list 'initial-frame-alist '(fullscreen . maximized))
+(add-to-list 'default-frame-alist '(internal-border-width . 8))
+
+(after! doom-ui
+  (window-divider-mode 1)
+  (setq window-divider-default-right-width 2
+        window-divider-default-bottom-width 2
+        window-divider-default-places t))
+
+(custom-set-faces!
+  `(window-divider             :foreground ,(doom-color 'base4))
+  `(window-divider-first-pixel :foreground ,(doom-color 'base4))
+  `(window-divider-last-pixel  :foreground ,(doom-color 'base4))
+  `(internal-border            :background ,(doom-color 'base4)))
 
 ;; There are two ways to load a theme. Both assume the theme is installed and
 ;; available. You can either set `doom-theme' or manually load a theme with the
@@ -188,17 +201,13 @@
   :after (ghostel evil)
   :hook (ghostel-mode . evil-ghostel-mode))
 
-(use-package indent-bars
+(use-package! indent-bars
   :custom
-  (indent-bars-no-descend-lists 'skip) ; prevent extra bars in nested lists + skip intermediate bars
   (indent-bars-treesit-support t)
+  (indent-bars-no-descend-lists t)
   (indent-bars-treesit-ignore-blank-lines-types '("module"))
-  ;; Add other languages as needed; check the wiki
   (indent-bars-treesit-scope '((python function_definition class_definition for_statement
-	                        if_statement with_statement while_statement)))
-  ;; Note: wrap likely not be needed if no-descend-list is enough
-  ;;(indent-bars-treesit-wrap '((python argument_list parameters ; for python, as an example
-  ;;				      list list_comprehension
-  ;;				      dictionary dictionary_comprehension
-  ;;				      parenthesized_expression subscript)))
-  :hook ((python-base-mode yaml-mode) . indent-bars-mode))
+                                if_statement with_statement while_statement)))
+  (indent-bars-color-by-depth '(:palette ("red" "orange" "yellow" "green" "cyan" "blue" "violet") :blend 0.5))
+  (indent-bars-highlight-current-depth '(:blend 0.7))
+  :hook (prog-mode . indent-bars-mode))
