@@ -197,7 +197,7 @@
 
 (load! "custom/vault-silos")
 
-(use-package evil-ghostel
+(use-package! evil-ghostel
   :after (ghostel evil)
   :hook (ghostel-mode . evil-ghostel-mode))
 

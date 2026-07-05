@@ -54,10 +54,7 @@
 ;; (unpin! t)
 (package! evil-tutor)
 (package! tldr)
-(package! nerd-icons)
-;; Evil enhancements
-(package! evil-surround)     ; cs"' = change surrounding " to ' | ds" = delete surrounding " | ys motion
-(package! evil-commentary)   ; gcc = comment/uncomment line, gc<motion> for ranges
+;; nerd-icons, evil-surround, evil-commentary are provided by Doom's :ui doom and :editor (evil +everywhere) modules
 
 ;; Org-mode
 (package! org-appear)        ; reveals /emphasis/ and *bold* markers only when cursor is on them
@@ -67,14 +64,14 @@
 (package! org-remark)        ; annotate PDFs, webpages, and any text file with margin notes
 (package! texfrag)           ; render LaTeX fragments in non-org buffers (text, markdown, etc.)
 
-;; Nix and related dev
-(package! direnv)
 ;; LaTeX / academic
 (package! citar)             ; citation picker — integrates with org and LaTeX, works with .bib files
 
-;; General QoL
-(package! ws-butler)         ; trims trailing whitespace only on lines you actually edited
-(package! doom-themes)
+;; ws-butler and doom-themes are provided by Doom's :editor (whitespace +trim) and :ui doom modules
+
+;; ghostel + evil integration (add :recipe if not on MELPA)
+(package! ghostel)
+(package! evil-ghostel)
 
 ;; Agentic coding
 (package! claude-code-ide
