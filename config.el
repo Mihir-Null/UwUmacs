@@ -214,3 +214,5 @@
 
 (after! projectile
   (setq projectile-project-search-path '(("~/" . 4))))
+
+(setq projectile-files-cache-expire 60)
