@@ -211,3 +211,6 @@
   (indent-bars-color-by-depth '(:palette ("red" "orange" "yellow" "green" "cyan" "blue" "violet") :blend 0.5))
   (indent-bars-highlight-current-depth '(:blend 0.7))
   :hook (prog-mode . indent-bars-mode))
+
+(after! projectile
+  (setq projectile-project-search-path '(("~/" . 4))))
