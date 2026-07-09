@@ -99,73 +99,73 @@
   (setq org-roam-directory "~/vault/roam/")
   (setq org-roam-capture-templates
         '(("d" "default" plain
-           (file "~/vault/templates/roam/default.org")
+           (file "~/vault/metadata/org-roam-capture/default.org")
            :target (file+head "%<%Y%m%d%H%M%S>-${slug}.org"
                               "#+title: ${title}\n#+date: %U\n#+filetags:\n")
            :unnarrowed t)
 
           ("r" "research" plain
-           (file "~/vault/templates/roam/research.org")
+           (file "~/vault/metadata/org-roam-capture/research.org")
            :target (file+head "research/%<%Y%m%d%H%M%S>-${slug}.org"
                               "#+title: ${title}\n#+date: %U\n#+filetags: :research:\n")
            :unnarrowed t)
 
           ("p" "paper" plain
-           (file "~/vault/templates/roam/paper.org")
+           (file "~/vault/metadata/org-roam-capture/paper.org")
            :target (file+head "papers/%<%Y%m%d%H%M%S>-${slug}.org"
                               "#+title: ${title}\n#+date: %U\n#+filetags: :paper:\n")
            :unnarrowed t)
 
           ("m" "meeting" plain
-           (file "~/vault/templates/roam/meeting.org")
+           (file "~/vault/metadata/org-roam-capture/meeting.org")
            :target (file+head "meetings/%<%Y%m%d>-${slug}.org"
                               "#+title: ${title}\n#+date: %U\n#+filetags: :meeting:\n")
            :unnarrowed t)
 
           ("c" "concept" plain
-           (file "~/vault/templates/roam/concept.org")
+           (file "~/vault/metadata/org-roam-capture/concept.org")
            :target (file+head "concepts/${slug}.org"
                               "#+title: ${title}\n#+date: %U\n#+filetags: :concept:\n")
            :unnarrowed t)
 
           ("P" "project" plain
-           (file "~/vault/templates/roam/project.org")
+           (file "~/vault/metadata/org-roam-capture/project.org")
            :target (file+head "projects/${slug}.org"
                               "#+title: ${title}\n#+date: %U\n#+filetags: :project:\n")
            :unnarrowed t)
 
           ("C" "coursework" plain
-           (file "~/vault/templates/roam/coursework.org")
+           (file "~/vault/metadata/org-roam-capture/coursework.org")
            :target (file+head "coursework/%<%Y%m%d%H%M%S>-${slug}.org"
                               "#+title: ${title}\n#+date: %U\n#+filetags: :coursework:\n")
            :unnarrowed t)
 
           ("l" "daily log" plain
-           (file "~/vault/templates/roam/log.org")
+           (file "~/vault/metadata/org-roam-capture/log.org")
            :target (file+head "log/%<%Y-%m-%d>.org"
                               "#+title: %<%Y-%m-%d %A>\n#+date: %U\n#+filetags: :log:\n")
            :unnarrowed t)
 
           ("t" "planning / booking" plain
-           (file "~/vault/templates/roam/planning.org")
+           (file "~/vault/metadata/org-roam-capture/planning.org")
            :target (file+head "planning/%<%Y%m%d>-${slug}.org"
                               "#+title: ${title}\n#+date: %U\n#+filetags: :planning:\n")
            :unnarrowed t)
 
           ("w" "review" plain
-           (file "~/vault/templates/roam/review.org")
+           (file "~/vault/metadata/org-roam-capture/review.org")
            :target (file+head "reviews/%<%Y-%m-%d>-${slug}.org"
                               "#+title: ${title}\n#+date: %U\n#+filetags: :review:\n")
            :unnarrowed t)
 
           ("A" "annotation reading" plain
-           (file "~/vault/templates/roam/annotation.org")
+           (file "~/vault/metadata/org-roam-capture/annotation.org")
            :target (file+head "papers/%<%Y%m%d%H%M%S>-${slug}.org"
                               "#+title: ${title}\n#+date: %U\n#+filetags: :annotation:reading:\n")
            :unnarrowed t)
 
           ("n" "person / contact" plain
-           (file "~/vault/templates/roam/person.org")
+           (file "~/vault/metadata/org-roam-capture/person.org")
            :target (file+head "people/${slug}.org"
                               "#+title: ${title}\n#+date: %U\n#+filetags: :person:\n")
            :unnarrowed t))))
