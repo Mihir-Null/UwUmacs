@@ -321,15 +321,6 @@
         (expand-file-name ".agent-shell/transcripts/" "~"))
   (agent-shell-tramp-mode 1))
 
-;; Slack remote control — set tokens via ~/.doom.d/.env; call
-;; (agent-shell-to-go-setup) interactively once credentials are in place.
-(use-package! agent-shell-to-go
-  :after agent-shell
-  :config
-  (setq agent-shell-to-go-env-file (expand-file-name ".env" doom-user-dir))
-  (setq agent-shell-to-go-todo-directory
-        (expand-file-name "roam/inbox/" "~/vault/")))
-
 ;; AI code review
 (use-package! agent-review
   :after (acp agent-shell))
