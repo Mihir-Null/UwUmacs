@@ -236,3 +236,5 @@
   (setq projectile-project-search-path '(("~/" . 4))))
 
 (setq projectile-files-cache-expire 60)
+
+(setq agent-shell-prefer-viewport-interaction t)
