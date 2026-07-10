@@ -123,6 +123,8 @@
   :recipe (:host github :repo "eddof13/ob-agent-shell"))
 (package! agent-shell-org-transcript  ; save sessions as org-roam nodes
   :recipe (:host github :repo "lllShamanlll/agent-shell-org-transcript"))
+(package! agent-shell-links           ; org-link type for agent-shell session buffers
+  :recipe (:host github :repo "ultronozm/agent-shell-links.el"))
 
 ;; Transcript search and resume
 (package! agent-recall
