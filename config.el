@@ -97,6 +97,26 @@
 
 (after! org-roam
   (setq org-roam-directory "~/vault/roam/")
+  (defvar my/org-roam-extra-dirs
+    '("~/vault/roam/qec")
+    "Extra note directories folded into the global org-roam index.")
+  (defun my/org-roam-extra-files ()
+    "Return declared extra Org files for the global org-roam index."
+    (delete-dups
+     (mapcan
+      (lambda (dir)
+        (let ((expanded (expand-file-name dir)))
+          (when (file-directory-p expanded)
+            (directory-files-recursively expanded "\\.org\\'"))))
+      my/org-roam-extra-dirs)))
+  (defun my/org-roam-list-files-include-extra-dirs (files)
+    "Append `my/org-roam-extra-dirs' to org-roam FILES."
+    (delete-dups
+     (append files (my/org-roam-extra-files))))
+  (advice-remove 'org-roam-list-files
+                 #'my/org-roam-list-files-include-extra-dirs)
+  (advice-add 'org-roam-list-files :filter-return
+              #'my/org-roam-list-files-include-extra-dirs)
   (setq org-roam-capture-templates
         '(("d" "default" plain
            (file "~/vault/metadata/org-roam-capture/default.org")
