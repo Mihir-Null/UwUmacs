@@ -88,8 +88,6 @@
 
 ;; UI
 (package! indent-bars)
-;;(package! agent-shell-hud
-;;  :recipe (:host github :repo "nohzafk/agent-shell-hud"))
 
 ;; Session management
 (package! agent-shell-bookmark
@@ -105,10 +103,6 @@
   :recipe (:host github :repo "konrad1977/knockknock"))
 (package! agent-shell-knockknock
   :recipe (:host github :repo "xenodium/agent-shell-knockknock"))
-
-;; Multi-agent coordination
-;;(package! meta-agent-shell
-;;  :recipe (:host github :repo "ElleNajt/meta-agent-shell"))
 
 ;; Org integration
 (package! ob-agent-shell              ; org-babel src blocks backed by agent-shell
