@@ -86,6 +86,10 @@
 (package! emacs-skills
   :recipe (:host github :repo "xenodium/emacs-skills"))
 
+;; Mobile/remote: interact with agent-shell sessions from Slack
+(package! agent-shell-to-go
+  :recipe (:host github :repo "ElleNajt/agent-shell-to-go"))
+
 ;; UI
 (package! indent-bars)
 (package! agent-shell-workspace    ; unified UI hub: sidebar + status + manager
