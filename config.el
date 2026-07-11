@@ -237,19 +237,4 @@
 
 (setq projectile-files-cache-expire 60)
 
-;; Agent-Shell and plugin configuration
 (setq agent-shell-prefer-viewport-interaction t)
-
-(after! agent-shell-org-transcript
-  (setq agent-shell-org-transcript-directory
-        (expand-file-name "agents-general/" org-roam-directory)))
-
-(use-package! agent-shell-links
-  :demand t
-  :config
-  (agent-shell-links-bookmark-setup)
-  (with-eval-after-load 'ol
-    (org-link-set-parameters
-     "agent-shell"
-     :follow #'agent-shell-links-org-follow
-     :store #'agent-shell-links-org-store)))
