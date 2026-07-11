@@ -232,9 +232,59 @@
   (indent-bars-highlight-current-depth '(:blend 0.7))
   :hook (prog-mode . indent-bars-mode))
 
-(after! projectile
-  (setq projectile-project-search-path '(("~/" . 4))))
+(use-package! projectile
+  :config
+  (setq projectile-project-search-path '(("~/" . 4))
+        projectile-files-cache-expire 60))
 
-(setq projectile-files-cache-expire 60)
+(use-package! agent-shell
+  :config
+  (setq agent-shell-prefer-viewport-interaction t)
+  )
+(require 'agent-shell-manager)
 
-(setq agent-shell-prefer-viewport-interaction t)
+(use-package! agent-shell-desktop
+  :after (agent-shell desktop)
+  :config
+  (agent-shell-desktop-mode 1))
+
+(use-package! agent-shell-knockknock
+  :after (agent-shell knockknock)
+  :hook (agent-shell-mode . agent-shell-knockknock-mode))
+
+;; (use-package meta-agent-shell
+  ;; :after agent-shell
+  ;; :config
+  ;; (setq meta-agent-shell-heartbeat-file "~/heartbeat.org")
+  ;; (setq meta-agent-shell-start-function #'agent-shell)  ; or your custom start function
+;;
+  ;; ;; Recommended keybindings under SPC o m
+  ;; ;; Unbind existing SPC o m (mu4e in Doom) first if needed
+  ;; (define-key doom-leader-map "om" nil)
+  ;; (map! :leader
+        ;; (:prefix ("o m" . "meta-agent")
+         ;; :desc "Meta-agent session" "m" #'meta-agent-shell-start
+         ;; :desc "Project dispatcher" "d" #'meta-agent-shell-jump-to-dispatcher
+         ;; :desc "Start heartbeat" "h" #'meta-agent-shell-heartbeat-start
+         ;; :desc "Stop heartbeat" "H" #'meta-agent-shell-heartbeat-stop
+         ;; :desc "Send heartbeat now" "s" #'meta-agent-shell-heartbeat-send-now
+         ;; :desc "STOP ALL AGENTS" "!" #'meta-agent-shell-big-red-button)))
+;;
+
+(use-package! ob-agent-shell
+  :straight (:host github :repo "eddof13/ob-agent-shell")
+  :after (agent-shell org)
+  :config
+  (add-to-list 'org-babel-load-languages '(agent-shell . t)))
+
+(use-package! agent-shell-org-transcript
+  :straight (:host github :repo "lllShamanlll/agent-shell-org-transcript")
+  :after agent-shell
+  :config
+  (setq agent-shell-org-transcript-directory "~/vault/agent-shell/"))
+
+(use-package! agent-shell-org-transcript
+  :after agent-shell
+  :init
+  (setq agent-shell-org-transcript-directory
+        (expand-file-name "~/vault/agent-shell/")))
