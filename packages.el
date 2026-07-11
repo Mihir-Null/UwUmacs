@@ -92,10 +92,18 @@
 
 ;; UI
 (package! indent-bars)
-(package! agent-shell-workspace    ; unified UI hub: sidebar + status + manager
-  :recipe (:host github :repo "gveres/agent-shell-workspace"))
+(package! agent-shell-sidebar
+  :recipe (:host github :repo "cmacrae/agent-shell-sidebar"))
+(package! agent-shell-hud
+  :recipe (:host github :repo "nohzafk/agent-shell-hud"))
 
 ;; Session management
+(package! agent-shell-bookmark
+  :recipe (:host github :repo "dcluna/agent-shell-bookmark"))
+(package! agent-shell-workspace
+  :recipe (:host github :repo "gveres/agent-shell-workspace"))
+(package! agent-shell-manager
+  :recipe (:host github :repo "jethrokuan/agent-shell-manager"))
 (package! agent-shell-desktop
   :recipe (:host github :repo "timfel/agent-shell-desktop.el"
            :files ("*.el")))

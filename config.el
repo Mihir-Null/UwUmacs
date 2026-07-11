@@ -237,58 +237,13 @@
 
 (setq projectile-files-cache-expire 60)
 
-;; ─── Agent-Shell ecosystem ────────────────────────────────────────────────────
-
+;; Agent-Shell and plugin configuration
 (setq agent-shell-prefer-viewport-interaction t)
 
-;; Notifications — init knockknock first so agent-shell-knockknock can depend on it
-(use-package! knockknock
-  :config
-  (knockknock-init))
-
-(use-package! agent-shell-knockknock
-  :after (agent-shell knockknock)
-  :hook (agent-shell-mode . agent-shell-knockknock-mode))
-
-;; Session persistence across Emacs restarts
-(use-package! agent-shell-desktop
-  :after agent-shell
-  :config
-  (agent-shell-desktop-mode 1))
-
-;; Unified workspace UI hub (replaces sidebar + manager + hud)
-(use-package! agent-shell-workspace
-  :after agent-shell
-  :bind ("C-c a w" . agent-shell-workspace-toggle))
-
-;; Transcript → vault org-roam nodes
-;; Must load before agent-shell-tramp; tramp loads after so its path resolver
-;; handles remote sessions without clobbering the org conversion for local ones.
-(use-package! agent-shell-org-transcript
-  :after agent-shell
-  :config
+(after! agent-shell-org-transcript
   (setq agent-shell-org-transcript-directory
         (expand-file-name "agents-general/" org-roam-directory)))
 
-;; Transcript search — extra-transcript-dirs bypasses the .agent-shell/transcripts
-;; default path so agent-recall finds the org files written by org-transcript.
-(use-package! agent-recall
-  :after agent-shell
-  :hook (agent-shell-mode . agent-recall-track-sessions)
-  :config
-  (setq agent-recall-extra-transcript-dirs
-        (list (expand-file-name "agents-general/" org-roam-directory)))
-  (global-agent-recall-transcript-mode 1))
-
-;; Org-babel agent-shell source blocks
-(use-package! ob-agent-shell
-  :after (agent-shell org)
-  :config
-  (add-to-list 'org-babel-load-languages '(agent-shell . t))
-  (org-babel-do-load-languages 'org-babel-load-languages
-                                org-babel-load-languages))
-
-;; Org-link type for live session buffers (supersedes agent-shell-bookmark's ol)
 (use-package! agent-shell-links
   :demand t
   :config
@@ -298,38 +253,3 @@
      "agent-shell"
      :follow #'agent-shell-links-org-follow
      :store #'agent-shell-links-org-store)))
-
-;; Multi-agent coordination — vault paths for heartbeat and logs
-;; meta-agent-shell-start and meta-agent-shell-heartbeat-start are left to manual
-;; invocation; add them here if you want them on every Emacs startup.
-(use-package! meta-agent-shell
-  :after agent-shell
-  :config
-  (setq meta-agent-shell-heartbeat-file
-        (expand-file-name "roam/agents-general/meta-heartbeat.org" "~/vault/"))
-  (setq meta-agent-shell-config-file
-        (expand-file-name "roam/agents-general/meta-config.org" "~/vault/"))
-  (setq meta-agent-shell-log-directory
-        (expand-file-name ".agent-shell/meta-logs/" "~/vault/")))
-
-;; TRAMP remote sessions — loads after org-transcript so its function override
-;; takes priority for local sessions; TRAMP sessions use the tramp transcript dir.
-(use-package! agent-shell-tramp
-  :after (agent-shell acp agent-shell-org-transcript)
-  :config
-  (setq agent-shell-tramp-transcript-directory
-        (expand-file-name ".agent-shell/transcripts/" "~"))
-  (agent-shell-tramp-mode 1))
-
-;; Slack remote control — set tokens via ~/.doom.d/.env; call
-;; (agent-shell-to-go-setup) interactively once credentials are in place.
-(use-package! agent-shell-to-go
-  :after agent-shell
-  :config
-  (setq agent-shell-to-go-env-file (expand-file-name ".env" doom-user-dir))
-  (setq agent-shell-to-go-todo-directory
-        (expand-file-name "roam/inbox/" "~/vault/")))
-
-;; AI code review
-(use-package! agent-review
-  :after (acp agent-shell))
