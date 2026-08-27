@@ -1,3 +1,1 @@
-*.elc
-custom.el
-.local/
+lambda-library/lambda-user/private.el
