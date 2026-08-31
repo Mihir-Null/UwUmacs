@@ -19,9 +19,10 @@
 ;; already-bound value, so the module will build its prefix maps with this choice.
 (setq lem-prefix "C-c C-SPC")
 
-;;;; UI policy
-;; Lambda otherwise defaults to its light theme. Keep the starter dark by default;
-;; this remains an ordinary variable that can later be replaced deliberately.
+;;;; UI fallback
+;; Lambda's theme module loads during the base stage. Keep its dark theme as a
+;; no-surprises fallback; `starter-setup-ui' replaces it with Doom Dark+ after the
+;; rest of the editor surface is available.
 (setq lem-ui-theme 'lambda-dark)
 
 ;;;; Base framework
@@ -79,7 +80,7 @@
 
 ;;;; After startup — useful editing subsystems
 (defun starter-after-startup ()
-  "Load programming, shell, Org, and lightweight UI modules."
+  "Load programming, shell, Org, and the starter presentation layer."
   (message "Loading Lambda editing modules...")
   (measure-time
    (cl-dolist (mod '(lem-setup-programming
@@ -88,11 +89,15 @@
                      lem-setup-org-base
                      lem-setup-org-settings
                      lem-setup-colors
-                     lem-setup-modeline
                      lem-setup-server))
      (require mod nil t)))
 
   (require 'starter-setup-org)
+
+  ;; UI is intentionally a user module rather than Lambda's `lem-setup-modeline'.
+  ;; It supplies Doom Dark+, doom-modeline, workspace-tab presentation, optional
+  ;; Nerd Icons, and modest spacing while retaining ordinary OS-managed frames.
+  (require 'starter-setup-ui)
 
   ;; Optional learning step: read this module first, then enable it.
   ;; (require 'starter-setup-languages)
