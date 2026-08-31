@@ -1,8 +1,8 @@
 ;;; starter-platform.el --- Portable platform defaults -*- lexical-binding: t; -*-
 
 ;;; Commentary:
-;; Safe defaults for Windows, GNU/Linux/Nix, and macOS. Prefer discovery with
-;; `executable-find' and platform-provided home locations over machine-specific paths.
+;; Safe defaults for native Windows, GNU/Linux/Nix, and macOS.  Platform
+;; differences are kept here instead of being scattered across UI modules.
 
 ;;; Code:
 
@@ -36,15 +36,41 @@ USERPROFILE for user-owned projects and documents."
   "Return the first executable found in PROGRAMS."
   (seq-some #'executable-find programs))
 
+(defun starter-platform-reveal-in-file-manager (&optional target)
+  "Reveal TARGET in the native file manager.
+Interactively, reveal the current file or open `default-directory'."
+  (interactive)
+  (let* ((path (expand-file-name
+                (or target buffer-file-name default-directory)))
+         (file-p (file-regular-p path))
+         (directory (if file-p (file-name-directory path) path)))
+    (pcase system-type
+      ('windows-nt
+       (if file-p
+           (w32-shell-execute
+            "open" "explorer.exe"
+            (format "/select,\"%s\"" (convert-standard-filename path)))
+         (w32-shell-execute "open" (convert-standard-filename directory))))
+      ('darwin
+       (if file-p
+           (start-process "starter-reveal" nil "open" "-R" path)
+         (start-process "starter-open-directory" nil "open" directory)))
+      ('gnu/linux
+       (if-let ((opener (executable-find "xdg-open")))
+           (start-process "starter-open-directory" nil opener directory)
+         (user-error "Install xdg-utils to reveal files externally")))
+      (_ (user-error "No file-manager integration for %s" system-type)))))
+
 (defun starter-platform-apply ()
   "Apply the currently configured portable platform defaults."
-  ;; `lem-setup-projects' defines and also assigns `lem-project-dir', so apply the
-  ;; user value after that feature loads rather than racing its initialization.
   (with-eval-after-load 'lem-setup-projects
     (setq lem-project-dir starter-project-directory))
 
-  ;; Choose a usable shell without assuming a username, Homebrew prefix, Nix profile,
-  ;; or conventional Unix filesystem on Windows.
+  ;; Replace Lambda's macOS-only Finder command with a portable implementation.
+  (with-eval-after-load 'lem-setup-keybindings
+    (define-key lem+buffer-keys (kbd "f")
+                #'starter-platform-reveal-in-file-manager))
+
   (pcase system-type
     ('windows-nt
      (cond
@@ -71,15 +97,10 @@ USERPROFILE for user-owned projects and documents."
        (setq explicit-shell-file-name shell
              shell-command-switch "-c"))))
 
-  ;; Lambda configures exec-path-from-shell. Declare useful variables when it loads;
-  ;; do not assume a particular Nix profile path.
   (when (memq system-type '(gnu/linux darwin))
     (with-eval-after-load 'exec-path-from-shell
       (setopt exec-path-from-shell-variables
               '("PATH" "MANPATH" "NIX_PATH" "NIX_PROFILES")))))
-
-;; Do not force a font here. Inheriting the platform default makes first boot robust.
-;; Set `lem-ui-default-font' later once you know which fonts are available everywhere.
 
 (provide 'starter-platform)
 ;;; starter-platform.el ends here

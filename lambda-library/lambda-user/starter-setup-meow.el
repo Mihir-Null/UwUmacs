@@ -3,33 +3,21 @@
 ;; Adapted from Colin McLear's cpm-setup-meow.el (GPL-3.0-or-later).
 
 ;;; Commentary:
-;; Reduced Meow configuration derived from Colin McLear's Lambda setup.
-;;
-;; The important architectural choice is to expose Lambda's existing semantic
-;; `lem+leader-map' through Meow. SPC therefore shows the user-facing command
-;; hierarchy in which-key while ordinary Emacs keymaps remain underneath it.
+;; Meow is the interaction model, not a compatibility layer beneath Firemacs.
+;; Firemacs-inspired bindings are added only on unused modified keys; Meow's
+;; selection verbs, things, `f', `;', and motion grammar remain authoritative.
 
 ;;; Code:
 
 (defun starter-meow-setup ()
   "Install starter Meow motion, leader, and normal-state bindings."
-
-  ;; Motion state is for special buffers where the major mode should keep most keys.
   (meow-motion-overwrite-define-key
    '("j" . meow-next)
    '("k" . meow-prev))
 
-  ;; Colin's useful integration trick: make Lambda's actual leader map the map
-  ;; Meow/which-key sees rather than duplicating the hierarchy.
+  ;; Reuse Lambda's semantic maps instead of maintaining a second hierarchy.
   (add-to-list 'meow-keymap-alist (cons 'leader lem+leader-map))
 
-  ;; SPC is a semantic leader here, not a generic modifier translator.
-  ;;
-  ;; Meow declares the three prefix variables below as character-valued Custom
-  ;; options. `nil' is nevertheless a useful runtime sentinel here: no input event
-  ;; can equal it, so the modifier translations are disabled. Use `setq' rather
-  ;; than `setopt' because Custom type validation would (correctly) warn that nil is
-  ;; not a character even though Meow's runtime code handles this use safely.
   (setq meow-keypad-meta-prefix nil
         meow-keypad-ctrl-meta-prefix nil
         meow-keypad-literal-prefix nil
@@ -65,8 +53,6 @@
    '("w" . lem+window-keys)
    '("W" . lem+workspace-keys))
 
-  ;; Colin's QWERTY Meow grammar, kept close to the documented/recommended Meow
-  ;; vocabulary so `meow-tutor' and upstream documentation transfer cleanly.
   (meow-normal-define-key
    '("0" . meow-expand-0)
    '("9" . meow-expand-9)
@@ -116,6 +102,7 @@
    '("r" . meow-replace)
    '("R" . overwrite-mode)
    '("s" . meow-kill)
+   '("S" . consult-ripgrep)
    '("t" . meow-till)
    '("u" . meow-undo)
    '("U" . meow-undo-in-selection)
@@ -131,6 +118,15 @@
    '("&" . meow-query-replace-regexp)
    '("%" . meow-query-replace)
    '("=" . meow-grab)
+
+   ;; Firemacs muscle-memory additions that do not replace Meow's plain keys.
+   '("C-b" . consult-buffer)
+   '("C-d" . starter-motion-scroll-half-page-down)
+   '("C-e" . dired-jump)
+   '("C-f" . starter-motion-scroll-page-down)
+   '("C-o" . meow-pop-to-mark)
+   '("C-i" . meow-unpop-to-mark)
+   '("C-u" . starter-motion-scroll-half-page-up)
    '("<escape>" . meow-cancel-selection)))
 
 (use-package meow
@@ -139,30 +135,35 @@
   (meow-use-cursor-position-hack t)
   (meow-use-clipboard t)
   (meow-goto-line-function #'consult-goto-line)
+  (meow-display-thing-help t)
+  (meow-keypad-message t)
+  (meow-keypad-describe-delay 0.3)
   :config
   (setopt meow-use-dynamic-face-color nil)
+  (setq meow-cursor-type-normal 'box
+        meow-cursor-type-insert '(bar . 2)
+        meow-cursor-type-motion 'hollow
+        meow-cursor-type-keypad 'hollow
+        meow-cursor-type-beacon 'box)
 
-  ;; Useful extra semantic "thing" retained from Colin's config.
   (meow-thing-register 'angle '(regexp "<" ">") '(regexp "<" ">"))
   (add-to-list 'meow-char-thing-table '(?a . angle))
 
-  ;; Predictable starting states for application-like modes.
-  (dolist (entry '((magit-status-mode . normal)
-                   (magit-log-mode . normal)
+  (dolist (entry '((dired-mode . motion)
+                   (help-mode . motion)
+                   (Info-mode . motion)
+                   (compilation-mode . motion)
+                   (magit-status-mode . motion)
+                   (magit-log-mode . motion)
                    (eshell-mode . insert)
                    (shell-mode . insert)
                    (term-mode . insert)))
     (add-to-list 'meow-mode-state-list entry))
 
   (with-eval-after-load 'magit
-    (add-to-list 'meow-grab-fill-commands 'magit-discard)
-    (add-hook 'magit-mode-hook
-              (lambda ()
-                (local-unset-key (kbd "j"))
-                (local-unset-key (kbd "k")))))
+    (add-to-list 'meow-grab-fill-commands 'magit-discard))
 
   (with-eval-after-load 'org
-    ;; Treat @ as part of symbols/words during Meow movement in Org.
     (modify-syntax-entry ?@ "_" org-mode-syntax-table))
 
   (starter-meow-setup)

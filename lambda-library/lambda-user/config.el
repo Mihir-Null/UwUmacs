@@ -1,28 +1,20 @@
-;;; config.el --- Lambda learning configuration -*- lexical-binding: t; -*-
+;;; config.el --- Meow-first Firemacs adaptation -*- lexical-binding: t; -*-
 
 ;;; Commentary:
-;; Composition root for the user layer. Keep this file boring: choose Lambda modules
-;; here and put subsystem-specific behavior in small files beside it.
-;;
-;; The staged structure follows Lambda's default config and Colin McLear's personal
-;; config, while intentionally omitting machine/account-specific workflows.
+;; Composition root for the Lambda user layer on the `firemacs-meow' branch.
+;; Lambda remains the framework; the modules in this directory adapt Firemacs'
+;; layout, feedback, and motion ideas around Meow and portable graphical Emacs.
 
 ;;; Code:
 
 ;;;; Personal identity
-;; Leave blank until you choose to set these here or in private.el.
 (setq user-full-name ""
       user-mail-address "")
 
 ;;;; Non-modal recovery / learning prefix
-;; Define this before Lambda loads its keybinding module. `defcustom' preserves an
-;; already-bound value, so the module will build its prefix maps with this choice.
 (setq lem-prefix "C-c C-SPC")
 
-;;;; UI fallback
-;; Lambda's theme module loads during the base stage. Keep its dark theme as a
-;; no-surprises fallback; `starter-setup-ui' replaces it with Doom Dark+ after the
-;; rest of the editor surface is available.
+;;;; Early theme fallback
 (setq lem-ui-theme 'lambda-dark)
 
 ;;;; Base framework
@@ -40,27 +32,20 @@
                    lem-setup-faces))
    (require mod nil t)))
 
-;; Deliberately do not load `lem-setup-frames' in the starter configuration.
-;; Lambda's frame module makes frames undecorated and recenters them. That aesthetic
-;; is useful as an opt-in, but ordinary OS-managed frames are a more portable base:
-;; Windows window managers can tile/resize them normally and Linux/macOS retain their
-;; native compositor/window-manager behavior. Load `lem-setup-frames' explicitly
-;; later if you decide you want Lambda's frameless presentation.
+;; Do not load `lem-setup-frames'.  This branch deliberately keeps ordinary,
+;; decorated, non-fullscreen frames so FancyWM and native Linux/macOS window
+;; managers remain authoritative for placement, resizing, and tiling.
 
-;; Portable user policy belongs after Lambda has defined its variables, but before
-;; later modules consume shell/project paths.
 (require 'starter-platform)
 
-;; Machine/account-specific overrides are optional. Copy private.example.el to
-;; private.el when needed; Git ignores that file.
 (let ((private (expand-file-name "private.el" lem-user-dir)))
   (when (file-exists-p private)
     (load-file private)))
 (starter-platform-apply)
 
-;;;; After init — interactive editor shell
+;;;; After init — navigation, command hierarchy, and modal interaction
 (defun starter-after-init ()
-  "Load completion, navigation, projects, keymaps, and modal editing."
+  "Load the interactive Lambda shell and the Meow-first motion layer."
   (message "Loading Lambda interactive modules...")
   (measure-time
    (cl-dolist (mod '(lem-setup-completion
@@ -74,13 +59,14 @@
                      lem-setup-tabs))
      (require mod nil t)))
 
-  ;; Lambda keymaps must exist before Meow exposes `lem+leader-map' through SPC.
+  ;; Motion commands exist before Meow binds C-u/C-d/C-f to them.
+  (require 'starter-setup-motion)
   (require 'starter-setup-meow))
 (add-hook 'after-init-hook #'starter-after-init)
 
-;;;; After startup — useful editing subsystems
+;;;; After startup — editing subsystems and presentation
 (defun starter-after-startup ()
-  "Load programming, shell, Org, and the starter presentation layer."
+  "Load editing, presentation, tabs, and graphical discoverability."
   (message "Loading Lambda editing modules...")
   (measure-time
    (cl-dolist (mod '(lem-setup-programming
@@ -93,30 +79,27 @@
      (require mod nil t)))
 
   (require 'starter-setup-org)
-
-  ;; UI is intentionally a user module rather than Lambda's `lem-setup-modeline'.
-  ;; It supplies Doom Dark+, doom-modeline, workspace-tab presentation, optional
-  ;; Nerd Icons, and modest spacing while retaining ordinary OS-managed frames.
   (require 'starter-setup-ui)
+  (require 'starter-setup-tabs)
+  (require 'starter-setup-discoverability)
 
   ;; Optional learning step: read this module first, then enable it.
   ;; (require 'starter-setup-languages)
   )
 (add-hook 'emacs-startup-hook #'starter-after-startup)
 
-;;;; Discoverability
-;; which-key is built into Emacs 30+ and enabled by Lambda's keybinding module.
+;;;; Discoverability defaults available before the richer UI loads
 (with-eval-after-load 'which-key
-  (setopt which-key-idle-delay 0.45
+  (setopt which-key-idle-delay 0.35
           which-key-idle-secondary-delay 0.05))
 
 ;;;; First commands to learn
 ;; M-x meow-tutor
-;; SPC SPC        -> M-x
-;; SPC /          -> describe Meow/keypad key
-;; C-h k          -> describe key
-;; C-h m          -> describe active modes
-;; M-x describe-keymap
+;; SPC             -> semantic leader with which-key
+;; SPC h .         -> documentation at point
+;; SPC j ...       -> visible jump commands
+;; SPC .           -> contextual Embark actions
+;; C-h k / C-h m   -> native key/mode inspection
 
 (provide 'config)
 ;;; config.el ends here

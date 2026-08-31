@@ -1,19 +1,14 @@
-;;; starter-setup-ui.el --- Portable starter presentation -*- lexical-binding: t; -*-
+;;; starter-setup-ui.el --- Firemacs-inspired portable presentation -*- lexical-binding: t; -*-
 
 ;;; Commentary:
-;; A small presentation layer for the Lambda learning configuration.
-;;
-;; Design goals:
-;; - retain ordinary OS-managed Emacs frames;
-;; - use Doom Dark+ as a familiar dark default without requiring Doom Emacs;
-;; - keep Lambda's built-in tab-bar/tabspaces architecture rather than adding a
-;;   second tab/workspace framework;
-;; - borrow the useful presentation ideas from Firemacs (compact modeline,
-;;   visible tabs, dark editor surface) without importing its terminal-specific
-;;   custom statuscolumn/MRU-tab implementation;
-;; - make icons optional so a missing Nerd Font never breaks first boot.
+;; A graphical, Windows-safe interpretation of Firemacs: dark editor surface,
+;; orange accent, rich modeline, grouped buffer strip, navigation rail, smooth
+;; feedback, and visible native help affordances.  Frames remain decorated and
+;; non-fullscreen so the operating-system window manager stays in control.
 
 ;;; Code:
+
+(require 'color)
 
 (defgroup starter-ui nil
   "Presentation defaults for the Lambda learning configuration."
@@ -27,12 +22,13 @@
   "Light theme used by `starter-ui-toggle-theme'."
   :type 'symbol)
 
+(defcustom starter-ui-accent "#ff5a36"
+  "Firemacs-inspired accent used for navigation and modal feedback."
+  :type 'color)
+
 (defcustom starter-ui-icons 'auto
   "Whether to use Nerd Font icons.
-
-When `auto', enable icons only in a graphical frame when the configured Nerd
-Font can be found.  Set this to t to force icons (for example in a terminal
-whose font already contains Nerd Font glyphs), or nil to disable them."
+When `auto', use them only in graphical frames where the font exists."
   :type '(choice (const :tag "Detect automatically" auto)
                  (const :tag "Always" t)
                  (const :tag "Never" nil)))
@@ -40,6 +36,14 @@ whose font already contains Nerd Font glyphs), or nil to disable them."
 (defcustom starter-ui-nerd-font "Symbols Nerd Font Mono"
   "Font family used for Nerd Icons."
   :type 'string)
+
+(defcustom starter-ui-enable-menu-bar t
+  "Whether graphical frames expose the native menu bar."
+  :type 'boolean)
+
+(defcustom starter-ui-enable-tool-bar t
+  "Whether graphical frames expose the native icon tool bar."
+  :type 'boolean)
 
 (defcustom starter-ui-line-numbers-in-programming t
   "Whether programming buffers should show line numbers by default."
@@ -54,14 +58,91 @@ whose font already contains Nerd Font glyphs), or nil to disable them."
      (and (display-graphic-p)
           (find-font (font-spec :name starter-ui-nerd-font))))))
 
-;;;; Theme
+(defun starter-ui-apply-frame-policy (&optional frame)
+  "Apply native, decorated, non-fullscreen policy to graphical FRAME."
+  (with-selected-frame (or frame (selected-frame))
+    (when (display-graphic-p)
+      (modify-frame-parameters
+       nil `((fullscreen . nil)
+             (undecorated . nil)
+             (menu-bar-lines . ,(if starter-ui-enable-menu-bar 1 0))
+             (tool-bar-lines . ,(if starter-ui-enable-tool-bar 1 0))))
+      (when (fboundp 'tooltip-mode)
+        (tooltip-mode 1))
+      (when (fboundp 'context-menu-mode)
+        (context-menu-mode 1)))))
+
+;; Remove inherited Lambda frame policy before future Windows/FancyWM frames
+;; are created.  This does not prevent the user from maximizing a frame later.
+(setq default-frame-alist
+      (assq-delete-all 'fullscreen
+                       (assq-delete-all 'undecorated default-frame-alist)))
+(add-to-list 'default-frame-alist '(fullscreen . nil))
+(add-to-list 'default-frame-alist '(undecorated . nil))
+(add-hook 'after-make-frame-functions #'starter-ui-apply-frame-policy)
+(starter-ui-apply-frame-policy)
+
+;;;; Theme and Firemacs face layer
+
+(defun starter-ui-apply-firemacs-faces ()
+  "Apply the accent and compact bar faces after a theme change."
+  (let ((accent starter-ui-accent)
+        (surface (if (eq (frame-parameter nil 'background-mode) 'dark)
+                     "#2b2b2b"
+                   "#f4f4f4"))
+        (muted (if (eq (frame-parameter nil 'background-mode) 'dark)
+                   "#4a4a4a"
+                 "#d8d8d8"))
+        (muted-foreground
+         (if (eq (frame-parameter nil 'background-mode) 'dark)
+             "#d7d7d7"
+           "#303030")))
+    (dolist (face '(tab-bar tab-line))
+      (when (facep face)
+        (set-face-attribute face nil :background surface :box nil)))
+    (dolist (face '(tab-bar-tab tab-line-tab-current))
+      (when (facep face)
+        (set-face-attribute face nil
+                            :background accent :foreground surface
+                            :weight 'bold :box nil)))
+    (dolist (face '(tab-bar-tab-inactive tab-line-tab tab-line-tab-inactive
+                    tab-line-tab-group))
+      (when (facep face)
+        (set-face-attribute face nil
+                            :background muted :foreground muted-foreground
+                            :box nil)))
+    (dolist (spec `((meow-normal-cursor . ,accent)
+                    (meow-normal-indicator . ,accent)
+                    (doom-modeline-meow-normal-state . ,accent)
+                    (meow-insert-cursor . "#98c379")
+                    (meow-insert-indicator . "#98c379")
+                    (doom-modeline-meow-insert-state . "#98c379")
+                    (meow-motion-cursor . "#61afef")
+                    (meow-motion-indicator . "#61afef")
+                    (doom-modeline-meow-motion-state . "#61afef")
+                    (meow-keypad-cursor . "#c678dd")
+                    (meow-keypad-indicator . "#c678dd")
+                    (doom-modeline-meow-keypad-state . "#c678dd")
+                    (meow-beacon-cursor . "#e5c07b")
+                    (meow-beacon-indicator . "#e5c07b")
+                    (doom-modeline-meow-beacon-state . "#e5c07b")))
+      (when (facep (car spec))
+        (set-face-attribute (car spec) nil
+                            :background (cdr spec)
+                            :foreground surface
+                            :weight 'bold)))
+    (when (facep 'which-key-posframe-border)
+      (set-face-attribute 'which-key-posframe-border nil :background accent))
+    (when (facep 'eldoc-box-border)
+      (set-face-attribute 'eldoc-box-border nil :background accent))))
 
 (defun starter-ui-load-theme (theme)
   "Disable active themes and load THEME non-interactively."
   (mapc #'disable-theme custom-enabled-themes)
   (load-theme theme t)
   (when (fboundp 'doom-themes-org-config)
-    (doom-themes-org-config)))
+    (doom-themes-org-config))
+  (starter-ui-apply-firemacs-faces))
 
 (defun starter-ui-toggle-theme ()
   "Toggle between `starter-ui-theme' and `starter-ui-light-theme'."
@@ -77,17 +158,12 @@ whose font already contains Nerd Font glyphs), or nil to disable them."
   (doom-themes-enable-bold t)
   (doom-themes-enable-italic t)
   :config
-  ;; Lambda loads a fallback theme early so startup is never unthemed. Replace it
-  ;; here once the user-facing UI layer is ready.
   (starter-ui-load-theme starter-ui-theme))
 
-;; Lambda's default toggle calls a macOS-only `dark-mode' shell utility. Replace
-;; just that binding with a portable theme toggle while retaining the rest of the
-;; Lambda toggle map. `SPC t T' remains Lambda's interactive theme chooser.
 (with-eval-after-load 'lem-setup-keybindings
   (define-key lem+toggle-keys (kbd "t") #'starter-ui-toggle-theme))
 
-;;;; Modeline
+;;;; Modeline and icons
 
 (use-package nerd-icons
   :ensure t
@@ -98,41 +174,38 @@ whose font already contains Nerd Font glyphs), or nil to disable them."
 (use-package doom-modeline
   :ensure t
   :init
-  (setq doom-modeline-height 28
+  (setq doom-modeline-height 30
+        doom-modeline-bar-width 4
         doom-modeline-project-detection 'project
         doom-modeline-buffer-file-name-style 'truncate-upto-project
         doom-modeline-icon (starter-ui-icons-available-p)
         doom-modeline-major-mode-icon t
-        doom-modeline-buffer-state-icon t)
+        doom-modeline-buffer-state-icon t
+        doom-modeline-modal t
+        doom-modeline-modal-icon t
+        doom-modeline-buffer-encoding 'nondefault)
   :config
-  (doom-modeline-mode 1))
+  (doom-modeline-mode 1)
+  (starter-ui-apply-firemacs-faces))
 
-;;;; Workspace/tab presentation
+;;;; Lambda workspace bar
 
 (with-eval-after-load 'tab-bar
-  ;; Lambda uses tabs as window-configuration/project workspaces. Keep that
-  ;; semantic model, but expose it visually once a second workspace exists.
   (setopt tab-bar-show 1)
+  (starter-ui-apply-firemacs-faces))
 
-  (defun starter-ui-apply-tab-faces ()
-    "Give the built-in tab bar a compact editor-like presentation."
-    (set-face-attribute 'tab-bar nil
-                        :inherit 'default
-                        :box nil)
-    (set-face-attribute 'tab-bar-tab nil
-                        :inherit 'mode-line
-                        :weight 'bold
-                        :box nil)
-    (set-face-attribute 'tab-bar-tab-inactive nil
-                        :inherit 'mode-line-inactive
-                        :weight 'normal
-                        :box nil))
+;;;; Navigation rail
 
-  (starter-ui-apply-tab-faces)
-  ;; Lambda defines this hook around `load-theme'; keep tab faces coherent when
-  ;; changing themes interactively later.
-  (when (boundp 'lem-after-load-theme-hook)
-    (add-hook 'lem-after-load-theme-hook #'starter-ui-apply-tab-faces)))
+(use-package diff-hl
+  :ensure t
+  :hook ((prog-mode . diff-hl-mode)
+         (text-mode . diff-hl-mode)
+         (dired-mode . diff-hl-dired-mode))
+  :config
+  (when (not (display-graphic-p))
+    (diff-hl-margin-mode 1))
+  (with-eval-after-load 'magit
+    (add-hook 'magit-post-refresh-hook #'diff-hl-magit-post-refresh)))
 
 ;;;; Completion and file-manager icons
 
@@ -161,13 +234,11 @@ whose font already contains Nerd Font glyphs), or nil to disable them."
   :commands nerd-icons-dired-mode
   :hook (dired-mode . starter-ui-maybe-enable-dired-icons))
 
-;;;; Spacing
+;;;; Spacing and editing-surface polish
 
 (use-package spacious-padding
   :ensure t
   :custom
-  ;; Deliberately modest: visual separation without changing the basic frame
-  ;; decoration model or relying on a particular desktop/window manager.
   (spacious-padding-widths
    '(:internal-border-width 8
      :header-line-width 2
@@ -175,16 +246,14 @@ whose font already contains Nerd Font glyphs), or nil to disable them."
      :tab-width 2
      :right-divider-width 1
      :scroll-bar-width 0
-     :fringe-width 6))
+     :fringe-width 8))
   :config
   (spacious-padding-mode 1))
-
-;;;; Editing-surface polish
 
 (show-paren-mode 1)
 
 (defun starter-ui-programming-presentation ()
-  "Apply unobtrusive visual aids in programming buffers."
+  "Apply the Firemacs-inspired navigation rail in programming buffers."
   (when starter-ui-line-numbers-in-programming
     (setq-local display-line-numbers-type t)
     (display-line-numbers-mode 1))

@@ -1,250 +1,122 @@
-# Emacs-Dots — Lambda-Emacs user layer
+# Emacs-Dots — Firemacs × Meow branch
 
-A small, inspectable configuration layer for [Lambda-Emacs](https://codeberg.org/Lambda-Emacs/lambda-emacs), using [Meow](https://github.com/meow-edit/meow) for selection-first modal editing and adapting the useful, portable parts of [Colin McLear's configuration](https://codeberg.org/mclear-tools/dotemacs).
+This branch is a Meow-first, cross-platform adaptation of the visual and
+interaction ideas in [Firemacs](https://github.com/66-firebat/firemacs), built
+as a user layer for [Lambda-Emacs](https://codeberg.org/Lambda-Emacs/lambda-emacs).
 
-This repository intentionally contains **configuration source, not an installer**. It is meant to be read first and then placed, copied, symlinked, or managed declaratively however makes sense on each machine.
+It is intentionally **not** an Evil port and does not copy Firemacs' unlicensed
+source.  It recreates the useful architecture with maintained Emacs 30 APIs and
+packages while keeping Lambda's modular framework.
 
-## Intended placement
+## Layout
 
-Lambda owns the framework:
+```text
+Lambda tab-bar + tabspaces       project/workspace layer
+Built-in grouped tab-line        per-window MRU buffer layer
+Editing window                   line rail + Diff HL + smooth feedback
+Doom Modeline                    Meow state + file/project/VCS/diagnostics
+Which-key / Eldoc child frames   discoverability at point
+```
+
+## What this branch adds
+
+- **Meow remains authoritative:** selection-first verbs and things are kept;
+  Firemacs-inspired shortcuts only occupy unused modified keys.
+- **Firemacs-style buffer strip:** grouped `Code`, `Docs`, `Config`, `Tools`,
+  `Terminal`, and `Buffers` tabs using Emacs 30's built-in `tab-line`.
+- **Motion and animation:** built-in interpolated keyboard scrolling, optional
+  Ultra Scroll for high-resolution input, and Pulsar feedback after jumps.
+- **Visible command discovery:** which-key in a GUI posframe, Eldoc child-frame
+  hover/help, Helpful, Embark actions, Casual transient menus, native menus and
+  tool bar, plus an opt-in Keycast log.
+- **Firemacs presentation:** Doom Dark+, an orange accent layer, Meow-aware Doom
+  Modeline, Nerd Icons, spacious padding, line numbers, and Diff HL.
+- **Native Windows behavior:** decorated non-fullscreen frames, built-in
+  clipboard, `pwsh.exe` preference, Explorer reveal support, and no dependency
+  on OSC cursor control, Wayland clipboard utilities, or Unix shell scripts.
+
+## Installation
+
+The repository is configuration source, not a bootstrapper.  Lambda currently
+requires Emacs 30.1 or later.
 
 ```text
 <lambda-emacs>/
 ├── early-init.el
 ├── init.el
 └── lambda-library/
-    ├── lambda-setup/       # upstream Lambda — leave unchanged while learning
-    └── lambda-user/        # this repository's user layer
+    ├── lambda-setup/       # upstream Lambda
+    └── lambda-user/        # copy/symlink this repository's user layer here
 ```
 
-The files in this repository already mirror that destination:
-
-```text
-.
-├── README.md
-├── docs/
-│   ├── PORTING-NOTES.md
-│   └── READING-ORDER.md
-└── lambda-library/
-    └── lambda-user/
-        ├── config.el
-        ├── early-config.el
-        ├── private.example.el
-        ├── starter-platform.el
-        ├── starter-setup-languages.el
-        ├── starter-setup-meow.el
-        ├── starter-setup-org.el
-        └── starter-setup-ui.el
-```
-
-No bootstrap script is required or provided. Clone Lambda however you prefer, then make `lambda-library/lambda-user/` contain these files.
-
-## Manual setup
-
-Lambda currently requires Emacs 30.1+.
-
-1. Obtain Lambda-Emacs from `https://codeberg.org/Lambda-Emacs/lambda-emacs`.
-2. Put the contents of this repo's `lambda-library/lambda-user/` into Lambda's corresponding directory.
-3. Start Emacs with that Lambda checkout as its init directory, for example:
+Launch examples:
 
 ```sh
 emacs --init-directory="$HOME/.config/lambda-emacs"
 ```
 
-On Windows the equivalent is conceptually:
-
 ```powershell
 emacs --init-directory="$env:USERPROFILE\.config\lambda-emacs"
 ```
 
-The actual checkout location is deliberately your choice.
+On first startup, `use-package` installs the enabled Elisp packages.  For icon
+glyphs, run `M-x nerd-icons-install-fonts`; on Windows, install the downloaded
+font files through Explorer and restart Emacs.
 
-### Nix / NixOS
-
-The initial model is deliberately simple:
-
-```text
-Nix / NixOS / Home Manager
-    -> Emacs 30.1+
-    -> Git, ripgrep, fd, language servers, compilers, etc.
-
-Lambda-Emacs
-    -> Emacs Lisp packages and framework configuration
-
-lambda-user/
-    -> your policy and extensions
-```
-
-That keeps the Emacs configuration easy to understand while learning it. If you later want Nix to own Elisp packages too, migrate that responsibility deliberately rather than mixing both approaches from the start.
-
-## What loads by default
-
-The starter keeps enough of Lambda to be a useful daily text editor without importing Colin's personal environment:
-
-- Lambda buffer/window/font/face foundations, while retaining ordinary OS-managed frame decorations;
-- Vertico/Consult-style completion and search from Lambda;
-- built-in `which-key` discoverability;
-- Dired;
-- project.el + Lambda tab/workspace integration;
-- Magit / VC integration;
-- Org base/settings plus a minimal inbox capture setup;
-- Lambda's general programming layer;
-- shell + Eshell;
-- **Meow** with Colin-inspired QWERTY selection-first bindings;
-- Lambda's semantic leader maps exposed directly through **`SPC`**;
-- the starter UI layer described below.
-
-Not loaded initially:
-
-- mail/calendar;
-- bibliography/citation workflow;
-- Colin's teaching modules;
-- personal note-system choices;
-- PDF/Elfeed/LLM stacks;
-- language-specific IDE packages beyond Lambda's general programming layer.
-
-`starter-setup-languages.el` is an intentionally optional example for Nix, Racket, and Guile/Scheme. Read it before enabling it.
-
-## Starter UI
-
-`starter-setup-ui.el` is deliberately separate from behavior/navigation. It can be replaced without changing the editor architecture.
-
-Default presentation:
-
-- **Doom Dark+** through the standalone `doom-themes` package;
-- **doom-modeline** at the bottom of the frame;
-- Lambda's built-in `tab-bar`/`tabspaces` workspaces, with the tab bar shown only once there is more than one workspace;
-- modest `spacious-padding`, while keeping native frame decorations so Windows/FancyWM and normal Linux/macOS window managers can resize the frame;
-- line numbers + current-line highlighting in programming buffers;
-- matching-parenthesis highlighting;
-- optional Nerd Icons in the modeline, completion UI, and Dired.
-
-This takes presentation cues from Firemacs while deliberately not importing its custom terminal-first statuscolumn or MRU-tab implementation. The existing Lambda workspace abstraction remains the canonical tab/workspace model.
-
-### Theme selection
-
-The default is:
-
-```elisp
-(setq starter-ui-theme 'doom-dark+)
-```
-
-Change it in `private.el` or before `starter-setup-ui` loads. Other `doom-themes` themes can be used the same way, for example:
-
-```elisp
-(setq starter-ui-theme 'doom-one)
-;; or
-(setq starter-ui-theme 'doom-gruvbox)
-```
-
-### Nerd Icons
-
-Icons are set to `auto` by default:
-
-```elisp
-(setq starter-ui-icons 'auto)
-```
-
-In a graphical frame they are enabled only if `Symbols Nerd Font Mono` is actually installed. Missing fonts therefore produce a normal text modeline rather than broken glyphs.
-
-After the `nerd-icons` package has been installed by first startup, run:
+## Core interaction
 
 ```text
-M-x nerd-icons-install-fonts
+SPC             Lambda semantic leader + which-key
+SPC SPC         M-x
+SPC h .         documentation at point
+SPC h f/v/k     function, variable, or key help
+SPC j c/l/w     Avy character, line, or word jump
+SPC .           Embark contextual actions
+SPC m           native menu bar
+C-d / C-u       animated half-page down/up (Meow normal state)
+C-f             animated full page down (Meow normal state)
+C-b             Consult buffer switcher (Meow normal state)
+C-o / C-i       Meow mark-ring backward/forward
+C-TAB           next grouped buffer tab
+C-S-TAB         previous grouped buffer tab
+S               project ripgrep (Meow normal state)
 ```
 
-On Linux/macOS this can install the font directly. On Windows the command downloads the font files, after which they still need to be installed through Windows (right-click the downloaded font files and choose **Install**, then restart Emacs).
+Run `M-x meow-tutor` first.  The non-modal Lambda prefix remains
+`C-c C-SPC` as a recovery and learning path.
 
-To force icons in a terminal that already uses a Nerd Font:
+## Configuration switches
+
+Copy `lambda-library/lambda-user/private.example.el` to `private.el` for local
+overrides.  Common choices include:
 
 ```elisp
-(setq starter-ui-icons t)
+(setq starter-ui-theme 'doom-dark+
+      starter-ui-accent "#ff5a36"
+      starter-ui-icons 'auto
+      starter-ui-enable-menu-bar t
+      starter-ui-enable-tool-bar t
+      starter-discoverability-posframes t
+      starter-discoverability-eldoc-hover t
+      starter-motion-enable-ultra-scroll t)
 ```
 
-To disable them everywhere:
+See [docs/FIREMACS-ADAPTATION.md](docs/FIREMACS-ADAPTATION.md) for the design
+mapping and Windows fallbacks, and [docs/READING-ORDER.md](docs/READING-ORDER.md)
+for the Lambda learning path.
 
-```elisp
-(setq starter-ui-icons nil)
-```
+The branch also runs a delimiter/parser check under Emacs 30.1 on both Linux
+and Windows GitHub runners.
 
-## Portable defaults
+## Upstreams
 
-`starter-platform.el` avoids account- or machine-specific absolute paths.
+- Lambda-Emacs: <https://codeberg.org/Lambda-Emacs/lambda-emacs>
+- Meow: <https://github.com/meow-edit/meow>
+- Firemacs design reference: <https://github.com/66-firebat/firemacs>
+- Doom Modeline: <https://github.com/seagle0128/doom-modeline>
+- Casual Suite: <https://github.com/kickingvegas/casual-suite>
+- Ultra Scroll: <https://github.com/jdtsmith/ultra-scroll>
+- Pulsar: <https://github.com/protesilaos/pulsar>
 
-- **Windows:** prefers `pwsh.exe`, then `powershell.exe`, then `cmd.exe`.
-- **GNU/Linux / Nix:** prefers `zsh`, then `bash`, then `sh`.
-- **macOS:** prefers `zsh`, then `bash`, then `sh`.
-- Projects default to `~/Projects/` (using `USERPROFILE` on native Windows where appropriate).
-- Org defaults to `~/Documents/org/`.
-- No primary text font is forced.
-
-For values that should not be committed, copy `private.example.el` to `private.el`. It is ignored by Git and is loaded after portable defaults are defined but before they are applied.
-
-## Interaction model
-
-Lambda defines semantic keymaps such as buffer, file, search, VC, project, window, and workspace maps. The Meow layer reuses those maps instead of duplicating them.
-
-```text
-SPC b ...   buffers
-SPC f ...   files
-SPC p ...   projects
-SPC s ...   search
-SPC v ...   version control
-SPC w ...   windows
-SPC W ...   tabs/workspaces
-SPC SPC     M-x
-SPC /       describe Meow/keypad key
-```
-
-The important architectural point is:
-
-```text
-SPC + which-key
-      ↓
-Meow leader
-      ↓
-Lambda semantic keymaps
-      ↓
-ordinary Emacs commands/keymaps
-```
-
-So the interface is modal and discoverable without hiding the underlying Emacs machinery.
-
-## First things to learn
-
-Run `M-x meow-tutor`, then make frequent use of:
-
-```text
-C-h k   describe-key
-C-h f   describe-function
-C-h v   describe-variable
-C-h m   describe-mode
-M-x describe-keymap
-M-x find-function
-```
-
-See `docs/READING-ORDER.md` for a guided source-reading sequence.
-
-## Upstream / provenance
-
-Active upstreams:
-
-- Lambda-Emacs: `https://codeberg.org/Lambda-Emacs/lambda-emacs`
-- Colin McLear's configuration: `https://codeberg.org/mclear-tools/dotemacs`
-- Meow: `https://github.com/meow-edit/meow`
-
-Presentation references/packages:
-
-- Doom themes: `https://github.com/doomemacs/themes`
-- doom-modeline: `https://github.com/seagle0128/doom-modeline`
-- Nerd Icons: `https://github.com/rainstormstudio/nerd-icons.el`
-- Spacious Padding: `https://github.com/protesilaos/spacious-padding`
-- Firemacs (design reference): `https://github.com/66-firebat/firemacs`
-
-The original Lambda/Colin port was checked against the final GitHub mirrors available on 2026-05-30, when both projects moved active development to Codeberg. Because Codeberg was not reachable from the execution environment that prepared that pass, treat the Lambda user layer as conservative rather than a claim of exact compatibility with every later upstream change.
-
-## Learning rule
-
-While learning the system, keep this boundary:
-
-> **Do not edit `lambda-library/lambda-setup/` unless you have intentionally decided to fork framework behavior.** Prefer normal Emacs extension points from `lambda-user/`: variables, hooks, keymaps, `use-package`, and `with-eval-after-load`.
+Keep user changes inside `lambda-library/lambda-user/` unless you intentionally
+decide to maintain a Lambda framework fork.
