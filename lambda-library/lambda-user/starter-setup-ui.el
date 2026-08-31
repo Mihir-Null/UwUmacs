@@ -11,7 +11,9 @@
 ;; - borrow the useful presentation ideas from Firemacs (compact modeline,
 ;;   visible tabs, dark editor surface) without importing its terminal-specific
 ;;   custom statuscolumn/MRU-tab implementation;
-;; - make icons optional so a missing Nerd Font never breaks first boot.
+;; - make icons optional so a missing Nerd Font never breaks first boot;
+;; - avoid frame-geometry decoration on native Windows, where an external tiling
+;;   manager such as FancyWM should have sole ownership of the outer rectangle.
 
 ;;; Code:
 
@@ -163,11 +165,14 @@ whose font already contains Nerd Font glyphs), or nil to disable them."
 
 ;;;; Spacing
 
+;; `spacious-padding' changes frame-level geometry (internal border/fringes).
+;; That is harmless under ordinary desktop WMs, but it is intentionally disabled
+;; on native Windows so FancyWM or another external tiler owns the frame rectangle
+;; without Emacs changing geometry after the window has already been tiled.
 (use-package spacious-padding
   :ensure t
+  :if (not (eq system-type 'windows-nt))
   :custom
-  ;; Deliberately modest: visual separation without fighting the native window
-  ;; manager or recreating Lambda's large frameless border.
   (spacious-padding-widths
    '(:internal-border-width 8
      :header-line-width 2
