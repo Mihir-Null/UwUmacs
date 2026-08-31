@@ -59,7 +59,9 @@ whose font already contains Nerd Font glyphs), or nil to disable them."
 (defun starter-ui-load-theme (theme)
   "Disable active themes and load THEME non-interactively."
   (mapc #'disable-theme custom-enabled-themes)
-  (load-theme theme t))
+  (load-theme theme t)
+  (when (fboundp 'doom-themes-org-config)
+    (doom-themes-org-config)))
 
 (defun starter-ui-toggle-theme ()
   "Toggle between `starter-ui-theme' and `starter-ui-light-theme'."
@@ -77,8 +79,7 @@ whose font already contains Nerd Font glyphs), or nil to disable them."
   :config
   ;; Lambda loads a fallback theme early so startup is never unthemed. Replace it
   ;; here once the user-facing UI layer is ready.
-  (starter-ui-load-theme starter-ui-theme)
-  (doom-themes-org-config))
+  (starter-ui-load-theme starter-ui-theme))
 
 ;; Lambda's default toggle calls a macOS-only `dark-mode' shell utility. Replace
 ;; just that binding with a portable theme toggle while retaining the rest of the
@@ -142,6 +143,13 @@ whose font already contains Nerd Font glyphs), or nil to disable them."
   (when (starter-ui-icons-available-p)
     (nerd-icons-completion-mode 1)
     (add-hook 'marginalia-mode-hook #'nerd-icons-completion-marginalia-setup)))
+
+(use-package nerd-icons-corfu
+  :ensure t
+  :after corfu
+  :config
+  (when (starter-ui-icons-available-p)
+    (add-to-list 'corfu-margin-formatters #'nerd-icons-corfu-formatter)))
 
 (defun starter-ui-maybe-enable-dired-icons ()
   "Enable Dired icons only when their font is usable."
