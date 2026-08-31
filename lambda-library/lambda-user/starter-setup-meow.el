@@ -24,10 +24,16 @@
   (add-to-list 'meow-keymap-alist (cons 'leader lem+leader-map))
 
   ;; SPC is a semantic leader here, not a generic modifier translator.
-  (setopt meow-keypad-meta-prefix nil
-          meow-keypad-ctrl-meta-prefix nil
-          meow-keypad-literal-prefix nil
-          meow-keypad-start-keys nil)
+  ;;
+  ;; Meow declares the three prefix variables below as character-valued Custom
+  ;; options. `nil' is nevertheless a useful runtime sentinel here: no input event
+  ;; can equal it, so the modifier translations are disabled. Use `setq' rather
+  ;; than `setopt' because Custom type validation would (correctly) warn that nil is
+  ;; not a character even though Meow's runtime code handles this use safely.
+  (setq meow-keypad-meta-prefix nil
+        meow-keypad-ctrl-meta-prefix nil
+        meow-keypad-literal-prefix nil
+        meow-keypad-start-keys nil)
 
   (meow-leader-define-key
    '("?" . consult-apropos)
