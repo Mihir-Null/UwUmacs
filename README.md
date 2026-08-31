@@ -33,7 +33,8 @@ The files in this repository already mirror that destination:
         ├── starter-platform.el
         ├── starter-setup-languages.el
         ├── starter-setup-meow.el
-        └── starter-setup-org.el
+        ├── starter-setup-org.el
+        └── starter-setup-ui.el
 ```
 
 No bootstrap script is required or provided. Clone Lambda however you prefer, then make `lambda-library/lambda-user/` contain these files.
@@ -80,7 +81,7 @@ That keeps the Emacs configuration easy to understand while learning it. If you 
 
 The starter keeps enough of Lambda to be a useful daily text editor without importing Colin's personal environment:
 
-- Lambda window, buffer, frame, font, face, and theme defaults;
+- Lambda buffer/window/font/face foundations, while retaining ordinary OS-managed frame decorations;
 - Vertico/Consult-style completion and search from Lambda;
 - built-in `which-key` discoverability;
 - Dired;
@@ -90,7 +91,8 @@ The starter keeps enough of Lambda to be a useful daily text editor without impo
 - Lambda's general programming layer;
 - shell + Eshell;
 - **Meow** with Colin-inspired QWERTY selection-first bindings;
-- Lambda's semantic leader maps exposed directly through **`SPC`**.
+- Lambda's semantic leader maps exposed directly through **`SPC`**;
+- the starter UI layer described below.
 
 Not loaded initially:
 
@@ -103,6 +105,68 @@ Not loaded initially:
 
 `starter-setup-languages.el` is an intentionally optional example for Nix, Racket, and Guile/Scheme. Read it before enabling it.
 
+## Starter UI
+
+`starter-setup-ui.el` is deliberately separate from behavior/navigation. It can be replaced without changing the editor architecture.
+
+Default presentation:
+
+- **Doom Dark+** through the standalone `doom-themes` package;
+- **doom-modeline** at the bottom of the frame;
+- Lambda's built-in `tab-bar`/`tabspaces` workspaces, with the tab bar shown only once there is more than one workspace;
+- modest `spacious-padding`, while keeping native frame decorations so Windows/FancyWM and normal Linux/macOS window managers can resize the frame;
+- line numbers + current-line highlighting in programming buffers;
+- matching-parenthesis highlighting;
+- optional Nerd Icons in the modeline, completion UI, and Dired.
+
+This takes presentation cues from Firemacs while deliberately not importing its custom terminal-first statuscolumn or MRU-tab implementation. The existing Lambda workspace abstraction remains the canonical tab/workspace model.
+
+### Theme selection
+
+The default is:
+
+```elisp
+(setq starter-ui-theme 'doom-dark+)
+```
+
+Change it in `private.el` or before `starter-setup-ui` loads. Other `doom-themes` themes can be used the same way, for example:
+
+```elisp
+(setq starter-ui-theme 'doom-one)
+;; or
+(setq starter-ui-theme 'doom-gruvbox)
+```
+
+### Nerd Icons
+
+Icons are set to `auto` by default:
+
+```elisp
+(setq starter-ui-icons 'auto)
+```
+
+In a graphical frame they are enabled only if `Symbols Nerd Font Mono` is actually installed. Missing fonts therefore produce a normal text modeline rather than broken glyphs.
+
+After the `nerd-icons` package has been installed by first startup, run:
+
+```text
+M-x nerd-icons-install-fonts
+```
+
+On Linux/macOS this can install the font directly. On Windows the command downloads the font files, after which they still need to be installed through Windows (right-click the downloaded font files and choose **Install**, then restart Emacs).
+
+To force icons in a terminal that already uses a Nerd Font:
+
+```elisp
+(setq starter-ui-icons t)
+```
+
+To disable them everywhere:
+
+```elisp
+(setq starter-ui-icons nil)
+```
+
 ## Portable defaults
 
 `starter-platform.el` avoids account- or machine-specific absolute paths.
@@ -110,9 +174,9 @@ Not loaded initially:
 - **Windows:** prefers `pwsh.exe`, then `powershell.exe`, then `cmd.exe`.
 - **GNU/Linux / Nix:** prefers `zsh`, then `bash`, then `sh`.
 - **macOS:** prefers `zsh`, then `bash`, then `sh`.
-- Projects default to `~/Projects/`.
+- Projects default to `~/Projects/` (using `USERPROFILE` on native Windows where appropriate).
 - Org defaults to `~/Documents/org/`.
-- No font is forced.
+- No primary text font is forced.
 
 For values that should not be committed, copy `private.example.el` to `private.el`. It is ignored by Git and is loaded after portable defaults are defined but before they are applied.
 
@@ -169,7 +233,15 @@ Active upstreams:
 - Colin McLear's configuration: `https://codeberg.org/mclear-tools/dotemacs`
 - Meow: `https://github.com/meow-edit/meow`
 
-This initial port was checked against the final GitHub mirrors available on 2026-05-30, when both Lambda and Colin's config moved active development to Codeberg. Because Codeberg was not reachable from the execution environment that prepared this pass, treat this as a conservative user layer rather than a claim of exact compatibility with every later upstream change.
+Presentation references/packages:
+
+- Doom themes: `https://github.com/doomemacs/themes`
+- doom-modeline: `https://github.com/seagle0128/doom-modeline`
+- Nerd Icons: `https://github.com/rainstormstudio/nerd-icons.el`
+- Spacious Padding: `https://github.com/protesilaos/spacious-padding`
+- Firemacs (design reference): `https://github.com/66-firebat/firemacs`
+
+The original Lambda/Colin port was checked against the final GitHub mirrors available on 2026-05-30, when both projects moved active development to Codeberg. Because Codeberg was not reachable from the execution environment that prepared that pass, treat the Lambda user layer as conservative rather than a claim of exact compatibility with every later upstream change.
 
 ## Learning rule
 
