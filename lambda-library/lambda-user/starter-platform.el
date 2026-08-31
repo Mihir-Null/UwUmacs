@@ -2,7 +2,7 @@
 
 ;;; Commentary:
 ;; Safe defaults for Windows, GNU/Linux/Nix, and macOS. Prefer discovery with
-;; `executable-find' over absolute machine-specific paths.
+;; `executable-find' and platform-provided home locations over machine-specific paths.
 
 ;;; Code:
 
@@ -13,11 +13,22 @@
   "Portable defaults for the Lambda learning configuration."
   :group 'lambda-emacs)
 
-(defcustom starter-project-directory (expand-file-name "~/Projects/")
+(defun starter--user-home-directory ()
+  "Return the user's ordinary home directory for configuration defaults.
+On native Windows, Emacs may define HOME as AppData/Roaming, so prefer
+USERPROFILE for user-owned projects and documents."
+  (file-name-as-directory
+   (if (eq system-type 'windows-nt)
+       (or (getenv "USERPROFILE") (expand-file-name "~"))
+     (expand-file-name "~"))))
+
+(defcustom starter-project-directory
+  (expand-file-name "Projects/" (starter--user-home-directory))
   "Default place to look for projects."
   :type 'directory)
 
-(defcustom starter-org-directory (expand-file-name "~/Documents/org/")
+(defcustom starter-org-directory
+  (expand-file-name "Documents/org/" (starter--user-home-directory))
   "Portable starter Org directory."
   :type 'directory)
 
