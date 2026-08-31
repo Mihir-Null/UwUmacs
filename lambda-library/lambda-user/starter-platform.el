@@ -27,9 +27,10 @@
 
 (defun starter-platform-apply ()
   "Apply the currently configured portable platform defaults."
-  ;; Lambda uses this directory in project convenience commands. It may be changed
-  ;; before this function runs from private.el.
-  (setopt lem-project-dir starter-project-directory)
+  ;; `lem-setup-projects' defines and also assigns `lem-project-dir', so apply the
+  ;; user value after that feature loads rather than racing its initialization.
+  (with-eval-after-load 'lem-setup-projects
+    (setq lem-project-dir starter-project-directory))
 
   ;; Choose a usable shell without assuming a username, Homebrew prefix, Nix profile,
   ;; or conventional Unix filesystem on Windows.
