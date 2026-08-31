@@ -20,7 +20,11 @@
   :group 'lambda-emacs)
 
 (defcustom starter-ui-theme 'doom-dark+
-  "Theme loaded by the starter UI layer."
+  "Dark/default theme loaded by the starter UI layer."
+  :type 'symbol)
+
+(defcustom starter-ui-light-theme 'doom-one-light
+  "Light theme used by `starter-ui-toggle-theme'."
   :type 'symbol)
 
 (defcustom starter-ui-icons 'auto
@@ -52,6 +56,19 @@ whose font already contains Nerd Font glyphs), or nil to disable them."
 
 ;;;; Theme
 
+(defun starter-ui-load-theme (theme)
+  "Disable active themes and load THEME non-interactively."
+  (mapc #'disable-theme custom-enabled-themes)
+  (load-theme theme t))
+
+(defun starter-ui-toggle-theme ()
+  "Toggle between `starter-ui-theme' and `starter-ui-light-theme'."
+  (interactive)
+  (starter-ui-load-theme
+   (if (memq starter-ui-theme custom-enabled-themes)
+       starter-ui-light-theme
+     starter-ui-theme)))
+
 (use-package doom-themes
   :ensure t
   :custom
@@ -60,9 +77,14 @@ whose font already contains Nerd Font glyphs), or nil to disable them."
   :config
   ;; Lambda loads a fallback theme early so startup is never unthemed. Replace it
   ;; here once the user-facing UI layer is ready.
-  (mapc #'disable-theme custom-enabled-themes)
-  (load-theme starter-ui-theme t)
+  (starter-ui-load-theme starter-ui-theme)
   (doom-themes-org-config))
+
+;; Lambda's default toggle calls a macOS-only `dark-mode' shell utility. Replace
+;; just that binding with a portable theme toggle while retaining the rest of the
+;; Lambda toggle map. `SPC t T' remains Lambda's interactive theme chooser.
+(with-eval-after-load 'lem-setup-keybindings
+  (define-key lem+toggle-keys (kbd "t") #'starter-ui-toggle-theme))
 
 ;;;; Modeline
 
@@ -128,6 +150,7 @@ whose font already contains Nerd Font glyphs), or nil to disable them."
 
 (use-package nerd-icons-dired
   :ensure t
+  :commands nerd-icons-dired-mode
   :hook (dired-mode . starter-ui-maybe-enable-dired-icons))
 
 ;;;; Spacing
