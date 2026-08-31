@@ -16,5 +16,20 @@
 ;; suppress nearly all startup warnings.
 (setopt warning-minimum-level :warning)
 
+;;;; Native Windows frame geometry
+;; FancyWM and similar Windows tilers assign windows exact pixel rectangles.
+;; Native Emacs otherwise advertises character-grid sizing hints and may round
+;; externally requested frame sizes.  This must be decided before the graphical
+;; frame is created, which is why it belongs in early-config.el.
+(when (eq system-type 'windows-nt)
+  (setq frame-resize-pixelwise t
+        window-resize-pixelwise t)
+
+  ;; Emacs 29+ uses double-buffered rendering on Windows.  It is normally a
+  ;; visual improvement, but can produce stale/fragmented regions during rapid
+  ;; external resize/reposition cycles.  Prefer correctness under a tiling WM.
+  (add-to-list 'default-frame-alist '(inhibit-double-buffering . t))
+  (add-to-list 'initial-frame-alist '(inhibit-double-buffering . t)))
+
 (provide 'early-config)
 ;;; early-config.el ends here
