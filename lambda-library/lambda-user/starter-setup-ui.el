@@ -1,0 +1,165 @@
+;;; starter-setup-ui.el --- Portable starter presentation -*- lexical-binding: t; -*-
+
+;;; Commentary:
+;; A small presentation layer for the Lambda learning configuration.
+;;
+;; Design goals:
+;; - retain ordinary OS-managed Emacs frames;
+;; - use Doom Dark+ as a familiar dark default without requiring Doom Emacs;
+;; - keep Lambda's built-in tab-bar/tabspaces architecture rather than adding a
+;;   second tab/workspace framework;
+;; - borrow the useful presentation ideas from Firemacs (compact modeline,
+;;   visible tabs, dark editor surface) without importing its terminal-specific
+;;   custom statuscolumn/MRU-tab implementation;
+;; - make icons optional so a missing Nerd Font never breaks first boot.
+
+;;; Code:
+
+(defgroup starter-ui nil
+  "Presentation defaults for the Lambda learning configuration."
+  :group 'lambda-emacs)
+
+(defcustom starter-ui-theme 'doom-dark+
+  "Theme loaded by the starter UI layer."
+  :type 'symbol)
+
+(defcustom starter-ui-icons 'auto
+  "Whether to use Nerd Font icons.
+
+When `auto', enable icons only in a graphical frame when the configured Nerd
+Font can be found.  Set this to t to force icons (for example in a terminal
+whose font already contains Nerd Font glyphs), or nil to disable them."
+  :type '(choice (const :tag "Detect automatically" auto)
+                 (const :tag "Always" t)
+                 (const :tag "Never" nil)))
+
+(defcustom starter-ui-nerd-font "Symbols Nerd Font Mono"
+  "Font family used for Nerd Icons."
+  :type 'string)
+
+(defcustom starter-ui-line-numbers-in-programming t
+  "Whether programming buffers should show line numbers by default."
+  :type 'boolean)
+
+(defun starter-ui-icons-available-p ()
+  "Return non-nil when the starter should render Nerd Font icons."
+  (pcase starter-ui-icons
+    ('t t)
+    ('nil nil)
+    ('auto
+     (and (display-graphic-p)
+          (find-font (font-spec :name starter-ui-nerd-font))))))
+
+;;;; Theme
+
+(use-package doom-themes
+  :ensure t
+  :custom
+  (doom-themes-enable-bold t)
+  (doom-themes-enable-italic t)
+  :config
+  ;; Lambda loads a fallback theme early so startup is never unthemed. Replace it
+  ;; here once the user-facing UI layer is ready.
+  (mapc #'disable-theme custom-enabled-themes)
+  (load-theme starter-ui-theme t)
+  (doom-themes-org-config))
+
+;;;; Modeline
+
+(use-package nerd-icons
+  :ensure t
+  :defer t
+  :custom
+  (nerd-icons-font-family starter-ui-nerd-font))
+
+(use-package doom-modeline
+  :ensure t
+  :init
+  (setq doom-modeline-height 28
+        doom-modeline-project-detection 'project
+        doom-modeline-buffer-file-name-style 'truncate-upto-project
+        doom-modeline-icon (starter-ui-icons-available-p)
+        doom-modeline-major-mode-icon t
+        doom-modeline-buffer-state-icon t)
+  :config
+  (doom-modeline-mode 1))
+
+;;;; Workspace/tab presentation
+
+(with-eval-after-load 'tab-bar
+  ;; Lambda uses tabs as window-configuration/project workspaces. Keep that
+  ;; semantic model, but expose it visually once a second workspace exists.
+  (setopt tab-bar-show 1)
+
+  (defun starter-ui-apply-tab-faces ()
+    "Give the built-in tab bar a compact editor-like presentation."
+    (set-face-attribute 'tab-bar nil
+                        :inherit 'default
+                        :box nil)
+    (set-face-attribute 'tab-bar-tab nil
+                        :inherit 'mode-line
+                        :weight 'bold
+                        :box nil)
+    (set-face-attribute 'tab-bar-tab-inactive nil
+                        :inherit 'mode-line-inactive
+                        :weight 'normal
+                        :box nil))
+
+  (starter-ui-apply-tab-faces)
+  ;; Lambda defines this hook around `load-theme'; keep tab faces coherent when
+  ;; changing themes interactively later.
+  (when (boundp 'lem-after-load-theme-hook)
+    (add-hook 'lem-after-load-theme-hook #'starter-ui-apply-tab-faces)))
+
+;;;; Completion and file-manager icons
+
+(use-package nerd-icons-completion
+  :ensure t
+  :after marginalia
+  :config
+  (when (starter-ui-icons-available-p)
+    (nerd-icons-completion-mode 1)
+    (add-hook 'marginalia-mode-hook #'nerd-icons-completion-marginalia-setup)))
+
+(defun starter-ui-maybe-enable-dired-icons ()
+  "Enable Dired icons only when their font is usable."
+  (when (starter-ui-icons-available-p)
+    (nerd-icons-dired-mode 1)))
+
+(use-package nerd-icons-dired
+  :ensure t
+  :hook (dired-mode . starter-ui-maybe-enable-dired-icons))
+
+;;;; Spacing
+
+(use-package spacious-padding
+  :ensure t
+  :custom
+  ;; Deliberately modest: visual separation without fighting the native window
+  ;; manager or recreating Lambda's large frameless border.
+  (spacious-padding-widths
+   '(:internal-border-width 8
+     :header-line-width 2
+     :mode-line-width 4
+     :tab-width 2
+     :right-divider-width 1
+     :scroll-bar-width 0
+     :fringe-width 6))
+  :config
+  (spacious-padding-mode 1))
+
+;;;; Editing-surface polish
+
+(show-paren-mode 1)
+
+(defun starter-ui-programming-presentation ()
+  "Apply unobtrusive visual aids in programming buffers."
+  (when starter-ui-line-numbers-in-programming
+    (setq-local display-line-numbers-type t)
+    (display-line-numbers-mode 1))
+  (hl-line-mode 1))
+
+(add-hook 'prog-mode-hook #'starter-ui-programming-presentation)
+
+(provide 'starter-setup-ui)
+;;; starter-setup-ui.el ends here
