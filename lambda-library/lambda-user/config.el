@@ -19,6 +19,11 @@
 ;; already-bound value, so the module will build its prefix maps with this choice.
 (setq lem-prefix "C-c C-SPC")
 
+;;;; UI policy
+;; Lambda otherwise defaults to its light theme. Keep the starter dark by default;
+;; this remains an ordinary variable that can later be replaced deliberately.
+(setq lem-ui-theme 'lambda-dark)
+
 ;;;; Base framework
 (message "Loading Lambda base modules...")
 (measure-time
@@ -30,10 +35,16 @@
                    lem-setup-theme
                    lem-setup-windows
                    lem-setup-buffers
-                   lem-setup-frames
                    lem-setup-fonts
                    lem-setup-faces))
    (require mod nil t)))
+
+;; Deliberately do not load `lem-setup-frames' in the starter configuration.
+;; Lambda's frame module makes frames undecorated and recenters them. That aesthetic
+;; is useful as an opt-in, but ordinary OS-managed frames are a more portable base:
+;; Windows window managers can tile/resize them normally and Linux/macOS retain their
+;; native compositor/window-manager behavior. Load `lem-setup-frames' explicitly
+;; later if you decide you want Lambda's frameless presentation.
 
 ;; Portable user policy belongs after Lambda has defined its variables, but before
 ;; later modules consume shell/project paths.
