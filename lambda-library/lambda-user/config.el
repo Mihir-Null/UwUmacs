@@ -14,6 +14,11 @@
 (setq user-full-name ""
       user-mail-address "")
 
+;;;; Non-modal recovery / learning prefix
+;; Define this before Lambda loads its keybinding module. `defcustom' preserves an
+;; already-bound value, so the module will build its prefix maps with this choice.
+(setq lem-prefix "C-c C-SPC")
+
 ;;;; Base framework
 (message "Loading Lambda base modules...")
 (measure-time
@@ -83,13 +88,8 @@
   )
 (add-hook 'emacs-startup-hook #'starter-after-startup)
 
-;;;; Non-modal recovery / learning prefix
-;; SPC is the normal Meow-facing leader. Keeping Lambda's conventional Emacs prefix
-;; is useful for learning and for modes where Meow is not active.
-(setopt lem-prefix "C-c C-SPC")
-
 ;;;; Discoverability
-;; which-key is built into Emacs 30 and enabled by Lambda's keybinding module.
+;; which-key is built into Emacs 30+ and enabled by Lambda's keybinding module.
 (with-eval-after-load 'which-key
   (setopt which-key-idle-delay 0.45
           which-key-idle-secondary-delay 0.05))
