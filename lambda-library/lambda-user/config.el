@@ -58,6 +58,11 @@
     (load-file private)))
 (starter-platform-apply)
 
+;; Install the startup home page before after-init/startup hooks run. The dashboard
+;; uses project.el/recentf/bookmarks and therefore remains a presentation layer over
+;; ordinary Emacs facilities rather than a second workspace system.
+(require 'starter-setup-dashboard)
+
 ;;;; After init — interactive editor shell
 (defun starter-after-init ()
   "Load completion, navigation, projects, keymaps, and modal editing."
@@ -112,6 +117,7 @@
 
 ;;;; First commands to learn
 ;; M-x meow-tutor
+;; M-x dashboard-open -> return to the home page
 ;; SPC SPC        -> M-x
 ;; SPC /          -> describe Meow/keypad key
 ;; C-h k          -> describe key
