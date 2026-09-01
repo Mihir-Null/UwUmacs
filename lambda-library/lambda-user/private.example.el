@@ -13,6 +13,11 @@
 ;; (setopt starter-project-directory (expand-file-name "~/src/"))
 ;; (setopt starter-org-directory (expand-file-name "~/Documents/my-org/"))
 
+;; Terminal
+;; `starter-setup-terminal' is loaded later, so pre-bind its installation root with
+;; `setq' if MSYS2 is not installed at the normal C:/msys64/ location.
+;; (setq starter-msys2-root "D:/Tools/msys64/")
+
 ;; UI
 ;; `starter-setup-ui' is loaded later, so use `setq' here; its `defcustom' forms will
 ;; preserve these pre-bound values.
