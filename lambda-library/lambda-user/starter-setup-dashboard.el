@@ -97,9 +97,10 @@
   (dashboard-setup-startup-hook))
 
 ;; Dashboard is an application-like buffer: retain its own r/p/b/number shortcuts
-;; while Meow supplies j/k motion and SPC leader access.
+;; while Meow supplies j/k motion and the usual SPC command surface.
 (with-eval-after-load 'meow
-  (add-to-list 'meow-mode-state-list '(dashboard-mode . motion)))
+  (add-to-list 'meow-mode-state-list '(dashboard-mode . motion))
+  (meow-leader-define-key '("h" . dashboard-open)))
 
 (provide 'starter-setup-dashboard)
 ;;; starter-setup-dashboard.el ends here
