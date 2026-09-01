@@ -18,9 +18,11 @@
 ;; preserve these pre-bound values.
 ;; (setq starter-ui-theme 'doom-dark+
 ;;       starter-ui-light-theme 'doom-one-light
+;;       starter-ui-font-family "GoogleSansCode Nerd Font"
 ;;       starter-ui-icons 'auto
 ;;       starter-ui-nerd-font "Symbols Nerd Font Mono")
 
-;; A patched primary programming font is separate from Nerd Icons. Lambda's font
-;; variables can also be set here once you decide which fonts should be present on
-;; each machine.
+;; The primary programming font and the dedicated Nerd Icons symbol font are kept
+;; separate. `starter-ui-font-family' changes only the default face family, preserving
+;; the platform's existing point size. If the family is absent, the starter keeps the
+;; platform default rather than failing startup.
