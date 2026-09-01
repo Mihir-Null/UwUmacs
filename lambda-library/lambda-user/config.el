@@ -97,6 +97,10 @@
                      lem-setup-server))
      (require mod nil t)))
 
+  ;; Lambda owns EAT itself; this user module only adds explicit terminal entries
+  ;; such as the Windows MSYS2 UCRT64 environment.
+  (require 'starter-setup-terminal)
+
   (require 'starter-setup-org)
 
   ;; UI is intentionally a user module rather than Lambda's `lem-setup-modeline'.
@@ -120,6 +124,7 @@
 ;; M-x dashboard-open -> return to the home page
 ;; SPC SPC        -> M-x
 ;; SPC /          -> describe Meow/keypad key
+;; SPC o m        -> MSYS2 UCRT64 in EAT (Windows)
 ;; C-h k          -> describe key
 ;; C-h m          -> describe active modes
 ;; M-x describe-keymap
