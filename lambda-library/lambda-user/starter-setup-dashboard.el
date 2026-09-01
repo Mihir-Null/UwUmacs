@@ -96,5 +96,10 @@
   ;; with a file argument, matching Doom's behavior.
   (dashboard-setup-startup-hook))
 
+;; Dashboard is an application-like buffer: retain its own r/p/b/number shortcuts
+;; while Meow supplies j/k motion and SPC leader access.
+(with-eval-after-load 'meow
+  (add-to-list 'meow-mode-state-list '(dashboard-mode . motion)))
+
 (provide 'starter-setup-dashboard)
 ;;; starter-setup-dashboard.el ends here
