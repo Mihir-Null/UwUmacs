@@ -56,7 +56,7 @@ multiple numbered terminal buffers can be created in the usual EAT way."
 ;; compact terminal namespace without changing Lambda's native recovery prefix.
 (with-eval-after-load 'meow
   (add-to-list 'meow-mode-state-list '(eat-mode . insert))
-  (meow-leader-define-key '("o" . starter+terminal-keys)))
+  (meow-leader-define-key `("o" . ,starter+terminal-keys)))
 
 (provide 'starter-setup-terminal)
 ;;; starter-setup-terminal.el ends here
