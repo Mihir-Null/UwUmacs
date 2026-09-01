@@ -6,6 +6,8 @@
 ;; Design goals:
 ;; - retain ordinary OS-managed Emacs frames;
 ;; - use Doom Dark+ as a familiar dark default without requiring Doom Emacs;
+;; - use Google Sans Code Nerd Font when installed, while retaining a safe
+;;   platform fallback when it is absent;
 ;; - keep Lambda's built-in tab-bar/tabspaces architecture rather than adding a
 ;;   second tab/workspace framework;
 ;; - borrow the useful presentation ideas from Firemacs (compact modeline,
@@ -27,6 +29,14 @@
   "Light theme used by `starter-ui-toggle-theme'."
   :type 'symbol)
 
+(defcustom starter-ui-font-family "GoogleSansCode Nerd Font"
+  "Preferred family for the default editing face.
+
+The family name matches the Google Sans Code build distributed by Nerd Fonts.
+If it is unavailable, retain the platform's existing default font rather than
+failing startup or substituting a machine-specific path."
+  :type 'string)
+
 (defcustom starter-ui-icons 'auto
   "Whether to use Nerd Font icons.
 
@@ -45,6 +55,23 @@ whose font already contains Nerd Font glyphs), or nil to disable them."
   "Whether programming buffers should show line numbers by default."
   :type 'boolean)
 
+(defun starter-ui-font-available-p ()
+  "Return non-nil when `starter-ui-font-family' is installed."
+  (and (display-graphic-p)
+       (find-font (font-spec :family starter-ui-font-family))))
+
+(defun starter-ui-apply-font ()
+  "Apply `starter-ui-font-family' through Lambda's font configuration.
+
+Only the font family is changed, so the existing point size and other default
+face attributes remain intact."
+  (when (display-graphic-p)
+    (if (starter-ui-font-available-p)
+        (setopt lem-ui-default-font
+                (list :family starter-ui-font-family))
+      (message "Starter UI: font %s not installed; keeping platform default"
+               starter-ui-font-family))))
+
 (defun starter-ui-icons-available-p ()
   "Return non-nil when the starter should render Nerd Font icons."
   (pcase starter-ui-icons
@@ -53,6 +80,10 @@ whose font already contains Nerd Font glyphs), or nil to disable them."
     ('auto
      (and (display-graphic-p)
           (find-font (font-spec :name starter-ui-nerd-font))))))
+
+;;;; Font
+
+(starter-ui-apply-font)
 
 ;;;; Theme
 
