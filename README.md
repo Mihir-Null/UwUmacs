@@ -34,6 +34,8 @@ The files in this repository already mirror that destination:
         ├── starter-setup-languages.el
         ├── starter-setup-meow.el
         ├── starter-setup-org.el
+        ├── starter-setup-terminal.el
+        ├── starter-setup-treesit.el
         └── starter-setup-ui.el
 ```
 
@@ -89,6 +91,8 @@ The starter keeps enough of Lambda to be a useful daily text editor without impo
 - Magit / VC integration;
 - Org base/settings plus a minimal inbox capture setup;
 - Lambda's general programming layer;
+- pinned Emacs-30-compatible Tree-sitter grammar recipes with safe mode fallback;
+- built-in Eglot commands, with automatic server startup left opt-in;
 - shell + Eshell;
 - **Meow** with Colin-inspired QWERTY selection-first bindings;
 - Lambda's semantic leader maps exposed directly through **`SPC`**;
@@ -103,7 +107,80 @@ Not loaded initially:
 - PDF/Elfeed/LLM stacks;
 - language-specific IDE packages beyond Lambda's general programming layer.
 
-`starter-setup-languages.el` is an intentionally optional example for Nix, Racket, and Guile/Scheme. Read it before enabling it.
+Nix, Racket, and Guile/Scheme packages remain explicit choices through
+`starter-language-packages`; no language runtime or server is silently assumed.
+
+## Tree-sitter grammars
+
+Lambda's upstream recipes follow grammar repository heads.  This user layer
+replaces those entries with exact revisions whose generated parsers use ABI 13
+or 14, keeping every recipe within Emacs 30's supported parser ABI range.
+
+Install one grammar with:
+
+```text
+M-x starter-treesit-install-language-grammar
+```
+
+Or install every pinned grammar with:
+
+```text
+M-x starter-treesit-install-all-grammars
+```
+
+You need Git plus a C/C++ compiler visible to Emacs.  On the current Windows
+setup, `C:/msys64/ucrt64/bin/` supplies GCC.  A `*-ts-mode` remap is added only
+after its grammar loads successfully; otherwise the classic major mode remains
+active.  `M-x starter-treesit-refresh-mode-remaps` rechecks this without a
+restart.
+
+## Integrated terminals
+
+The terminal leader namespace is:
+
+```text
+SPC o e   EAT using the platform's normal shell
+SPC o p   project-local EAT
+SPC o m   MSYS2 UCRT64 Bash in EAT (native Windows)
+```
+
+On native Windows, EAT still expects a POSIX `/usr/bin/env sh` launch helper.
+The starter terminal module translates that helper to the configured MSYS2
+installation while leaving the actual ordinary terminal shell as PowerShell.
+Set `starter-msys2-root` (or `MSYS2_ROOT`) if MSYS2 is not in `C:/msys64/`.
+
+Native Windows Emacs uses pipes rather than a Unix PTY.  Ordinary command-line
+work is supported, but job control and some full-screen terminal applications
+may remain limited by that upstream constraint.
+
+## Language tooling
+
+Eglot is built into Emacs and is available without enabling Lambda's broader LSP
+module, which currently auto-starts servers and duplicates Tree-sitter policy.
+The starter uses a smaller `SPC l` namespace:
+
+```text
+SPC l e   start/manage Eglot
+SPC l a   code actions
+SPC l R   rename symbol
+SPC l f   format buffer
+SPC l d   find definition
+SPC l r   find references
+SPC l q   shut down server
+```
+
+Eglot does not auto-start by default.  Once a language server is installed, add
+its modes in `private.el`, for example:
+
+```elisp
+(setq starter-eglot-auto-start-modes '(python-mode python-ts-mode))
+```
+
+Optional editing packages use the same policy:
+
+```elisp
+(setq starter-language-packages '(nix racket guile))
+```
 
 ## Starter UI
 

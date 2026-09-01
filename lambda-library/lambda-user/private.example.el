@@ -18,6 +18,12 @@
 ;; `setq' if MSYS2 is not installed at the normal C:/msys64/ location.
 ;; (setq starter-msys2-root "D:/Tools/msys64/")
 
+;; Language tooling
+;; Eglot is available manually through SPC l e. Automatic startup and external
+;; language packages are opt-in because their servers/runtimes are platform-owned.
+;; (setq starter-eglot-auto-start-modes '(python-mode python-ts-mode)
+;;       starter-language-packages '(nix racket guile))
+
 ;; UI
 ;; `starter-setup-ui' is loaded later, so use `setq' here; its `defcustom' forms will
 ;; preserve these pre-bound values.

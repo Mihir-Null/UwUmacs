@@ -53,6 +53,7 @@ Then compare upstream behavior with the small user modules:
 
 - `starter-platform.el`
 - `starter-setup-org.el`
+- `starter-setup-treesit.el`
 - `starter-setup-languages.el`
 
 ## Extension discipline

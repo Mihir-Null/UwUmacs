@@ -1,33 +1,101 @@
-;;; starter-setup-languages.el --- Optional language examples -*- lexical-binding: t; -*-
+;;; starter-setup-languages.el --- Selective language tooling -*- lexical-binding: t; -*-
 
 ;;; Commentary:
-;; NOT loaded by default. Uncomment `(require 'starter-setup-languages)' in config.el
-;; after reading this file. The point is to demonstrate extending Lambda's general
-;; programming layer rather than silently pre-installing an IDE for every language.
+;; Supply a small built-in Eglot command surface without assuming which language
+;; servers each machine owns.  Language packages and automatic LSP startup remain
+;; explicit opt-ins that can be set in private.el before this module loads.
 
 ;;; Code:
 
-;; Nix has no built-in major mode in Emacs.
-(use-package nix-mode
-  :ensure t
-  :mode "\\.nix\\'")
+(defgroup starter-languages nil
+  "Selective language tooling for the starter configuration."
+  :group 'lambda-emacs)
 
-;; Racket editing + REPL/debugger tooling.
-(use-package racket-mode
-  :ensure t
-  :mode "\\.rkt\\'")
+(defcustom starter-language-packages nil
+  "Optional language packages to install and configure.
 
-;; Emacs ships Scheme mode; Geiser adds implementation-aware REPL/evaluation support.
-(use-package geiser
-  :ensure t
-  :defer t)
+Supported values are `nix', `racket', and `guile'.  Built-in modes and Eglot do
+not need to be listed here."
+  :type '(set (const nix) (const racket) (const guile))
+  :group 'starter-languages)
 
-(use-package geiser-guile
-  :ensure t
-  :after geiser)
+(defcustom starter-eglot-auto-start-modes nil
+  "Major modes in which `eglot-ensure' should run automatically.
 
-;; Eglot is built into modern Emacs. Start it explicitly with M-x eglot initially.
-;; Add automatic hooks only after deciding which language servers each platform owns.
+The default is nil: start Eglot explicitly with `starter-eglot' or `M-x eglot'
+until the language server for a mode is deliberately installed on each machine."
+  :type '(repeat symbol)
+  :group 'starter-languages)
+
+(use-package eglot
+  :ensure nil
+  :commands (eglot eglot-ensure eglot-shutdown eglot-reconnect
+                   eglot-rename eglot-code-actions eglot-format
+                   eglot-format-buffer eglot-find-declaration
+                   eglot-find-implementation eglot-find-typeDefinition)
+  :custom
+  (eglot-autoshutdown t))
+
+(defvar starter--eglot-auto-start-hooks nil
+  "Mode hooks currently managed by `starter-eglot-apply-auto-start-modes'.")
+
+(defun starter-eglot-apply-auto-start-modes ()
+  "Apply `starter-eglot-auto-start-modes' to their corresponding hooks."
+  (interactive)
+  (dolist (hook starter--eglot-auto-start-hooks)
+    (remove-hook hook #'eglot-ensure))
+  (setq starter--eglot-auto-start-hooks nil)
+  (dolist (mode starter-eglot-auto-start-modes)
+    (let ((hook (intern (format "%s-hook" mode))))
+      (add-hook hook #'eglot-ensure)
+      (push hook starter--eglot-auto-start-hooks))))
+
+(defun starter-eglot ()
+  "Interactively start or manage Eglot for the current project."
+  (interactive)
+  (require 'eglot)
+  (call-interactively #'eglot))
+
+(defvar-keymap starter+lsp-keys
+  :doc "Language-server and code-intelligence commands."
+  "e" #'starter-eglot
+  "q" #'eglot-shutdown
+  "=" #'eglot-reconnect
+  "a" #'eglot-code-actions
+  "R" #'eglot-rename
+  "f" #'eglot-format-buffer
+  "F" #'eglot-format
+  "d" #'xref-find-definitions
+  "r" #'xref-find-references
+  "D" #'eglot-find-declaration
+  "i" #'eglot-find-implementation
+  "t" #'eglot-find-typeDefinition
+  "h" #'eldoc-doc-buffer)
+
+(with-eval-after-load 'meow
+  (meow-leader-define-key `("l" . ,starter+lsp-keys)))
+
+(starter-eglot-apply-auto-start-modes)
+
+;; Keep non-built-in language modes deliberate.  Set
+;; `starter-language-packages' in private.el before startup to enable these.
+(when (memq 'nix starter-language-packages)
+  (use-package nix-mode
+    :ensure t
+    :mode "\\.nix\\'"))
+
+(when (memq 'racket starter-language-packages)
+  (use-package racket-mode
+    :ensure t
+    :mode "\\.rkt\\'"))
+
+(when (memq 'guile starter-language-packages)
+  (use-package geiser
+    :ensure t
+    :defer t)
+  (use-package geiser-guile
+    :ensure t
+    :after geiser))
 
 (provide 'starter-setup-languages)
 ;;; starter-setup-languages.el ends here

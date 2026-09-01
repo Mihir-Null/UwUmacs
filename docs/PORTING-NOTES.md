@@ -33,6 +33,22 @@ Not ported:
 - personal Org/Denote workflow;
 - PDF/Elfeed/LLM stacks.
 
+## Selective workflow migration
+
+The first post-baseline migration keeps only workflows with a clear portable
+boundary:
+
+- built-in Eglot is exposed through a small leader map, but no server starts
+  automatically until its modes are listed in `starter-eglot-auto-start-modes`;
+- Nix, Racket, and Guile editing packages are opt-in through
+  `starter-language-packages`.
+
+The existing vault remains independent of this fresh starter configuration.
+Org-roam, Org-remark annotations, Yasnippet/template libraries, agent-shell,
+bibliography, mail, and calendar remain deferred until a proven workflow is
+migrated at its canonical source rather than reconstructed as a compatibility
+module here.
+
 ## Why this repo does not install Lambda
 
 The repository is deliberately not a bootstrapper. Keeping Lambda and the user layer separable means you can choose per machine whether to:

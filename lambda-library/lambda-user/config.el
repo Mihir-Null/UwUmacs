@@ -97,6 +97,14 @@
                      lem-setup-server))
      (require mod nil t)))
 
+  ;; Replace Lambda's moving Tree-sitter grammar recipes and unconditional mode
+  ;; remaps with reproducible Emacs-30-compatible pins and availability checks.
+  (require 'starter-setup-treesit)
+
+  ;; Eglot commands are always available, while language packages and automatic
+  ;; server startup remain explicit per-machine choices.
+  (require 'starter-setup-languages)
+
   ;; Lambda owns EAT itself; this user module only adds explicit terminal entries
   ;; such as the Windows MSYS2 UCRT64 environment.
   (require 'starter-setup-terminal)
@@ -108,8 +116,6 @@
   ;; Nerd Icons, and modest spacing while retaining ordinary OS-managed frames.
   (require 'starter-setup-ui)
 
-  ;; Optional learning step: read this module first, then enable it.
-  ;; (require 'starter-setup-languages)
   )
 (add-hook 'emacs-startup-hook #'starter-after-startup)
 
