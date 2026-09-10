@@ -44,7 +44,7 @@ The migration records exact backup paths and before/after checks in the local au
 
 To roll back from an unpackaged Windows process: close Emacs and preserve new runtime state/edits. Remove only the two new `.emacs.d` junction entries, leaving their target intact. Move `desktop-emacs.d` from the recorded backup directory back to normal AppData `.emacs.d`. Move archived `lambda-emacs` back to `.config/lambda-emacs`, and move `startup-link-1` back to the Codex-packaged AppData `.emacs.d` location. The archived Lambda user-layer junction already points at the backed-up original dotfiles. This restores the original split configuration for recovery; the consolidated checkout is retained. Do not recursively delete a directory junction or its target.
 
-The migration branch is local until explicitly published. The `main` branch and remote repository are not advanced by deployment.
+The complete configuration is published on `main`. The installed checkout also uses `main`; update it with an ordinary fast-forward Git pull after reviewing incoming changes. The dated backups retain the pre-migration configuration.
 
 ## Known inherited limits
 

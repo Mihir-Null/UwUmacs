@@ -14,7 +14,6 @@ A separate Lambda checkout or submodule is not required.
 git clone https://github.com/Mihir-Null/Emacs-Dots.git ~/.emacs.d
 ```
 
-That command applies after the self-contained branch has been published and selected.
 For an existing checkout, start Emacs with `--init-directory=/path/to/Emacs-Dots`.
 Emacs 30.1 or later is required. First startup can install the selected Elisp
 packages; external runtimes and language servers remain your responsibility.
