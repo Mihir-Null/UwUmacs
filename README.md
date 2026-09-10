@@ -1,65 +1,52 @@
-# Emacs-Dots — Lambda-Emacs user layer
+# Emacs-Dots — complete Lambda-based configuration
 
 A small, inspectable configuration layer for [Lambda-Emacs](https://codeberg.org/Lambda-Emacs/lambda-emacs), using [Meow](https://github.com/meow-edit/meow) for selection-first modal editing and adapting the useful, portable parts of [Colin McLear's configuration](https://codeberg.org/mclear-tools/dotemacs).
 
-This repository intentionally contains **configuration source, not an installer**. It is meant to be read first and then placed, copied, symlinked, or managed declaratively however makes sense on each machine.
+This repository owns both startup and personal configuration, with a pinned Lambda framework snapshot and ordinary Git history.
 
-## Intended placement
+## Install and edit
 
-Lambda owns the framework:
-
-```text
-<lambda-emacs>/
-├── early-init.el
-├── init.el
-└── lambda-library/
-    ├── lambda-setup/       # upstream Lambda — leave unchanged while learning
-    └── lambda-user/        # this repository's user layer
-```
-
-The files in this repository already mirror that destination:
-
-```text
-.
-├── README.md
-├── docs/
-│   ├── PORTING-NOTES.md
-│   └── READING-ORDER.md
-└── lambda-library/
-    └── lambda-user/
-        ├── config.el
-        ├── early-config.el
-        ├── private.example.el
-        ├── starter-platform.el
-        ├── starter-setup-languages.el
-        ├── starter-setup-meow.el
-        ├── starter-setup-org.el
-        ├── starter-setup-terminal.el
-        ├── starter-setup-treesit.el
-        └── starter-setup-ui.el
-```
-
-No bootstrap script is required or provided. Clone Lambda however you prefer, then make `lambda-library/lambda-user/` contain these files.
-
-## Manual setup
-
-Lambda currently requires Emacs 30.1+.
-
-1. Obtain Lambda-Emacs from `https://codeberg.org/Lambda-Emacs/lambda-emacs`.
-2. Put the contents of this repo's `lambda-library/lambda-user/` into Lambda's corresponding directory.
-3. Start Emacs with that Lambda checkout as its init directory, for example:
+This is a complete Emacs configuration repository. Lambda startup and framework
+files are included at the revision recorded in `docs/LAMBDA-UPSTREAM.json`.
+A separate Lambda checkout or submodule is not required.
 
 ```sh
-emacs --init-directory="$HOME/.config/lambda-emacs"
+git clone https://github.com/Mihir-Null/Emacs-Dots.git ~/.emacs.d
 ```
 
-On Windows the equivalent is conceptually:
+That command applies after the self-contained branch has been published and selected.
+For an existing checkout, start Emacs with `--init-directory=/path/to/Emacs-Dots`.
+Emacs 30.1 or later is required. First startup can install the selected Elisp
+packages; external runtimes and language servers remain your responsibility.
 
-```powershell
-emacs --init-directory="$env:USERPROFILE\.config\lambda-emacs"
+```text
+.emacs.d/                       # this repository
+├── early-init.el               # pinned Lambda startup
+├── init.el                     # pinned Lambda startup
+├── lambda-library/
+│   ├── lambda-setup/            # included Lambda framework
+│   └── lambda-user/             # edit your preferences here
+│       ├── config.el           # enabled modules
+│       ├── early-config.el     # package installation policy
+│       ├── starter-*.el        # portable preferences
+│       └── private.el          # optional, ignored machine overrides
+└── var/                        # ignored packages and local state
+    ├── elpa/
+    ├── etc/custom.el           # saved Customize preferences
+    └── cache/
 ```
 
-The actual checkout location is deliberately your choice.
+`private.el` loads exactly once, after platform variables are defined and before
+later modules consume them. Commit portable preferences in `lambda-user/`.
+Customize saves local preferences under `var/etc/custom.el`; those settings and
+`private.el` need their own backup and are not reproduced by cloning Git.
+
+On this Windows installation, the editable repository is
+`C:/Users/walnu/.config/emacs-dots/`. Both the normal Windows and Codex-packaged
+AppData `.emacs.d` entries point directly to it. Windows Emacs currently resolves
+`~` to AppData/Roaming because HOME is unset; merely creating
+`C:/Users/walnu/.emacs.d` would not change that. See `docs/DEPLOYMENT.md` for the
+layout, validation, and rollback instructions.
 
 ### Nix / NixOS
 
@@ -88,7 +75,7 @@ The starter keeps enough of Lambda to be a useful daily text editor without impo
 - built-in `which-key` discoverability;
 - Dired;
 - project.el + Lambda tab/workspace integration;
-- Magit / VC integration;
+- built-in VC integration; Lambda Magit support is available if Magit is separately installed;
 - Org base/settings plus a minimal inbox capture setup;
 - Lambda's general programming layer;
 - pinned Emacs-30-compatible Tree-sitter grammar recipes with safe mode fallback;
@@ -98,7 +85,7 @@ The starter keeps enough of Lambda to be a useful daily text editor without impo
 - Lambda's semantic leader maps exposed directly through **`SPC`**;
 - the starter UI layer described below.
 
-Not loaded initially:
+Not enabled initially (and unrelated package topics are excluded from automatic installation):
 
 - mail/calendar;
 - bibliography/citation workflow;
@@ -253,7 +240,7 @@ To disable them everywhere:
 - **macOS:** prefers `zsh`, then `bash`, then `sh`.
 - Projects default to `~/Projects/` (using `USERPROFILE` on native Windows where appropriate).
 - Org defaults to `~/Documents/org/`.
-- No primary text font is forced.
+- GoogleSansCode Nerd Font is preferred when installed; otherwise the platform font remains.
 
 For values that should not be committed, copy `private.example.el` to `private.el`. It is ignored by Git and is loaded after portable defaults are defined but before they are applied.
 
@@ -318,7 +305,7 @@ Presentation references/packages:
 - Spacious Padding: `https://github.com/protesilaos/spacious-padding`
 - Firemacs (design reference): `https://github.com/66-firebat/firemacs`
 
-The original Lambda/Colin port was checked against the final GitHub mirrors available on 2026-05-30, when both projects moved active development to Codeberg. Because Codeberg was not reachable from the execution environment that prepared that pass, treat the Lambda user layer as conservative rather than a claim of exact compatibility with every later upstream change.
+The original user layer was based on the May 2026 mirrors. The complete repository now includes the locally verified August 2026 Lambda revision recorded in `docs/LAMBDA-UPSTREAM.json`. `docs/UPSTREAM.md` records provenance and the small integration patch.
 
 ## Learning rule
 

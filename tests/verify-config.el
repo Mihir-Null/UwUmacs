@@ -1,0 +1,80 @@
+;;; verify-config.el --- Isolated startup regression check -*- lexical-binding: t; -*-
+;; Run: emacs -Q --batch -l tests/verify-config.el
+;; Set EMACS_DOTS_TEST_PACKAGES to an existing Lambda var/elpa directory.
+;; No packages are installed, refreshed or upgraded by this check.
+(require 'cl-lib)
+(require 'package)
+(require 'package-vc)
+(defvar dots-test-source
+  (file-name-directory (directory-file-name (file-name-directory load-file-name))))
+(defvar dots-test-root (make-temp-file "emacs-dots-check-" t))
+(defvar dots-test-failures nil)
+(defun dots-test-check (predicate description)
+  (unless predicate (push description dots-test-failures)))
+(defun dots-test-block-install (&rest args)
+  (push (format "Unexpected package installation: %S" args) dots-test-failures)
+  (error "Package installation disabled during verification"))
+(dolist (fn '(package-install package-vc-install package-refresh-contents))
+  (advice-add fn :override #'dots-test-block-install))
+(dolist (file '("early-init.el" "init.el"))
+  (copy-file (expand-file-name file dots-test-source)
+             (expand-file-name file dots-test-root)))
+(copy-directory (expand-file-name "lambda-library" dots-test-source)
+                (expand-file-name "lambda-library" dots-test-root) nil t)
+(setq user-emacs-directory (file-name-as-directory dots-test-root)
+      default-directory user-emacs-directory
+      user-init-file (expand-file-name "init.el" user-emacs-directory)
+      starter-org-directory (expand-file-name "org/" user-emacs-directory)
+      native-comp-jit-compilation nil)
+(make-directory (expand-file-name "var/etc" user-emacs-directory) t)
+(with-temp-file (expand-file-name "var/etc/custom.el" user-emacs-directory)
+  (insert "(setq dots-test-custom-loaded t)\n"))
+(with-temp-file (expand-file-name "lambda-library/lambda-user/private.el" user-emacs-directory)
+  (insert "(unless (boundp 'starter-project-directory) (error \"Private loaded before platform\"))\n"
+          "(setq dots-test-private-loads (1+ (if (boundp 'dots-test-private-loads) dots-test-private-loads 0)))\n"
+          "(setopt starter-project-directory (expand-file-name \"test-projects/\" user-emacs-directory))\n"))
+(when (getenv "EMACS_DOTS_TEST_PACKAGES")
+  (advice-add 'package-initialize :before
+              (lambda (&rest _)
+                (setq package-user-dir (getenv "EMACS_DOTS_TEST_PACKAGES")))))
+(condition-case err
+    (progn
+      (load (expand-file-name "early-init.el" user-emacs-directory) nil t)
+      (dots-test-check (not (seq-intersection (mapcar #'car lem-packages-alist)
+                                              '(citation elfeed notes macos writing lsp)))
+                       "Disabled module package topics selected")
+      (load user-init-file nil t)
+      (run-hooks 'after-init-hook)
+      (run-hooks 'emacs-startup-hook)
+      (require 'cus-edit)
+      (dots-test-check (= dots-test-private-loads 1) "private.el must load once")
+      (dots-test-check (equal lem-project-dir
+                              (expand-file-name "test-projects/" user-emacs-directory))
+                       "Project override was overwritten")
+      (dots-test-check (and (boundp 'dots-test-custom-loaded) dots-test-custom-loaded)
+                       "Persistent Customize file was not loaded")
+      (dots-test-check (string-suffix-p "var/etc/custom.el" custom-file)
+                       "Customize file is not in persistent state")
+      (dolist (feature '(config starter-setup-dashboard starter-setup-meow
+                        starter-setup-treesit starter-setup-languages
+                        starter-setup-terminal starter-setup-org starter-setup-ui))
+        (dots-test-check (featurep feature) (format "Missing feature %s" feature)))
+      (dots-test-check (equal custom-enabled-themes '(doom-dark+)) "Theme changed")
+      (dots-test-check (and meow-global-mode doom-modeline-mode) "Editor modes missing")
+      (dots-test-check (null starter-eglot-auto-start-modes) "LSP auto-start changed")
+      (dots-test-check (null starter-language-packages) "Language package opt-ins changed"))
+  (error (push (format "Startup error: %S" err) dots-test-failures)))
+;; Check syntax without running installed packages' programming-mode hooks.
+(let ((emacs-lisp-mode-hook nil) (prog-mode-hook nil))
+  (dolist (file (append (list (expand-file-name "early-init.el" dots-test-source)
+                             (expand-file-name "init.el" dots-test-source))
+                        (directory-files (expand-file-name "lambda-library/lambda-user" dots-test-source)
+                                         t "\\.el$")))
+    (condition-case err
+        (with-temp-buffer (insert-file-contents file) (emacs-lisp-mode) (check-parens))
+      (error (push (format "Syntax %s: %S" file err) dots-test-failures)))))
+(princ (format "\nEMACS-DOTS-VERIFY %s\nTemporary state: %s\nFailures: %S\n"
+               (if dots-test-failures "FAIL" "PASS") dots-test-root dots-test-failures))
+;; Avoid save-session hooks retaining any references to installed state on exit.
+(setq kill-emacs-hook nil)
+(kill-emacs (if dots-test-failures 1 0))

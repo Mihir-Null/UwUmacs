@@ -6,11 +6,20 @@
 
 ;;; Code:
 
-;; Let `use-package' install packages requested by the modules we enable.
-;; On Nix this intentionally means: Nix owns Emacs/external executables initially,
-;; while Lambda/package.el owns Elisp. Change this only when you deliberately move
-;; package ownership into Nix.
-(setopt lem-package-ensure-packages t)
+;; Lambda installs its declared package topics before config.el loads. Limit that
+;; list here so disabling a module also avoids installing its unrelated packages.
+;; Existing packages are never removed by this policy. Personal modules can still
+;; request packages explicitly through use-package :ensure.
+(require 'seq)
+(setopt lem-load-extras t)
+(defconst starter-package-topics
+  '(buffers colors completion dashboard dired eshell faces fonts functions help
+    libraries macros navigation org-settings programming search settings shell
+    tabs windows)
+  "Lambda package topics used by the personal configuration.")
+(setq lem-packages-alist
+      (seq-filter (lambda (entry) (memq (car entry) starter-package-topics))
+                  lem-packages-alist))
 
 ;; Warnings are useful while learning. Do not inherit Colin's personal choice to
 ;; suppress nearly all startup warnings.

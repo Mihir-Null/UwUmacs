@@ -1,1 +1,17 @@
-lambda-library/lambda-user/private.el
+# Machine-specific settings
+/lambda-library/lambda-user/private.el
+# Packages, persistent local settings, caches and sessions
+/var/
+/elpa/
+/eln-cache/
+/server/
+/auto-save-list/
+/projects
+/projects.eld
+/recentf.eld
+/tabsession.el
+/elfeed/
+*.elc
+*~
+.#*
+#*#

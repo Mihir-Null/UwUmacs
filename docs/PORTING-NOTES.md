@@ -1,3 +1,7 @@
+# Historical porting notes
+
+These describe the original user-layer-only architecture, superseded by the complete repository on 2026-09-10. See UPSTREAM.md and DEPLOYMENT.md for the current arrangement.
+
 # Porting notes
 
 ## Source baseline
