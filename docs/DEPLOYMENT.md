@@ -36,13 +36,13 @@ emacs -Q --batch -l tests/verify-config.el
 
 The check copies configuration to temporary storage, blocks package installation and archive refresh, and verifies private override ordering, package-topic selection, persistent Customize loading, key startup features, and personal Elisp syntax. It requires the configured packages to be present; a missing package is a failing check, not an instruction to install it automatically. Graphical appearance and Windows startup resolution require a separate GUI check.
 
-Inside normally started Emacs inspect `user-init-file`, `user-emacs-directory`, `lem-config-file`, and `custom-file`. `file-truename` resolves junctions. `-Q` and `-q` intentionally bypass normal user configuration.
+Inside normally started Emacs inspect `user-init-file`, `user-emacs-directory`, `lem-config-file`, and `custom-file`. Windows may retain the junction spelling even after `file-truename`; use `file-equal-p` to verify file identity and inspect junction targets from an unpackaged Windows process. `-Q` and `-q` intentionally bypass normal user configuration.
 
 ## Migration and rollback
 
-The migration records exact backup paths and before/after checks in the local audit folder `C:/Users/walnu/Documents/Emacs-Audit-20260910/`. Runtime data is copied, not moved, from the old Lambda directory. The old startup junctions and configuration folders are retained in the dated backup directory.
+The migration records exact backup paths and before/after checks in the local audit folder `C:/Users/walnu/Documents/Emacs-Audit-20260910/`. Runtime data is copied, not moved, from the old Lambda directory. The physical desktop startup directory, the old packaged startup junction, and both original configuration repositories are retained in the dated backup directory. The migration discovered that the physical desktop had an independent copy of Lambda's default sample configuration, hidden by Codex's AppData redirection.
 
-To roll back: close Emacs, preserve any new runtime state and configuration edits, remove only the two new `.emacs.d` junction entries (not their targets), restore the original junctions and the original `.config/lambda-emacs` folder from the recorded backups. The old user-layer junction must point at the backed-up Emacs-Dots clone when restoring the exact pre-migration configuration. Do not recursively delete a directory junction or its target.
+To roll back from an unpackaged Windows process: close Emacs and preserve new runtime state/edits. Remove only the two new `.emacs.d` junction entries, leaving their target intact. Move `desktop-emacs.d` from the recorded backup directory back to normal AppData `.emacs.d`. Move archived `lambda-emacs` back to `.config/lambda-emacs`, and move `startup-link-1` back to the Codex-packaged AppData `.emacs.d` location. The archived Lambda user-layer junction already points at the backed-up original dotfiles. This restores the original split configuration for recovery; the consolidated checkout is retained. Do not recursively delete a directory junction or its target.
 
 The migration branch is local until explicitly published. The `main` branch and remote repository are not advanced by deployment.
 
