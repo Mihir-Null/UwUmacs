@@ -240,7 +240,7 @@ To disable them everywhere:
 - **macOS:** prefers `zsh`, then `bash`, then `sh`.
 - Projects default to `~/Projects/` (using `USERPROFILE` on native Windows where appropriate).
 - Org defaults to `~/Documents/org/`.
-- GoogleSansCode Nerd Font is preferred when installed; otherwise the platform font remains.
+- GoogleSansCode Nerd Font is preferred when installed, including its Windows family name `GoogleSansCode NF`; otherwise the platform font remains.
 
 For values that should not be committed, copy `private.example.el` to `private.el`. It is ignored by Git and is loaded after portable defaults are defined but before they are applied.
 

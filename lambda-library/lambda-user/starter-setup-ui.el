@@ -17,6 +17,8 @@
 
 ;;; Code:
 
+(require 'seq)
+
 (defgroup starter-ui nil
   "Presentation defaults for the Lambda learning configuration."
   :group 'lambda-emacs)
@@ -55,10 +57,20 @@ whose font already contains Nerd Font glyphs), or nil to disable them."
   "Whether programming buffers should show line numbers by default."
   :type 'boolean)
 
+(defun starter-ui-resolve-font-family ()
+  "Resolve the requested font, including Nerd Fonts' Windows family alias.
+Windows registers Google Sans Code as GoogleSansCode NF.  Preserve arbitrary
+user font choices and only use this alias for the default Google family."
+  (when (display-graphic-p)
+    (seq-find
+     (lambda (family) (find-font (font-spec :family family)))
+     (if (equal starter-ui-font-family "GoogleSansCode Nerd Font")
+         (list starter-ui-font-family "GoogleSansCode NF")
+       (list starter-ui-font-family)))))
+
 (defun starter-ui-font-available-p ()
-  "Return non-nil when `starter-ui-font-family' is installed."
-  (and (display-graphic-p)
-       (find-font (font-spec :family starter-ui-font-family))))
+  "Return non-nil when `starter-ui-font-family' or its known alias is installed."
+  (and (starter-ui-resolve-font-family) t))
 
 (defun starter-ui-apply-font ()
   "Apply `starter-ui-font-family' through Lambda's font configuration.
@@ -66,9 +78,8 @@ whose font already contains Nerd Font glyphs), or nil to disable them."
 Only the font family is changed, so the existing point size and other default
 face attributes remain intact."
   (when (display-graphic-p)
-    (if (starter-ui-font-available-p)
-        (setopt lem-ui-default-font
-                (list :family starter-ui-font-family))
+    (if-let* ((family (starter-ui-resolve-font-family)))
+        (setopt lem-ui-default-font (list :family family))
       (message "Starter UI: font %s not installed; keeping platform default"
                starter-ui-font-family))))
 

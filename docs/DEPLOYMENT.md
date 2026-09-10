@@ -49,4 +49,3 @@ The migration branch is local until explicitly published. The `main` branch and 
 ## Known inherited limits
 
 Magit is not in Lambda's automatic package list and was absent from this machine at review time; built-in VC remains available. Install Magit deliberately if desired. First provision a fresh package directory with an ordinary interactive Emacs start and restart before using daemon mode: the inherited cold-daemon installer runs after some module configuration, so a brand-new daemon is not a supported first-install validation path here. The migration tests use existing packages; they are not evidence of an offline fresh-package bootstrap.
-
