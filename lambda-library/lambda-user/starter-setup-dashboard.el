@@ -75,7 +75,7 @@
           (("λ" "Config" "Open Emacs-Dots config" starter-dashboard-open-config)
            ("◎" "Agenda" "Open Org agenda" starter-dashboard-open-agenda)
            ("*" "Scratch" "Open scratch buffer"
-            (lambda (&rest _) (switch-to-buffer "*scratch*")))))))
+            (lambda (&rest _) (switch-to-buffer "*scratch*"))))))
   :config
   ;; Keep the dashboard visually tied to the active theme rather than baking in
   ;; a second palette.

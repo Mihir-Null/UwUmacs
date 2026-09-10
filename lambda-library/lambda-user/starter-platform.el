@@ -36,6 +36,10 @@ USERPROFILE for user-owned projects and documents."
   "Return the first executable found in PROGRAMS."
   (seq-some #'executable-find programs))
 
+(defun starter--skip-exec-path-from-shell-on-windows (&rest _)
+  "Keep native Windows Emacs's inherited process environment unchanged."
+  nil)
+
 (defun starter-platform-apply ()
   "Apply the currently configured portable platform defaults."
   ;; `lem-setup-projects' defines and also assigns `lem-project-dir', so apply the
@@ -71,9 +75,17 @@ USERPROFILE for user-owned projects and documents."
        (setq explicit-shell-file-name shell
              shell-command-switch "-c"))))
 
-  ;; Lambda configures exec-path-from-shell. Declare useful variables when it loads;
-  ;; do not assume a particular Nix profile path.
-  (when (memq system-type '(gnu/linux darwin))
+  ;; Lambda configures exec-path-from-shell.  It supports POSIX shells, so native
+  ;; Windows keeps the environment inherited from Windows instead of asking
+  ;; PowerShell to evaluate Unix `printf' syntax.  Linux/macOS retain Lambda's
+  ;; intended login-shell import without assuming a particular Nix profile path.
+  (if (eq system-type 'windows-nt)
+      (with-eval-after-load 'exec-path-from-shell
+        (unless (advice-member-p
+                 #'starter--skip-exec-path-from-shell-on-windows
+                 #'exec-path-from-shell-initialize)
+          (advice-add #'exec-path-from-shell-initialize :override
+                      #'starter--skip-exec-path-from-shell-on-windows)))
     (with-eval-after-load 'exec-path-from-shell
       (setopt exec-path-from-shell-variables
               '("PATH" "MANPATH" "NIX_PATH" "NIX_PROFILES")))))
