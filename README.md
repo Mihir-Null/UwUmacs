@@ -168,6 +168,18 @@ Optional editing packages use the same policy:
 (setq starter-language-packages '(nix racket guile))
 ```
 
+## Keybindings cheat sheet
+
+On the dashboard, click **Keys & commands** or press `?`. From Meow normal or
+motion state, use `SPC H`; `SPC h` returns home. The editable, offline
+[cheat sheet](lambda-library/lambda-user/keybindings.org) covers Meow, files,
+projects, windows, terminals, language tools and live Emacs help.
+
+Fonts initialize before dashboard layout. Nerd Icons use the installed
+`starter-ui-nerd-font` family (default: `Symbols Nerd Font Mono`) and the
+package's specific glyph ranges. Dashboard heading/file icons respect
+`starter-ui-icons`, like the modeline and completion icons.
+
 ## Starter UI
 
 `starter-setup-ui.el` is deliberately separate from behavior/navigation. It can be replaced without changing the editor architecture.

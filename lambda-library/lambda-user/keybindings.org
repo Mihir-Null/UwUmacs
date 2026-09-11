@@ -1,0 +1,148 @@
+#+title: Emacs-Dots: keys & commands
+#+startup: showall
+#+options: toc:nil
+
+* Start here
+
+This sheet describes the Meow + Lambda bindings in Emacs-Dots.
+=C-= means Ctrl, =M-= means Alt, =SPC= means Space, and =RET= means Enter.
+Keys separated by spaces are pressed in sequence; uppercase letters use Shift.
+
+In Meow normal or motion state, press =SPC= and pause for the which-key menu.
+In insert state, use =C-c C-SPC= for the same leader map, or Escape first.
+Use =M-x= to run any command below by name. =C-g= cancels a prompt.
+
+| Key       | Action                       | Command                          |
+|-----------+------------------------------+----------------------------------|
+| SPC SPC   | Run a command                | execute-extended-command         |
+| SPC h     | Return to the dashboard      | dashboard-open                   |
+| SPC H     | Open this sheet              | starter-dashboard-open-cheatsheet |
+| ? at home | Open this sheet              | starter-dashboard-open-cheatsheet |
+| C-h k     | Explain the next key sequence | describe-key                    |
+| C-h m     | Help for this buffer's modes | describe-mode                    |
+| C-h f     | Help for a command/function  | describe-function                |
+| SPC ?     | Search available commands    | consult-apropos                  |
+
+Try =M-x meow-tutor= for guided editing practice. For the complete live maps,
+run =M-x describe-keymap= and choose =lem+leader-map= or =meow-normal-state-keymap=.
+Those live maps include your later customizations; this sheet is a curated guide.
+
+* Meow: select, then act
+
+Normal state moves/selects text; insert state types text. Start with =w= to
+select a word, then =c= to replace it. Press Escape to return to normal state.
+
+| Keys         | Action                                      |
+|--------------+---------------------------------------------|
+| h j k l      | Move left / down / up / right                |
+| H J K L      | Extend selection in that direction          |
+| w / W        | Select word / symbol                        |
+| b / e        | Move/select backward / forward by word      |
+| x            | Select line                                 |
+| o            | Select a block                              |
+| , / .        | Select inside / bounds of a thing           |
+| i / a        | Insert before / append after selection      |
+| I / A        | Open a line above / below                   |
+| c            | Change selection, then type replacement     |
+| d            | Delete selection                            |
+| s            | Cut (kill) selection                        |
+| y / p        | Copy selection / paste (yank)               |
+| u / U        | Undo / undo within selection                |
+| ;            | Reverse selection direction                 |
+| z / Escape   | Pop previous selection / cancel selection   |
+| f / t        | Find a character / move till a character    |
+| v / n        | Visit matching text / search selection      |
+| g / G        | Beginning / end of buffer                   |
+| :            | Go to line                                  |
+| 0 through 9  | Expand using Meow's numbered hints           |
+
+Normal-state =s= cuts text; =SPC s= opens the search menu.
+Special buffers such as the dashboard keep their own shortcuts in motion state.
+
+* Files, buffers, search
+
+| Key     | Action                         | Command               |
+|---------+--------------------------------+-----------------------|
+| SPC f f | Open a file                    | find-file             |
+| SPC f s | Save                           | save-buffer           |
+| SPC f r | Recent files                   | consult-recent-file   |
+| SPC f b | Bookmarks                      | consult-bookmark      |
+| SPC b b | Switch buffer                  | consult-buffer        |
+| SPC b k | Close this buffer              | lem-kill-this-buffer  |
+| SPC b a | List/manage buffers            | ibuffer               |
+| SPC [   | Previous user buffer           | lem-previous-user-buffer |
+| SPC ]   | Next user buffer               | lem-next-user-buffer  |
+| SPC d   | Open containing directory      | dired-jump            |
+| SPC s s | Search lines in this buffer    | consult-line          |
+| SPC s d | Search files with ripgrep      | consult-ripgrep       |
+| SPC k   | Choose previously copied text  | consult-yank-from-kill-ring |
+
+=C-x C-f= opens files and =C-x C-s= saves from any editing state.
+
+* Projects, windows and workspaces
+
+| Key       | Action                     | Command                         |
+|-----------+----------------------------+---------------------------------|
+| SPC p p   | Open project workspace     | tabspaces-open-or-create-project-and-workspace |
+| SPC p f   | Find a project file        | project-find-file               |
+| SPC p b   | Switch project buffer      | consult-project-buffer          |
+| C-x 2     | Split above/below          | split-window-below              |
+| C-x 3     | Split side by side         | split-window-right              |
+| C-x o     | Move to another window     | other-window                    |
+| C-x 0     | Close this window          | delete-window                   |
+| C-x 1     | Keep only this window      | delete-other-windows             |
+| SPC b t   | New workspace tab          | tab-bar-new-tab                 |
+| SPC { / } | Previous / next tab        | tab-bar-switch-to-prev/next-tab  |
+| SPC TAB   | Select a workspace tab     | lem-tab-bar-select-tab-dwim      |
+
+=SPC w= shows window commands; =SPC W= shows workspace commands.
+A window is a pane, a buffer holds text, and a tab remembers a window layout.
+For Git without optional packages, start with =M-x vc-dir=.
+
+* Terminals and language tools
+
+| Key     | Action                        | Command                   |
+|---------+-------------------------------+---------------------------|
+| SPC o e | EAT with the normal shell     | starter-eat          |
+| SPC o p | Project-local EAT             | starter-eat-project  |
+| SPC o m | MSYS2 UCRT64 Bash (Windows)    | starter-eat-msys2-ucrt64     |
+| SPC l e | Start/manage language server  | starter-eglot             |
+| SPC l a | Code actions                  | eglot-code-actions        |
+| SPC l R | Rename symbol                 | eglot-rename              |
+| SPC l f | Format buffer                 | eglot-format-buffer       |
+| SPC l d | Go to definition              | xref-find-definitions     |
+| SPC l r | Find references               | xref-find-references      |
+| SPC l h | Documentation                 | eldoc-doc-buffer          |
+| SPC l q | Shut down language server     | eglot-shutdown            |
+
+The normal Windows shell is PowerShell. Language servers must be installed
+separately; they do not start automatically in this configuration.
+
+* Org, appearance and configuration
+
+| Command                    | Purpose                                    |
+|----------------------------+--------------------------------------------|
+| org-agenda                 | Agenda (also available from the dashboard) |
+| org-capture                | Capture an inbox TODO (t) or note (n)       |
+| org-todo                   | Change a heading's TODO state              |
+| starter-ui-toggle-theme    | Toggle dark/light theme (SPC t t)           |
+| display-line-numbers-mode  | Toggle line numbers (SPC t n)               |
+| starter-dashboard-open-config | Open your main config (dashboard Config) |
+| starter-treesit-refresh-mode-remaps | Recheck installed grammars          |
+
+* Symbols not showing?
+
+- =M-x describe-char= describes the character at point, including its font.
+- =M-x describe-variable RET nerd-icons-font-family= shows the icon font name.
+- The default is =Symbols Nerd Font Mono=. The GUI must see that exact family;
+  installing a font and configuring an icon consumer are separate steps.
+- After installing a font in Windows, restart Emacs. In a terminal, configure
+  the terminal emulator's font instead.
+
+* References and editable sources
+
+- [[https://github.com/meow-edit/meow/blob/master/KEYBINDING_QWERTY.org][Meow QWERTY reference]] and =M-x meow-tutor=.
+- [[https://github.com/rainstormstudio/nerd-icons.el][Nerd Icons font setup]].
+- [[file:starter-setup-meow.el][Your Meow bindings]].
+- [[file:../lambda-setup/lem-setup-keybindings.el][Lambda leader groups]].
+- [[file:starter-setup-languages.el][Language commands]] and [[file:starter-setup-terminal.el][terminal commands]].
