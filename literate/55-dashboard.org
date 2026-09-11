@@ -1,3 +1,25 @@
+#+TITLE: Dashboard: home and discovery
+#+OPTIONS: toc:3 num:nil
+#+STARTUP: overview
+#+PROPERTY: header-args:emacs-lisp :eval never :comments no :padline no :mkdirp yes
+
+[[file:index.org][Reading guide]] · [[file:framework.org][Framework provenance]]
+
+Ownership: *subsequent development*. The external dashboard package presents core recentf, project.el and bookmarks. Our additions supply the home layout, callbacks, local cheat sheet, font-aware centering and literate Config destination. No second project or workspace database is introduced.
+
+* starter-setup-dashboard
+:PROPERTIES:
+:header-args:emacs-lisp: :tangle ../lambda-library/lambda-user/starter-setup-dashboard.el :eval never :comments no :padline no :mkdirp yes
+:END:
+
+Deployed file: [[file:../lambda-library/lambda-user/starter-setup-dashboard.el][lambda-library/lambda-user/starter-setup-dashboard.el]]. Edit the blocks here; generated Lisp is kept in Git for ordinary startup and review.
+
+** Load starter-setup-fonts
+
+Load this dependency before evaluating the forms that use its functions or variables. This preserves the existing startup dependency order.
+
+#+name: starter-setup-dashboard-01-1
+#+begin_src emacs-lisp
 ;;; starter-setup-dashboard.el --- Doom-like home page -*- lexical-binding: t; -*-
 ;; Generated from literate/55-dashboard.org; edit the Org source, then tangle.
 
@@ -8,32 +30,90 @@
 ;;; Code:
 
 (require 'starter-setup-fonts)
+#+end_src
+
+** Keep help available offline
+
+The dashboard callback accepts widget arguments and opens the local Org cheat sheet. The same command is reachable with ? at home and SPC H elsewhere.
+
+#+name: starter-setup-dashboard-02-1
+#+begin_src emacs-lisp
 (defun starter-dashboard-open-cheatsheet (&rest _)
   "Open the local keybindings and commands cheat sheet."
   (interactive)
   (find-file (expand-file-name "keybindings.org" lem-user-dir)))
+#+end_src
+
+** Dashboard open file
+
+Prompt for a file from a dashboard button.
+
+#+name: starter-setup-dashboard-03-1
+#+begin_src emacs-lisp
 (defun starter-dashboard-open-file (&rest _)
   "Prompt for a file from a dashboard button."
   (interactive)
   (call-interactively #'find-file))
+#+end_src
+
+** Open the authoring entry point
+
+The Config button now opens literate/index.org. The generated config.el remains a runtime file, while the reading guide explains where to edit each choice.
+
+#+name: starter-setup-dashboard-04-1
+#+begin_src emacs-lisp
 (defun starter-dashboard-open-config (&rest _)
   "Open the documented literate configuration."
   (interactive)
   (starter-literate-open))
+#+end_src
+
+** Dashboard open project
+
+Choose a project using Emacs project.el.
+
+#+name: starter-setup-dashboard-05-1
+#+begin_src emacs-lisp
 (defun starter-dashboard-open-project (&rest _)
   "Choose a project using Emacs project.el."
   (interactive)
   (call-interactively #'project-switch-project))
+#+end_src
+
+** Dashboard open recent
+
+Choose a recently opened file.
+
+#+name: starter-setup-dashboard-06-1
+#+begin_src emacs-lisp
 (defun starter-dashboard-open-recent (&rest _)
   "Choose a recently opened file."
   (interactive)
   (if (fboundp 'consult-recent-file)
       (call-interactively #'consult-recent-file)
     (call-interactively #'recentf-open-files)))
+#+end_src
+
+** Dashboard open agenda
+
+Open the Org agenda.
+
+#+name: starter-setup-dashboard-07-1
+#+begin_src emacs-lisp
 (defun starter-dashboard-open-agenda (&rest _)
   "Open the Org agenda."
   (interactive)
   (call-interactively #'org-agenda))
+#+end_src
+
+** Center rendered text rather than character counts
+
+Icons, proportional headings and display overlays have different pixel widths. Measure the actual buffer line, exclude trailing padding and compensate for indentation before adding a display prefix. This retains the centering fix from the preceding development.
+
+The following blocks are consecutive fragments of this source section. Some share an open Lisp form; edit them here and rebuild the whole chapter rather than evaluating a fragment on its own.
+
+#+name: starter-setup-dashboard-08-1
+#+begin_src emacs-lisp
 (defun starter-dashboard-center-lines ()
   "Center each visible dashboard line using its rendered pixel width.
 Measure the actual buffer so heading display overlays and icon faces count.
@@ -62,6 +142,14 @@ Exclude trailing padding and compensate for leading indentation."
                                     (selected-window) start last t)))
                        (indent (car (window-text-pixel-size
                                      (selected-window) start first t)))
+#+end_src
+
+*** Place the visible span at the window center
+
+Convert the measured width and indentation into a display-space prefix. The center-relative expression follows window resizing; font and theme changes trigger a fresh measurement.
+
+#+name: starter-setup-dashboard-08-2
+#+begin_src emacs-lisp
                        (offset (/ (+ width indent) 2.0))
                        (prefix (propertize
                                 " " 'display
@@ -69,12 +157,30 @@ Exclude trailing padding and compensate for leading indentation."
                   (add-text-properties start end
                                        `(line-prefix ,prefix wrap-prefix ,prefix)))))
             (forward-line)))))))
+#+end_src
+
+** Refresh measurements when presentation changes
+
+Only a visible dashboard needs measuring. Font, theme and initial window setup hooks use this helper after their changes settle.
+
+#+name: starter-setup-dashboard-09-1
+#+begin_src emacs-lisp
 (defun starter-dashboard-recenter (&rest _)
   "Recompute visible dashboard text metrics after a font or theme change."
   (when-let* ((window (get-buffer-window dashboard-buffer-name t)))
     (with-selected-window window
       (with-current-buffer dashboard-buffer-name
         (starter-dashboard-center-lines)))))
+#+end_src
+
+** Assemble the home page
+
+Fonts have already initialized. The dashboard renders a text banner, three button rows and bounded lists from core editor facilities; the last insertion pass applies pixel-based centering.
+
+The following blocks are consecutive fragments of this source section. Some share an open Lisp form; edit them here and rebuild the whole chapter rather than evaluating a fragment on its own.
+
+#+name: starter-setup-dashboard-10-1
+#+begin_src emacs-lisp
 (use-package dashboard
   :ensure t
   :demand t
@@ -103,6 +209,14 @@ Exclude trailing padding and compensate for leading indentation."
         dashboard-item-shortcuts '((recents . "r")
                                    (projects . "p")
                                    (bookmarks . "b"))
+#+end_src
+
+*** Assemble the home page: continued 2
+
+Continue the same definition in its original scope. This fragment follows the preceding block directly in the deployed file.
+
+#+name: starter-setup-dashboard-10-2
+#+begin_src emacs-lisp
         dashboard-item-names '(("Recent Files:" . "Recent")
                                ("Projects:" . "Projects")
                                ("Bookmarks:" . "Bookmarks"))
@@ -133,6 +247,14 @@ Exclude trailing padding and compensate for leading indentation."
   (set-face-attribute 'dashboard-text-banner nil
                       :inherit 'font-lock-keyword-face
                       :weight 'bold)
+#+end_src
+
+*** Assemble the home page: continued 3
+
+Skip the home page when Emacs was invoked with a file argument.
+
+#+name: starter-setup-dashboard-10-3
+#+begin_src emacs-lisp
   (set-face-attribute 'dashboard-banner-logo-title nil
                       :inherit 'font-lock-comment-face
                       :height 1.05)
@@ -151,10 +273,28 @@ Exclude trailing padding and compensate for leading indentation."
 
   ;; Skip the home page when Emacs was invoked with a file argument.
   (dashboard-setup-startup-hook))
+#+end_src
+
+** Apply policy after starter-setup-meow
+
+Waiting for the feature avoids racing its initialization. The following policy takes effect once its variables, maps or hooks exist; it does not force an unrelated feature to load now.
+
+#+name: starter-setup-dashboard-11-1
+#+begin_src emacs-lisp
 ;; Keep r/p/b/? and dashboard item shortcuts alongside Meow j/k and SPC.
 (with-eval-after-load 'starter-setup-meow
   (add-to-list 'meow-mode-state-list '(dashboard-mode . motion))
   (meow-leader-define-key '("h" . dashboard-open)
                          '("H" . starter-dashboard-open-cheatsheet)))
+#+end_src
+
+** Publish the module
+
+The core require/provide protocol records that this file loaded. Later requires can reuse the feature without evaluating the module again.
+
+#+name: starter-setup-dashboard-12-1
+#+begin_src emacs-lisp
 (provide 'starter-setup-dashboard)
 ;;; starter-setup-dashboard.el ends here
+#+end_src
+

@@ -127,7 +127,10 @@ separately; they do not start automatically in this configuration.
 | org-todo                   | Change a heading's TODO state              |
 | starter-ui-toggle-theme    | Toggle dark/light theme (SPC t t)           |
 | display-line-numbers-mode  | Toggle line numbers (SPC t n)               |
-| starter-dashboard-open-config | Open your main config (dashboard Config) |
+| starter-dashboard-open-config | Open the literate guide (dashboard Config) |
+| starter-literate-open      | Open the literate reading guide             |
+| starter-literate-tangle    | Regenerate Lisp from saved Org sources      |
+| starter-literate-check     | Check source/output agreement without writing |
 | starter-treesit-refresh-mode-remaps | Recheck installed grammars          |
 
 * Symbols not showing?
@@ -143,6 +146,8 @@ separately; they do not start automatically in this configuration.
 
 - [[https://github.com/meow-edit/meow/blob/master/KEYBINDING_QWERTY.org][Meow QWERTY reference]] and =M-x meow-tutor=.
 - [[https://github.com/rainstormstudio/nerd-icons.el][Nerd Icons font setup]].
-- [[file:starter-setup-meow.el][Your Meow bindings]].
+- [[file:../../literate/40-editing.org][Editable Meow configuration]].
 - [[file:../lambda-setup/lem-setup-keybindings.el][Lambda leader groups]].
-- [[file:starter-setup-languages.el][Language commands]] and [[file:starter-setup-terminal.el][terminal commands]].
+- [[file:../../literate/60-programming.org][Editable language configuration]] and [[file:../../literate/30-platform.org][terminal configuration]].
+
+- [[file:../../literate/index.org][Literate guide: ownership, editing and rebuilding]].

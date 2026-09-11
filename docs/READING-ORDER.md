@@ -1,69 +1,35 @@
 # Reading order
 
-The goal is to understand the system while already having a useful editor.
+Start with [the literate guide](../literate/index.org), which explains Emacs core,
+Lambda, user configuration and later development as separate ownership layers.
+Each chapter has nested headings, short code blocks and an explanation of why
+that code belongs there.
 
-## Pass 1 — understand the boundary
+1. [User policy](../literate/20-user-policy.org): trace package selection, the
+   composition root, private overrides and staged loading.
+2. [Platform and terminals](../literate/30-platform.org): understand portable
+   paths, PowerShell and the explicit MSYS2 adapter.
+3. [Editing](../literate/40-editing.org) and the
+   [cheat sheet](../lambda-library/lambda-user/keybindings.org): learn Meow's
+   selection grammar and how SPC reuses Lambda's semantic maps.
+4. [Appearance](../literate/50-appearance.org) and
+   [dashboard](../literate/55-dashboard.org): follow fonts before layout,
+   conditional icons, theme changes and rendered-text centering.
+5. [Programming](../literate/60-programming.org) and
+   [Org](../literate/70-org.org): inspect the conservative subsystem choices.
+6. [Maintenance](../literate/80-maintenance.org): distinguish portable source,
+   generated deployment and private machine state.
+7. [Bootstrap](../literate/10-bootstrap.org) and
+   [framework map](../literate/framework.org): go deeper into Lambda's inherited
+   startup and the selected vendor modules.
 
-1. **Lambda `early-init.el`**
-   - Find `lem-emacs-dir`, `lem-library-dir`, `lem-user-dir`, `lem-setup-dir`, package archives, and writable state directories.
-   - Goal: know which parts are framework, user configuration, packages, and runtime state.
+Use Emacs to inspect the running result: `C-h k` for a key, `C-h f` for a
+function, `C-h v` for a variable, `C-h m` for active modes, and
+`M-x describe-keymap` for a map. `M-x find-function` reaches the implementation;
+if it is generated user Lisp, its first comment points back to the Org chapter.
 
-2. **Lambda `init.el`**
-   - Read the section that chooses between `lambda-user/config.el` and Lambda's default config.
-   - Goal: understand when control passes from the framework to your code.
-
-3. **This repo's `lambda-library/lambda-user/config.el`**
-   - This is the composition root.
-   - Follow each `require` and note which startup phase owns it.
-
-4. **`starter-platform.el`**
-   - Goal: see how machine differences can be represented as policy without scattering OS checks through the config.
-
-## Pass 2 — learn interaction
-
-5. **Lambda `lem-setup-keybindings.el`**
-   - Find `lem-prefix`, `lem+leader-map`, and the semantic prefix maps.
-   - Inspect Lambda's built-in `which-key` configuration.
-
-6. **`starter-setup-meow.el`**
-   - Compare Meow's normal-state selection commands with the leader map.
-   - Notice that `SPC` reuses Lambda's maps rather than creating a second command hierarchy.
-
-7. Use Emacs to inspect itself:
-   - `C-h k` — describe a key;
-   - `C-h f` — describe a function;
-   - `C-h v` — describe a variable;
-   - `C-h m` — describe active modes;
-   - `M-x describe-keymap` — inspect a keymap;
-   - `M-x find-function` — jump to implementation.
-
-## Pass 3 — learn subsystems as you need them
-
-Read upstream modules in roughly this order:
-
-- `lem-setup-completion.el` — minibuffer/completion stack;
-- `lem-setup-dired.el` — file management;
-- `lem-setup-projects.el` + `lem-setup-tabs.el` — projects and tab/workspace behavior;
-- `lem-setup-vc.el` — Git/Magit;
-- `lem-setup-org-base.el` + `lem-setup-org-settings.el` — Org;
-- `lem-setup-programming.el` — programming defaults, tree-sitter, Flymake, etc.;
-- `lem-setup-shell.el` + `lem-setup-eshell.el` — shell integration.
-
-Then compare upstream behavior with the small user modules:
-
-- `starter-platform.el`
-- `starter-setup-org.el`
-- `starter-setup-treesit.el`
-- `starter-setup-languages.el`
-
-## Extension discipline
-
-When changing behavior:
-
-1. identify the command/variable with Emacs help;
-2. identify which package or Lambda module owns it;
-3. prefer `setopt`, hooks, keymap APIs, `with-eval-after-load`, or `use-package` in `lambda-user/`;
-4. create another small user module when a subsystem becomes nontrivial;
-5. patch `lambda-setup/` only when you intentionally want to maintain a framework fork.
-
-This keeps the configuration explainable and makes upstream updates much easier to reason about.
+For portable changes, edit the chapter, rebuild with `starter-literate-tangle`,
+check with `starter-literate-check`, review both source and output, then restart.
+Prefer variables, hooks, keymaps and deferred configuration in the user chapters.
+Change vendor modules only when intentionally maintaining a documented framework
+patch. See [upstream maintenance](UPSTREAM.md) and [deployment](DEPLOYMENT.md).

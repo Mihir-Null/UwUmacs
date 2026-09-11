@@ -1,0 +1,555 @@
+#+TITLE: Fonts and the editor surface
+#+OPTIONS: toc:3 num:nil
+#+STARTUP: overview
+#+PROPERTY: header-args:emacs-lisp :eval never :comments no :padline no :mkdirp yes
+
+[[file:index.org][Reading guide]] · [[file:framework.org][Framework provenance]]
+
+Ownership: *user configuration with subsequent font and UI fixes*. Emacs core owns faces, fontsets and tab-bar; Lambda supplies font/theme hooks and workspace behavior. Nerd Icons, Doom themes/modeline and spacious-padding are external packages. The font module runs before the dashboard measures text; the remaining presentation loads after startup.
+
+* starter-setup-fonts
+:PROPERTIES:
+:header-args:emacs-lisp: :tangle ../lambda-library/lambda-user/starter-setup-fonts.el :eval never :comments no :padline no :mkdirp yes
+:END:
+
+Deployed file: [[file:../lambda-library/lambda-user/starter-setup-fonts.el][lambda-library/lambda-user/starter-setup-fonts.el]]. Edit the blocks here; generated Lisp is kept in Git for ordinary startup and review.
+
+** Load seq
+
+Load this dependency before evaluating the forms that use its functions or variables. This preserves the existing startup dependency order.
+
+#+name: starter-setup-fonts-01-1
+#+begin_src emacs-lisp
+;;; starter-setup-fonts.el --- Fonts before dashboard rendering -*- lexical-binding: t; -*-
+;; Generated from literate/50-appearance.org; edit the Org source, then tangle.
+
+;;; Commentary:
+;; Resolve fonts before dashboard and icon consumers initialize.  Keep Nerd
+;; glyph mappings confined to the ranges maintained by nerd-icons.
+
+;;; Code:
+
+(require 'seq)
+#+end_src
+
+** Group customization options
+
+This Custom group gives the following settings a discoverable home in Emacs's built-in customization interface.
+
+#+name: starter-setup-fonts-02-1
+#+begin_src emacs-lisp
+(defgroup starter-ui nil
+  "Presentation defaults for the Lambda learning configuration."
+  :group 'lambda-emacs)
+#+end_src
+
+** Choose a text font independently of icons
+
+The default face needs a full programming font. A symbols-only Nerd Font belongs in the icon mapping, not the default face.
+
+#+name: starter-setup-fonts-03-1
+#+begin_src emacs-lisp
+(defcustom starter-ui-font-family "GoogleSansCode Nerd Font"
+  "Preferred editing font family; retain the platform default if absent."
+  :type 'string)
+#+end_src
+
+** Make icons conditional
+
+Automatic mode checks that a graphical frame can find the dedicated font. A local override can disable icons or force them for a suitably configured terminal.
+
+#+name: starter-setup-fonts-04-1
+#+begin_src emacs-lisp
+(defcustom starter-ui-icons 'auto
+  "Whether to render Nerd Font icons.
+With `auto', require a graphical frame and an installed icon font.
+Use t for a terminal configured with a Nerd Font, or nil to disable icons."
+  :type '(choice (const auto) (const t) (const nil)))
+#+end_src
+
+** Choose the dedicated symbol family
+
+The default uses Symbols Nerd Font Mono. Keeping icon and text families separate prevents symbol coverage from changing ordinary text metrics.
+
+#+name: starter-setup-fonts-05-1
+#+begin_src emacs-lisp
+(defcustom starter-ui-nerd-font "Symbols Nerd Font Mono"
+  "Font family used for Nerd Icons."
+  :type 'string)
+#+end_src
+
+** Resolve platform font names
+
+Windows can expose a shorter family alias for the same installed font. Resolve the requested family against actual availability before assigning it.
+
+#+name: starter-setup-fonts-06-1
+#+begin_src emacs-lisp
+(defun starter-ui-resolve-font-family ()
+  "Resolve the requested editing font, including its Windows family alias."
+  (when (display-graphic-p)
+    (seq-find
+     (lambda (family) (find-font (font-spec :family family)))
+     (if (equal starter-ui-font-family "GoogleSansCode Nerd Font")
+         (list starter-ui-font-family "GoogleSansCode NF")
+       (list starter-ui-font-family)))))
+#+end_src
+
+** Ui font available p
+
+Return non-nil when the requested editing font is installed.
+
+#+name: starter-setup-fonts-07-1
+#+begin_src emacs-lisp
+(defun starter-ui-font-available-p ()
+  "Return non-nil when the requested editing font is installed."
+  (and (starter-ui-resolve-font-family) t))
+#+end_src
+
+** Check readiness before rendering icons
+
+The user policy and actual font availability jointly control icons across dashboard, modeline and completion surfaces.
+
+#+name: starter-setup-fonts-08-1
+#+begin_src emacs-lisp
+(defun starter-ui-icons-available-p ()
+  "Return non-nil when the starter should render Nerd Font icons."
+  (pcase starter-ui-icons
+    ('t t)
+    ('nil nil)
+    ('auto (and (display-graphic-p)
+                (find-font (font-spec :family starter-ui-nerd-font))
+                t))))
+#+end_src
+
+** Map only Nerd Icons glyph ranges
+
+The Nerd Icons package knows its private-use ranges. Calling its font setup avoids the broad Unicode mapping that previously interfered with ordinary symbols.
+
+#+name: starter-setup-fonts-09-1
+#+begin_src emacs-lisp
+(defun starter-ui-apply-icon-font (&optional frame)
+  "Map Nerd glyph ranges to the configured font in graphical FRAME."
+  (with-selected-frame (or frame (selected-frame))
+    (when (and (display-graphic-p)
+               (starter-ui-icons-available-p)
+               (find-font (font-spec :family starter-ui-nerd-font)))
+      (nerd-icons-set-font starter-ui-nerd-font (selected-frame)))))
+#+end_src
+
+** Establish metrics before layout
+
+Set the chosen family only when installed, retaining the existing point size. Refresh icon mappings at the same time so layout and glyph selection agree.
+
+#+name: starter-setup-fonts-10-1
+#+begin_src emacs-lisp
+(defun starter-ui-apply-font (&optional frame)
+  "Apply the editing and icon fonts to FRAME, preserving the point size."
+  (with-selected-frame (or frame (selected-frame))
+    (when (display-graphic-p)
+      (when-let* ((family (starter-ui-resolve-font-family)))
+        (setopt lem-ui-default-font (list :family family))
+        ;; The Custom setter skips unchanged values; new daemon frames still
+        ;; need the requested family even when another frame set it earlier.
+        (set-face-attribute 'default (selected-frame) :family family))
+      (starter-ui-apply-icon-font))))
+#+end_src
+
+** Load nerd-icons
+
+Load this dependency before evaluating the forms that use its functions or variables. This preserves the existing startup dependency order.
+
+#+name: starter-setup-fonts-11-1
+#+begin_src emacs-lisp
+(require 'nerd-icons)
+#+end_src
+
+** Tell Nerd Icons which family to use
+
+Set the dedicated symbol family before its glyph-range setup runs. Ordinary text continues to use the separate default-face font.
+
+#+name: starter-setup-fonts-12-1
+#+begin_src emacs-lisp
+(setq nerd-icons-font-family starter-ui-nerd-font)
+#+end_src
+
+** Replace the inherited hook
+
+Remove this inherited callback before installing the local replacement. That prevents the broader framework behavior from undoing the targeted user policy.
+
+#+name: starter-setup-fonts-13-1
+#+begin_src emacs-lisp
+;; Lambda's deferred hook prepends the icon font for all Unicode.  Replace it
+;; before setting the editing font, and use nerd-icons' own specific ranges.
+(remove-hook 'after-setting-font-hook #'lem-font--init-nerd-icons-fonts)
+#+end_src
+
+** Connect after-setting-font-hook
+
+Register the callback for the point in the core or framework lifecycle where its dependencies are ready. The callback runs when that hook is reached.
+
+#+name: starter-setup-fonts-14-1
+#+begin_src emacs-lisp
+(add-hook 'after-setting-font-hook #'starter-ui-apply-icon-font)
+#+end_src
+
+** Connect after-make-frame-functions
+
+Register the callback for the point in the core or framework lifecycle where its dependencies are ready. The callback runs when that hook is reached.
+
+#+name: starter-setup-fonts-15-1
+#+begin_src emacs-lisp
+(add-hook 'after-make-frame-functions #'starter-ui-apply-font)
+#+end_src
+
+** Initialize the first frame's fonts
+
+Apply the same helper used by later frame and font hooks now, before the dashboard measures any text.
+
+#+name: starter-setup-fonts-16-1
+#+begin_src emacs-lisp
+(starter-ui-apply-font)
+#+end_src
+
+** Publish the module
+
+The core require/provide protocol records that this file loaded. Later requires can reuse the feature without evaluating the module again.
+
+#+name: starter-setup-fonts-17-1
+#+begin_src emacs-lisp
+(provide 'starter-setup-fonts)
+;;; starter-setup-fonts.el ends here
+#+end_src
+
+* starter-setup-ui
+:PROPERTIES:
+:header-args:emacs-lisp: :tangle ../lambda-library/lambda-user/starter-setup-ui.el :eval never :comments no :padline no :mkdirp yes
+:END:
+
+Deployed file: [[file:../lambda-library/lambda-user/starter-setup-ui.el][lambda-library/lambda-user/starter-setup-ui.el]]. Edit the blocks here; generated Lisp is kept in Git for ordinary startup and review.
+
+** Load starter-setup-fonts
+
+Load this dependency before evaluating the forms that use its functions or variables. This preserves the existing startup dependency order.
+
+#+name: starter-setup-ui-01-1
+#+begin_src emacs-lisp
+;;; starter-setup-ui.el --- Portable starter presentation -*- lexical-binding: t; -*-
+;; Generated from literate/50-appearance.org; edit the Org source, then tangle.
+
+;;; Commentary:
+;; A small presentation layer for the Lambda learning configuration.
+;;
+;; Design goals:
+;; - retain ordinary OS-managed Emacs frames;
+;; - use Doom Dark+ as a familiar dark default without requiring Doom Emacs;
+;; - use Google Sans Code Nerd Font when installed, while retaining a safe
+;;   platform fallback when it is absent;
+;; - keep Lambda's built-in tab-bar/tabspaces architecture rather than adding a
+;;   second tab/workspace framework;
+;; - borrow the useful presentation ideas from Firemacs (compact modeline,
+;;   visible tabs, dark editor surface) without importing its terminal-specific
+;;   custom statuscolumn/MRU-tab implementation;
+;; - make icons optional so a missing Nerd Font never breaks first boot.
+
+;;; Code:
+
+(require 'starter-setup-fonts)
+#+end_src
+
+** Group customization options
+
+This Custom group gives the following settings a discoverable home in Emacs's built-in customization interface.
+
+#+name: starter-setup-ui-02-1
+#+begin_src emacs-lisp
+(defgroup starter-ui nil
+  "Presentation defaults for the Lambda learning configuration."
+  :group 'lambda-emacs)
+#+end_src
+
+** Select the everyday dark theme
+
+This is a user presentation choice layered over Lambda's theme-loading mechanism.
+
+#+name: starter-setup-ui-03-1
+#+begin_src emacs-lisp
+(defcustom starter-ui-theme 'doom-dark+
+  "Dark/default theme loaded by the starter UI layer."
+  :type 'symbol)
+#+end_src
+
+** Select the light alternative
+
+The theme toggle pairs this setting with the dark choice rather than enabling unrelated themes at once.
+
+#+name: starter-setup-ui-04-1
+#+begin_src emacs-lisp
+(defcustom starter-ui-light-theme 'doom-one-light
+  "Light theme used by `starter-ui-toggle-theme'."
+  :type 'symbol)
+#+end_src
+
+** Ui line numbers in programming
+
+Whether programming buffers should show line numbers by default.
+
+#+name: starter-setup-ui-05-1
+#+begin_src emacs-lisp
+(defcustom starter-ui-line-numbers-in-programming t
+  "Whether programming buffers should show line numbers by default."
+  :type 'boolean)
+#+end_src
+
+** Use Lambda's theme lifecycle
+
+Loading through the framework keeps its after-theme hooks, including dashboard recentering, connected.
+
+#+name: starter-setup-ui-06-1
+#+begin_src emacs-lisp
+;;;; Theme
+
+(defun starter-ui-load-theme (theme)
+  "Disable active themes and load THEME non-interactively."
+  (mapc #'disable-theme custom-enabled-themes)
+  (load-theme theme t)
+  (when (fboundp 'doom-themes-org-config)
+    (doom-themes-org-config)))
+#+end_src
+
+** Switch between the selected pair
+
+The command reads current enabled themes and chooses the other configured presentation.
+
+#+name: starter-setup-ui-07-1
+#+begin_src emacs-lisp
+(defun starter-ui-toggle-theme ()
+  "Toggle between `starter-ui-theme' and `starter-ui-light-theme'."
+  (interactive)
+  (starter-ui-load-theme
+   (if (memq starter-ui-theme custom-enabled-themes)
+       starter-ui-light-theme
+     starter-ui-theme)))
+#+end_src
+
+** Load the selected theme after startup
+
+The external theme package supplies colors. It is independent of Doom Emacs; this remains a Lambda configuration.
+
+#+name: starter-setup-ui-08-1
+#+begin_src emacs-lisp
+(use-package doom-themes
+  :ensure t
+  :custom
+  (doom-themes-enable-bold t)
+  (doom-themes-enable-italic t)
+  :config
+  ;; Lambda loads a fallback theme early so startup is never unthemed. Replace it
+  ;; here once the user-facing UI layer is ready.
+  (starter-ui-load-theme starter-ui-theme))
+#+end_src
+
+** Apply policy after lem-setup-keybindings
+
+Waiting for the feature avoids racing its initialization. The following policy takes effect once its variables, maps or hooks exist; it does not force an unrelated feature to load now.
+
+#+name: starter-setup-ui-09-1
+#+begin_src emacs-lisp
+;; Lambda's default toggle calls a macOS-only `dark-mode' shell utility. Replace
+;; just that binding with a portable theme toggle while retaining the rest of the
+;; Lambda toggle map. `SPC t T' remains Lambda's interactive theme chooser.
+(with-eval-after-load 'lem-setup-keybindings
+  (define-key lem+toggle-keys (kbd "t") #'starter-ui-toggle-theme))
+#+end_src
+
+** Share the icon family across packages
+
+The UI's Nerd Icons declaration uses the same dedicated font setting as the early font module.
+
+#+name: starter-setup-ui-10-1
+#+begin_src emacs-lisp
+;;;; Modeline
+
+(use-package nerd-icons
+  :ensure t
+  :defer t
+  :custom
+  (nerd-icons-font-family starter-ui-nerd-font))
+#+end_src
+
+** Configure the status line
+
+The external modeline uses the same icon availability policy as the rest of the UI. Its layout is a user choice.
+
+#+name: starter-setup-ui-11-1
+#+begin_src emacs-lisp
+(use-package doom-modeline
+  :ensure t
+  :init
+  (setq doom-modeline-height 28
+        doom-modeline-project-detection 'project
+        doom-modeline-buffer-file-name-style 'truncate-upto-project
+        doom-modeline-icon (starter-ui-icons-available-p)
+        doom-modeline-major-mode-icon t
+        doom-modeline-buffer-state-icon t)
+  :config
+  (doom-modeline-mode 1))
+#+end_src
+
+** Apply policy after tab-bar
+
+Waiting for the feature avoids racing its initialization. The following policy takes effect once its variables, maps or hooks exist; it does not force an unrelated feature to load now.
+
+#+name: starter-setup-ui-12-1
+#+begin_src emacs-lisp
+;;;; Workspace/tab presentation
+
+(with-eval-after-load 'tab-bar
+  ;; Lambda uses tabs as window-configuration/project workspaces. Keep that
+  ;; semantic model, but expose it visually once a second workspace exists.
+  (setopt tab-bar-show 1)
+
+  (defun starter-ui-apply-tab-faces ()
+    "Give the built-in tab bar a compact editor-like presentation."
+    (set-face-attribute 'tab-bar nil
+                        :inherit 'default
+                        :box nil)
+    (set-face-attribute 'tab-bar-tab nil
+                        :inherit 'mode-line
+                        :weight 'bold
+                        :box nil)
+    (set-face-attribute 'tab-bar-tab-inactive nil
+                        :inherit 'mode-line-inactive
+                        :weight 'normal
+                        :box nil))
+
+  (starter-ui-apply-tab-faces)
+  ;; Lambda defines this hook around `load-theme'; keep tab faces coherent when
+  ;; changing themes interactively later.
+  (when (boundp 'lem-after-load-theme-hook)
+    (add-hook 'lem-after-load-theme-hook #'starter-ui-apply-tab-faces)))
+#+end_src
+
+** Decorate completion candidates
+
+This package adds icons to completion annotations when the shared font policy allows them.
+
+#+name: starter-setup-ui-13-1
+#+begin_src emacs-lisp
+;;;; Completion and file-manager icons
+
+(use-package nerd-icons-completion
+  :ensure t
+  :after marginalia
+  :config
+  (when (starter-ui-icons-available-p)
+    (nerd-icons-completion-mode 1)
+    (add-hook 'marginalia-mode-hook #'nerd-icons-completion-marginalia-setup)))
+#+end_src
+
+** Decorate in-buffer completion
+
+Corfu gets the same icon policy as minibuffer completion, so installed font capability remains the single decision point.
+
+#+name: starter-setup-ui-14-1
+#+begin_src emacs-lisp
+(use-package nerd-icons-corfu
+  :ensure t
+  :after corfu
+  :config
+  (when (starter-ui-icons-available-p)
+    (add-to-list 'corfu-margin-formatters #'nerd-icons-corfu-formatter)))
+#+end_src
+
+** Gate file-browser icons
+
+Dired remains usable without symbol fonts; decoration is enabled only when the policy and environment support it.
+
+#+name: starter-setup-ui-15-1
+#+begin_src emacs-lisp
+(defun starter-ui-maybe-enable-dired-icons ()
+  "Enable Dired icons only when their font is usable."
+  (when (starter-ui-icons-available-p)
+    (nerd-icons-dired-mode 1)))
+#+end_src
+
+** Attach decoration to Dired buffers
+
+This hook leaves core Dired behavior intact while applying the conditional icon helper.
+
+#+name: starter-setup-ui-16-1
+#+begin_src emacs-lisp
+(use-package nerd-icons-dired
+  :ensure t
+  :commands nerd-icons-dired-mode
+  :hook (dired-mode . starter-ui-maybe-enable-dired-icons))
+#+end_src
+
+** Add modest spacing
+
+The external spacing package changes presentation while retaining ordinary operating-system frame decorations and resizing.
+
+#+name: starter-setup-ui-17-1
+#+begin_src emacs-lisp
+;;;; Spacing
+
+(use-package spacious-padding
+  :ensure t
+  :custom
+  ;; Deliberately modest: visual separation without changing the basic frame
+  ;; decoration model or relying on a particular desktop/window manager.
+  (spacious-padding-widths
+   '(:internal-border-width 8
+     :header-line-width 2
+     :mode-line-width 4
+     :tab-width 2
+     :right-divider-width 1
+     :scroll-bar-width 0
+     :fringe-width 6))
+  :config
+  (spacious-padding-mode 1))
+#+end_src
+
+** Highlight matching parentheses
+
+Enable Emacs's built-in matching-parenthesis display as a small editing aid.
+
+#+name: starter-setup-ui-18-1
+#+begin_src emacs-lisp
+;;;; Editing-surface polish
+
+(show-paren-mode 1)
+#+end_src
+
+** Make code buffers easier to scan
+
+Line numbers are optional user policy. Current-line highlighting is restricted here to programming buffers.
+
+#+name: starter-setup-ui-19-1
+#+begin_src emacs-lisp
+(defun starter-ui-programming-presentation ()
+  "Apply unobtrusive visual aids in programming buffers."
+  (when starter-ui-line-numbers-in-programming
+    (setq-local display-line-numbers-type t)
+    (display-line-numbers-mode 1))
+  (hl-line-mode 1))
+#+end_src
+
+** Connect prog-mode-hook
+
+Register the callback for the point in the core or framework lifecycle where its dependencies are ready. The callback runs when that hook is reached.
+
+#+name: starter-setup-ui-20-1
+#+begin_src emacs-lisp
+(add-hook 'prog-mode-hook #'starter-ui-programming-presentation)
+#+end_src
+
+** Publish the module
+
+The core require/provide protocol records that this file loaded. Later requires can reuse the feature without evaluating the module again.
+
+#+name: starter-setup-ui-21-1
+#+begin_src emacs-lisp
+(provide 'starter-setup-ui)
+;;; starter-setup-ui.el ends here
+#+end_src
+

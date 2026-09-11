@@ -1,4 +1,5 @@
 ;;; starter-platform.el --- Portable platform defaults -*- lexical-binding: t; -*-
+;; Generated from literate/30-platform.org; edit the Org source, then tangle.
 
 ;;; Commentary:
 ;; Safe defaults for Windows, GNU/Linux/Nix, and macOS. Prefer discovery with
@@ -8,11 +9,9 @@
 
 (require 'seq)
 (require 'subr-x)
-
 (defgroup starter-platform nil
   "Portable defaults for the Lambda learning configuration."
   :group 'lambda-emacs)
-
 (defun starter--user-home-directory ()
   "Return the user's ordinary home directory for configuration defaults.
 On native Windows, Emacs may define HOME as AppData/Roaming, so prefer
@@ -21,25 +20,20 @@ USERPROFILE for user-owned projects and documents."
    (if (eq system-type 'windows-nt)
        (or (getenv "USERPROFILE") (expand-file-name "~"))
      (expand-file-name "~"))))
-
 (defcustom starter-project-directory
   (expand-file-name "Projects/" (starter--user-home-directory))
   "Default place to look for projects."
   :type 'directory)
-
 (defcustom starter-org-directory
   (expand-file-name "Documents/org/" (starter--user-home-directory))
   "Portable starter Org directory."
   :type 'directory)
-
 (defun starter--first-executable (&rest programs)
   "Return the first executable found in PROGRAMS."
   (seq-some #'executable-find programs))
-
 (defun starter--skip-exec-path-from-shell-on-windows (&rest _)
   "Keep native Windows Emacs's inherited process environment unchanged."
   nil)
-
 (defun starter-platform-apply ()
   "Apply the currently configured portable platform defaults."
   ;; `lem-setup-projects' defines and also assigns `lem-project-dir', so apply the
@@ -89,7 +83,6 @@ USERPROFILE for user-owned projects and documents."
     (with-eval-after-load 'exec-path-from-shell
       (setopt exec-path-from-shell-variables
               '("PATH" "MANPATH" "NIX_PATH" "NIX_PROFILES")))))
-
 ;; Do not force a font here. Inheriting the platform default makes first boot robust.
 ;; Set `lem-ui-default-font' later once you know which fonts are available everywhere.
 

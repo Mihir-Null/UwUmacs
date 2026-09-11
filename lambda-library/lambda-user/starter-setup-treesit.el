@@ -1,4 +1,5 @@
 ;;; starter-setup-treesit.el --- Portable Tree-sitter policy -*- lexical-binding: t; -*-
+;; Generated from literate/60-programming.org; edit the Org source, then tangle.
 
 ;;; Commentary:
 ;; Lambda supplies useful grammar recipes, but moving repository heads can start
@@ -11,11 +12,9 @@
 (require 'cl-lib)
 (require 'rx)
 (require 'treesit)
-
 (defgroup starter-treesit nil
   "Portable Tree-sitter policy for the starter configuration."
   :group 'lambda-emacs)
-
 (defcustom starter-treesit-language-source-alist
   '((bash "https://github.com/tree-sitter/tree-sitter-bash"
           "8509e3229b863c255ab6b61f3bf74ad0bf14e8bc")
@@ -57,7 +56,6 @@ entry has the same shape accepted by `treesit-language-source-alist':
 (LANGUAGE REPOSITORY REVISION &optional SOURCE-DIRECTORY CC CXX)."
   :type '(repeat sexp)
   :group 'starter-treesit)
-
 (defconst starter-treesit-mode-remaps
   '((yaml-mode yaml-ts-mode yaml)
     (bash-mode bash-ts-mode bash)
@@ -67,20 +65,17 @@ entry has the same shape accepted by `treesit-language-source-alist':
     (python-mode python-ts-mode python)
     (typst-mode typst-ts-mode typst))
   "Classic mode, Tree-sitter mode, and grammar triples managed here.")
-
 (defun starter-treesit--language-available-p (language)
   "Return non-nil when LANGUAGE can be loaded by this Emacs build."
   (and (treesit-available-p)
        (condition-case nil
            (treesit-language-available-p language)
          (error nil))))
-
 (defun starter-treesit-apply-pinned-sources ()
   "Replace Lambda's moving grammar recipes with pinned recipes."
   (dolist (source starter-treesit-language-source-alist)
     (setf (alist-get (car source) treesit-language-source-alist)
           (cdr source))))
-
 (defun starter-treesit--git-clone-revision
     (original-function url revision workdir)
   "Clone URL at exact REVISION into WORKDIR for `treesit'.
@@ -106,7 +101,6 @@ ORIGINAL-FUNCTION unchanged."
          "git" nil t nil "-C" workdir "checkout" "--detach" "--quiet"
          "FETCH_HEAD"))
     (funcall original-function url revision workdir)))
-
 (defun starter-treesit-refresh-mode-remaps (&rest _)
   "Refresh managed mode remaps for the grammars available right now.
 
@@ -125,7 +119,6 @@ then added only when its target mode exists and its grammar loads successfully."
         (add-to-list 'major-mode-remap-alist
                      (cons classic-mode treesit-mode) t))))
   major-mode-remap-alist)
-
 (defun starter-treesit-install-language-grammar (language)
   "Install pinned grammar LANGUAGE, then refresh conditional remaps."
   (interactive
@@ -141,7 +134,6 @@ then added only when its target mode exists and its grammar loads successfully."
   (starter-treesit-apply-pinned-sources)
   (treesit-install-language-grammar language)
   (starter-treesit-refresh-mode-remaps))
-
 (defun starter-treesit-install-all-grammars ()
   "Install every missing pinned grammar and refresh mode remaps."
   (interactive)
@@ -153,15 +145,12 @@ then added only when its target mode exists and its grammar loads successfully."
       (unless (starter-treesit--language-available-p language)
         (treesit-install-language-grammar language))))
   (starter-treesit-refresh-mode-remaps))
-
 (starter-treesit-apply-pinned-sources)
 (starter-treesit-refresh-mode-remaps)
-
 (unless (advice-member-p #'starter-treesit--git-clone-revision
                          #'treesit--git-clone-repo)
   (advice-add #'treesit--git-clone-repo :around
               #'starter-treesit--git-clone-revision))
-
 ;; Lambda's bulk command calls the built-in installer directly.  Refresh after
 ;; each successful installation so a restart is not required before the remap
 ;; becomes active.
@@ -169,6 +158,5 @@ then added only when its target mode exists and its grammar loads successfully."
                          #'treesit-install-language-grammar)
   (advice-add #'treesit-install-language-grammar :after
               #'starter-treesit-refresh-mode-remaps))
-
 (provide 'starter-setup-treesit)
 ;;; starter-setup-treesit.el ends here
