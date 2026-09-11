@@ -20,7 +20,7 @@
 (setq lem-prefix "C-c C-SPC")
 ;;;; UI fallback
 ;; Lambda's theme module loads during the base stage. Keep its dark theme as a
-;; no-surprises fallback; `starter-setup-ui' replaces it with Doom Dark+ after the
+;; no-surprises fallback; `starter-setup-ui' replaces it with Sonokai after the
 ;; rest of the editor surface is available.
 (setq lem-ui-theme 'lambda-dark)
 ;;;; Base framework
@@ -108,7 +108,7 @@
 
   (require 'starter-setup-org)
   ;; UI is intentionally a user module rather than Lambda's `lem-setup-modeline'.
-  ;; It supplies Doom Dark+, doom-modeline, workspace-tab presentation, optional
+  ;; It supplies Sonokai, doom-modeline, workspace-tab presentation, optional
   ;; Nerd Icons, and modest spacing while retaining ordinary OS-managed frames.
   (require 'starter-setup-ui)
 

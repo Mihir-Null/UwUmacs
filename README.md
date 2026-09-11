@@ -216,7 +216,7 @@ package's specific glyph ranges. Dashboard heading/file icons respect
 
 Default presentation:
 
-- **Doom Dark+** through the standalone `doom-themes` package;
+- **Sonokai (default style)** through a tracked port using the standalone `doom-themes` package;
 - **doom-modeline** at the bottom of the frame;
 - Lambda's built-in `tab-bar`/`tabspaces` workspaces, with the tab bar shown only once there is more than one workspace;
 - modest `spacious-padding`, while keeping native frame decorations so Windows/FancyWM and normal Linux/macOS window managers can resize the frame;
@@ -231,10 +231,12 @@ This takes presentation cues from Firemacs while deliberately not importing its 
 The default is:
 
 ```elisp
-(setq starter-ui-theme 'doom-dark+)
+(setq starter-ui-theme 'doom-sonokai)
 ```
 
-Change it in `private.el` or before `starter-setup-ui` loads. Other `doom-themes` themes can be used the same way, for example:
+The port is stored in [`lambda-library/lambda-user/themes/`](lambda-library/lambda-user/themes/README.md), outside the package cache. It preserves Sonokai's default palette; the other Sonokai variants are not included.
+
+For a portable change, edit `starter-ui-theme` in `literate/50-appearance.org` and run `M-x starter-literate-tangle`. For a machine-only override, set it in `lambda-library/lambda-user/private.el` before `starter-setup-ui` loads. Other `doom-themes` themes can be used the same way, for example:
 
 ```elisp
 (setq starter-ui-theme 'doom-one)

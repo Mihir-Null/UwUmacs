@@ -62,7 +62,14 @@
                         starter-setup-treesit starter-setup-languages
                         starter-setup-terminal starter-setup-org starter-setup-ui))
         (dots-test-check (featurep feature) (format "Missing feature %s" feature)))
-      (dots-test-check (equal custom-enabled-themes '(doom-dark+)) "Theme changed")
+      (dots-test-check (equal custom-enabled-themes '(doom-sonokai)) "Theme changed")
+      ;; Exercise the real loader in both directions: themes must not stack.
+      (starter-ui-toggle-theme)
+      (dots-test-check (equal custom-enabled-themes (list starter-ui-light-theme))
+                       "Light theme toggle failed")
+      (starter-ui-toggle-theme)
+      (dots-test-check (equal custom-enabled-themes '(doom-sonokai))
+                       "Sonokai was not restored by the theme toggle")
       (dots-test-check (and meow-global-mode doom-modeline-mode) "Editor modes missing")
       (dots-test-check (null starter-eglot-auto-start-modes) "LSP auto-start changed")
       (dots-test-check (null starter-language-packages) "Language package opt-ins changed")
