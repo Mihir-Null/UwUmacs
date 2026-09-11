@@ -58,6 +58,9 @@
     (load-file private)))
 (starter-platform-apply)
 
+;; Establish final font metrics and icon mappings before dashboard measures text.
+(require 'starter-setup-fonts)
+
 ;; Install the startup home page before after-init/startup hooks run. The dashboard
 ;; uses project.el/recentf/bookmarks and therefore remains a presentation layer over
 ;; ordinary Emacs facilities rather than a second workspace system.
