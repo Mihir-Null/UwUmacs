@@ -1,4 +1,5 @@
 ;;; init.el  -*- lexical-binding: t; mode: emacs-lisp; coding:utf-8; fill-column: 80 -*-
+;; Generated from literate/10-bootstrap.org; edit the Org source, then tangle.
 ;; Author: Colin McLear
 ;; Maintainer: Colin McLear
 ;; Version: 0.3.0
@@ -26,7 +27,6 @@
 
 ;;; Code:
 ;;;; Startup
-
 ;;;;; Use-Package
 
 ;; use-package is built-in since Emacs 29
@@ -50,7 +50,6 @@
   (use-package-always-ensure nil)
   ;; Navigate use-package declarations w/imenu
   (use-package-enable-imenu-support t))
-
 ;;;;; Security
 ;; Properly verify outgoing ssl connections.
 ;; See https://glyph.twistedmatrix.com/2015/11/editor-malware.html
@@ -60,7 +59,6 @@
   :custom
   (gnutls-verify-error t)
   (gnutls-min-prime-bits 3072))
-
 ;;;;; Command Line Switches
 
 ;; Conditionally load parts of config depending on command line switches.
@@ -81,7 +79,6 @@
   `clean' loads only the `init.el' file w/no personal config; `core'
   loads the set of modules set in `lem-core-modules'; `test' loads
   only a `lem-setup-test.el' file for easy testing.")
-
 (defvar lem--emacs-switches-found nil
   "Custom command-line switches found in `command-line-args' at startup.
 Populated by a single scan at load time: each known switch
@@ -89,19 +86,16 @@ Populated by a single scan at load time: each known switch
 `command-line-args' is recorded here and deleted from
 `command-line-args' exactly once, so Emacs's own option processing
 does not signal \"Unknown option\" after init.")
-
 (dolist (switch '("-minimal" "-test" "-vanilla" "-default"))
   (when (member switch command-line-args)
     (push switch lem--emacs-switches-found)
     (setq command-line-args (delete switch command-line-args))))
-
 (defun lem--emacs-switches (switch)
   "Non-nil if command line argument SWITCH was passed.
 Consults `lem--emacs-switches-found', the snapshot recorded when the
 switch was removed from `command-line-args' at load time, so it is
 safe to call any number of times per switch."
   (member switch lem--emacs-switches-found))
-
 ;;;;; Emacs Build Version
 ;; When built with https://codeberg.org/mclearc/build-emacs-macos, Emacs has
 ;; git-version patch to include git sha1 in emacs-version string.
@@ -111,7 +105,6 @@ safe to call any number of times per switch."
 ;; exists on disk so the guard passes, but `require' cannot find it.
 (when (locate-library "emacs-git-version")
   (require 'emacs-git-version))
-
 (defun lem-emacs-version ()
   "A convenience function to print the emacs-version in the echo-area/*messages* buffer and put
 emacs-version string on the kill ring."
@@ -119,7 +112,6 @@ emacs-version string on the kill ring."
   (let ((emacs (emacs-version)))
     (message (emacs-version))
     (kill-new emacs)))
-
 ;;;;; Outline Navigation
 ;; Navigate elisp files easily. Outline is a built-in library and we can easily
 ;; configure it to treat elisp comments as headings.
@@ -147,7 +139,6 @@ emacs-version string on the kill ring."
                             (";;;;; " . 3)
                             (";;;;;; " . 4)
                             (";;;;;;; " . 5))))))
-
 ;;;;; Load Configuration Modules
 ;; Lambda-Emacs loads a series of lisp-libraries or 'modules'. Which modules are
 ;; loaded is left to the user to set in `config.el', though if there is no
@@ -173,7 +164,6 @@ Skips modules listed in `(lem-gui-only-modules)' when
                     'lem-setup-functions
                     'lem-setup-server
                     'lem-setup-scratch
-
                     ;; UI modules
                     'lem-setup-frames
                     'lem-setup-windows
@@ -201,7 +191,6 @@ Skips modules listed in `(lem-gui-only-modules)' when
                     ;; Org modules
                     'lem-setup-org-base
                     'lem-setup-org-settings
-
                     ;; Writing modules
                     'lem-setup-writing
                     'lem-setup-notes
@@ -214,7 +203,6 @@ Skips modules listed in `(lem-gui-only-modules)' when
                     ;; Programming modules
                     'lem-setup-programming)))
      (require mod))))
-
 (defun lem--minimal-modules ()
   "Load 𝛌-Emacs with a minimal set of modules.
 Skips modules listed in `(lem-gui-only-modules)' when
@@ -235,7 +223,6 @@ Skips modules listed in `(lem-gui-only-modules)' when
                      'lem-setup-functions
                      'lem-setup-server
                      'lem-setup-scratch
-
                      ;; UI modules
                      'lem-setup-frames
                      'lem-setup-windows
@@ -251,7 +238,6 @@ Skips modules listed in `(lem-gui-only-modules)' when
                      'lem-setup-dired
                      'lem-setup-search)))
      (require mod))))
-
 ;;;; Defensive headless-host warning
 ;; Installed BEFORE the module-loading cond so the hook is in
 ;; place even if the cond's body errors out (e.g. an external
@@ -274,7 +260,6 @@ Skips modules listed in `(lem-gui-only-modules)' when
              "restart Emacs to recover.")
      :error)))
 (add-hook 'server-after-make-frame-hook #'lem--warn-gui-frame-on-headless)
-
 ;; Conditionally load configuration files based on command-line switches,
 ;; presence of user-config file, or the default set of modules.
 (cond
@@ -298,7 +283,6 @@ Skips modules listed in `(lem-gui-only-modules)' when
  ((lem--emacs-switches "-vanilla")
   (message "*-vanilla is deprecated; using -minimal instead*")
   (lem--minimal-modules))
-
  ;; Load user's personal config file (if it exists) and hasn't been bypassed
  ;; by a command-line switch to load the default libraries.
  ((and (not (lem--emacs-switches "-default"))
@@ -321,7 +305,6 @@ Skips modules listed in `(lem-gui-only-modules)' when
      (run-with-idle-timer 1 nil
                           (function require)
                           'lem-setup-macos nil t))))
-
  ;; No user config file exists: create one from the shipped default
  ;; and load it. Historically this branch called yes-or-no-p and
  ;; discarded the answer (always proceeding), so the prompt offered
@@ -343,7 +326,6 @@ Skips modules listed in `(lem-gui-only-modules)' when
      (run-with-idle-timer 1 nil
                           (function require)
                           'lem-setup-macos nil t)))))
-
 ;;;; After Startup
 ;; reset file-name-handler-alist
 (add-hook 'emacs-startup-hook (lambda ()

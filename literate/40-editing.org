@@ -1,3 +1,27 @@
+#+TITLE: Selection-first editing
+#+OPTIONS: toc:3 num:nil
+#+STARTUP: overview
+#+PROPERTY: header-args:emacs-lisp :eval never :comments no :padline no :mkdirp yes
+
+[[file:index.org][Reading guide]] · [[file:framework.org][Framework provenance]]
+
+Ownership: *user configuration*, adapted from Colin McLear's Meow setup under GPL-3.0-or-later. Meow is an external package; Lambda owns the semantic leader maps, and Emacs core still supplies ordinary keymaps and commands. The important choice is to reuse those maps so SPC, which-key and non-modal recovery share one hierarchy. See the [[file:../lambda-library/lambda-user/keybindings.org][keybindings and commands cheat sheet]] for use rather than implementation.
+
+* starter-setup-meow
+:PROPERTIES:
+:header-args:emacs-lisp: :tangle ../lambda-library/lambda-user/starter-setup-meow.el :eval never :comments no :padline no :mkdirp yes
+:END:
+
+Deployed file: [[file:../lambda-library/lambda-user/starter-setup-meow.el][lambda-library/lambda-user/starter-setup-meow.el]]. Edit the blocks here; generated Lisp is kept in Git for ordinary startup and review.
+
+** Build the selection and leader vocabulary
+
+Motion state keeps application-specific keys available. The leader reuses Lambda's existing maps; normal state supplies the QWERTY selection vocabulary. The fragments below are consecutive parts of one function.
+
+The following blocks are consecutive fragments of this source section. Some share an open Lisp form; edit them here and rebuild the whole chapter rather than evaluating a fragment on its own.
+
+#+name: starter-setup-meow-01-1
+#+begin_src emacs-lisp
 ;;; starter-setup-meow.el --- Selection-first editing -*- lexical-binding: t; -*-
 ;; Generated from literate/40-editing.org; edit the Org source, then tangle.
 
@@ -23,6 +47,14 @@
   ;; Colin's useful integration trick: make Lambda's actual leader map the map
   ;; Meow/which-key sees rather than duplicating the hierarchy.
   (add-to-list 'meow-keymap-alist (cons 'leader lem+leader-map))
+#+end_src
+
+*** Build the selection and leader vocabulary: continued 2
+
+SPC is a semantic leader here, not a generic modifier translator. Meow declares the three prefix variables below as character-valued Custom options. `nil' is nevertheless a useful runtime sentinel here: no input event
+
+#+name: starter-setup-meow-01-2
+#+begin_src emacs-lisp
   ;; SPC is a semantic leader here, not a generic modifier translator.
   ;;
   ;; Meow declares the three prefix variables below as character-valued Custom
@@ -53,6 +85,14 @@
    '("f" . lem+file-keys)
    '("F" . lem+flymake-keys)
    '("i" . lem-find-lambda-file)
+#+end_src
+
+*** Build the selection and leader vocabulary: continued 3
+
+Colin's QWERTY Meow grammar, kept close to the documented/recommended Meow vocabulary so `meow-tutor' and upstream documentation transfer cleanly.
+
+#+name: starter-setup-meow-01-3
+#+begin_src emacs-lisp
    '("k" . consult-yank-from-kill-ring)
    '("l" . vertico-repeat)
    `("p" . ,project-prefix-map)
@@ -83,6 +123,14 @@
    '(":" . meow-goto-line)
    '("," . meow-inner-of-thing)
    '("." . meow-bounds-of-thing)
+#+end_src
+
+*** Build the selection and leader vocabulary: continued 4
+
+Continue the same definition in its original scope. This fragment follows the preceding block directly in the deployed file.
+
+#+name: starter-setup-meow-01-4
+#+begin_src emacs-lisp
    '("[" . meow-beginning-of-thing)
    '("]" . meow-end-of-thing)
    '("a" . meow-append)
@@ -113,6 +161,14 @@
    '("O" . meow-to-block)
    '("p" . meow-yank)
    '("q" . meow-quit)
+#+end_src
+
+*** Build the selection and leader vocabulary: continued 5
+
+Continue the same definition in its original scope. This fragment follows the preceding block directly in the deployed file.
+
+#+name: starter-setup-meow-01-5
+#+begin_src emacs-lisp
    '("r" . meow-replace)
    '("R" . overwrite-mode)
    '("s" . meow-kill)
@@ -132,6 +188,16 @@
    '("%" . meow-query-replace)
    '("=" . meow-grab)
    '("<escape>" . meow-cancel-selection)))
+#+end_src
+
+** Enable Meow after its dependencies
+
+The package gets predictable starting states for shells and special buffers, a small angle-bracket thing, and Org syntax integration. Global mode is enabled only after installing our keymaps.
+
+The following blocks are consecutive fragments of this source section. Some share an open Lisp form; edit them here and rebuild the whole chapter rather than evaluating a fragment on its own.
+
+#+name: starter-setup-meow-02-1
+#+begin_src emacs-lisp
 (use-package meow
   :ensure t
   :custom
@@ -159,11 +225,29 @@
               (lambda ()
                 (local-unset-key (kbd "j"))
                 (local-unset-key (kbd "k")))))
+#+end_src
+
+*** Enable Meow after its dependencies: continued 2
+
+Treat @ as part of symbols/words during Meow movement in Org.
+
+#+name: starter-setup-meow-02-2
+#+begin_src emacs-lisp
   (with-eval-after-load 'org
     ;; Treat @ as part of symbols/words during Meow movement in Org.
     (modify-syntax-entry ?@ "_" org-mode-syntax-table))
 
   (starter-meow-setup)
   (meow-global-mode 1))
+#+end_src
+
+** Publish the module
+
+The core require/provide protocol records that this file loaded. Later requires can reuse the feature without evaluating the module again.
+
+#+name: starter-setup-meow-03-1
+#+begin_src emacs-lisp
 (provide 'starter-setup-meow)
 ;;; starter-setup-meow.el ends here
+#+end_src
+

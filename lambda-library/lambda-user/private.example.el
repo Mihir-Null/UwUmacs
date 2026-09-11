@@ -1,4 +1,5 @@
 ;;; private.example.el --- Example local overrides -*- lexical-binding: t; -*-
+;; Generated from literate/80-maintenance.org; edit the Org source, then tangle.
 
 ;; Copy to private.el for account/machine-specific values that should not be committed.
 ;; config.el loads private.el after the portable platform variables are defined and
@@ -23,7 +24,6 @@
 ;; language packages are opt-in because their servers/runtimes are platform-owned.
 ;; (setq starter-eglot-auto-start-modes '(python-mode python-ts-mode)
 ;;       starter-language-packages '(nix racket guile))
-
 ;; UI
 ;; `starter-setup-ui' is loaded later, so use `setq' here; its `defcustom' forms will
 ;; preserve these pre-bound values.

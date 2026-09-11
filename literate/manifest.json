@@ -1,0 +1,30 @@
+{
+  "sources": [
+    "10-bootstrap.org",
+    "20-user-policy.org",
+    "30-platform.org",
+    "40-editing.org",
+    "50-appearance.org",
+    "55-dashboard.org",
+    "60-programming.org",
+    "70-org.org",
+    "80-maintenance.org"
+  ],
+  "outputs": [
+    "early-init.el",
+    "init.el",
+    "lambda-library/lambda-user/early-config.el",
+    "lambda-library/lambda-user/config.el",
+    "lambda-library/lambda-user/starter-platform.el",
+    "lambda-library/lambda-user/starter-setup-terminal.el",
+    "lambda-library/lambda-user/starter-setup-meow.el",
+    "lambda-library/lambda-user/starter-setup-fonts.el",
+    "lambda-library/lambda-user/starter-setup-ui.el",
+    "lambda-library/lambda-user/starter-setup-dashboard.el",
+    "lambda-library/lambda-user/starter-setup-treesit.el",
+    "lambda-library/lambda-user/starter-setup-languages.el",
+    "lambda-library/lambda-user/starter-setup-org.el",
+    "lambda-library/lambda-user/private.example.el",
+    "lambda-library/lambda-user/starter-setup-literate.el"
+  ]
+}

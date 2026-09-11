@@ -4,7 +4,36 @@ A small, inspectable configuration layer for [Lambda-Emacs](https://codeberg.org
 
 This repository owns both startup and personal configuration, with a pinned Lambda framework snapshot and ordinary Git history.
 
-## Install and edit
+## Read and edit the literate configuration
+
+Start at **[literate/index.org](literate/index.org)**, also available from the
+dashboard's **Config** button or `M-x starter-literate-open`. The nested chapters
+pair small code blocks with explanations and distinguish Emacs core facilities,
+pinned Lambda code, user choices and later development additions.
+
+Edit portable configuration in `literate/`, save it, then run:
+
+```text
+M-x starter-literate-tangle
+M-x starter-literate-check
+```
+
+The first command stages and validates generated Lisp before updating the deployed
+files; the second checks that source and output agree without changing deployed
+files. Restart Emacs to apply changes. From a shell, the same operations are:
+
+```sh
+emacs -Q --batch -l tools/tangle.el -- --write
+emacs -Q --batch -l tools/tangle.el -- --check
+```
+
+Commit the Org sources and generated Lisp together. Startup loads the generated
+Lisp directly, so a clone works without tangling first. The build never generates
+`private.el`, packages, caches or saved Customize state. The pinned Lambda module
+snapshot remains ordinary vendor source, documented in
+[literate/framework.org](literate/framework.org).
+
+## Install and deploy
 
 This is a complete Emacs configuration repository. Lambda startup and framework
 files are included at the revision recorded in `docs/LAMBDA-UPSTREAM.json`.
@@ -20,11 +49,12 @@ packages; external runtimes and language servers remain your responsibility.
 
 ```text
 .emacs.d/                       # this repository
-├── early-init.el               # pinned Lambda startup
-├── init.el                     # pinned Lambda startup
+├── literate/                   # editable, documented source chapters
+├── early-init.el               # generated Lambda startup
+├── init.el                     # generated Lambda startup
 ├── lambda-library/
 │   ├── lambda-setup/            # included Lambda framework
-│   └── lambda-user/             # edit your preferences here
+│   └── lambda-user/             # generated user Lisp + local private.el
 │       ├── config.el           # enabled modules
 │       ├── early-config.el     # package installation policy
 │       ├── starter-*.el        # portable preferences
@@ -36,7 +66,7 @@ packages; external runtimes and language servers remain your responsibility.
 ```
 
 `private.el` loads exactly once, after platform variables are defined and before
-later modules consume them. Commit portable preferences in `lambda-user/`.
+later modules consume them. Commit portable preferences in `literate/` and their generated `lambda-user/` output.
 Customize saves local preferences under `var/etc/custom.el`; those settings and
 `private.el` need their own backup and are not reproduced by cloning Git.
 
@@ -322,4 +352,4 @@ The original user layer was based on the May 2026 mirrors. The complete reposito
 
 While learning the system, keep this boundary:
 
-> **Do not edit `lambda-library/lambda-setup/` unless you have intentionally decided to fork framework behavior.** Prefer normal Emacs extension points from `lambda-user/`: variables, hooks, keymaps, `use-package`, and `with-eval-after-load`.
+> **Do not edit `lambda-library/lambda-setup/` unless you have intentionally decided to fork framework behavior.** Prefer normal Emacs extension points in the user chapters under `literate/` (tangled into `lambda-user/`): variables, hooks, keymaps, `use-package`, and `with-eval-after-load`.

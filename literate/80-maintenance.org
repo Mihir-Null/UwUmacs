@@ -1,0 +1,163 @@
+#+TITLE: Maintenance and machine overrides
+#+OPTIONS: toc:3 num:nil
+#+STARTUP: overview
+#+PROPERTY: header-args:emacs-lisp :eval never :comments no :padline no :mkdirp yes
+
+[[file:index.org][Reading guide]] · [[file:framework.org][Framework provenance]]
+
+Ownership: *user configuration* for the example and *this literate refactor* for the authoring commands. The build uses the Org shipped with Emacs. Editing and generation are explicit, while normal startup continues to load plain Lisp. Read [[file:index.org::#editing-and-rebuilding][the workflow]] before changing these files.
+
+* private.example
+:PROPERTIES:
+:header-args:emacs-lisp: :tangle ../lambda-library/lambda-user/private.example.el :eval never :comments no :padline no :mkdirp yes
+:END:
+
+Deployed file: [[file:../lambda-library/lambda-user/private.example.el][lambda-library/lambda-user/private.example.el]]. Edit the blocks here; generated Lisp is kept in Git for ordinary startup and review.
+
+** Keep account and machine choices local
+
+The generated example contains only comments. Copy it once to private.el and uncomment the settings you need. The real private.el is ignored by Git and excluded from every tangle output; rebuilding will never replace it.
+
+The following blocks are consecutive fragments of this source section. Some share an open Lisp form; edit them here and rebuild the whole chapter rather than evaluating a fragment on its own.
+
+#+name: private.example-01-1
+#+begin_src emacs-lisp
+;;; private.example.el --- Example local overrides -*- lexical-binding: t; -*-
+;; Generated from literate/80-maintenance.org; edit the Org source, then tangle.
+
+;; Copy to private.el for account/machine-specific values that should not be committed.
+;; config.el loads private.el after the portable platform variables are defined and
+;; before the later UI/programming modules consume their policy variables.
+
+;; Identity
+;; (setq user-full-name "Your Name"
+;;       user-mail-address "you@example.com")
+
+;; Paths
+;; These variables are already defined when private.el is loaded, so `setopt' is useful.
+;; (setopt starter-project-directory (expand-file-name "~/src/"))
+;; (setopt starter-org-directory (expand-file-name "~/Documents/my-org/"))
+
+;; Terminal
+;; `starter-setup-terminal' is loaded later, so pre-bind its installation root with
+;; `setq' if MSYS2 is not installed at the normal C:/msys64/ location.
+;; (setq starter-msys2-root "D:/Tools/msys64/")
+
+;; Language tooling
+;; Eglot is available manually through SPC l e. Automatic startup and external
+;; language packages are opt-in because their servers/runtimes are platform-owned.
+;; (setq starter-eglot-auto-start-modes '(python-mode python-ts-mode)
+;;       starter-language-packages '(nix racket guile))
+#+end_src
+
+*** Keep account and machine choices local: continued 2
+
+UI preserve these pre-bound values. starter-ui-light-theme 'doom-one-light
+
+#+name: private.example-01-2
+#+begin_src emacs-lisp
+;; UI
+;; `starter-setup-ui' is loaded later, so use `setq' here; its `defcustom' forms will
+;; preserve these pre-bound values.
+;; (setq starter-ui-theme 'doom-dark+
+;;       starter-ui-light-theme 'doom-one-light
+;;       starter-ui-font-family "GoogleSansCode Nerd Font"
+;;       starter-ui-icons 'auto
+;;       starter-ui-nerd-font "Symbols Nerd Font Mono")
+
+;; The primary programming font and the dedicated Nerd Icons symbol font are kept
+;; separate. `starter-ui-font-family' changes only the default face family, preserving
+;; the platform's existing point size. If the family is absent, the starter keeps the
+;; platform default rather than failing startup.
+#+end_src
+
+* starter-setup-literate
+:PROPERTIES:
+:header-args:emacs-lisp: :tangle ../lambda-library/lambda-user/starter-setup-literate.el :eval never :comments no :padline no :mkdirp yes
+:END:
+
+Deployed file: [[file:../lambda-library/lambda-user/starter-setup-literate.el][lambda-library/lambda-user/starter-setup-literate.el]]. Edit the blocks here; generated Lisp is kept in Git for ordinary startup and review.
+
+** Open the reading guide
+
+The path is relative to Lambda's resolved configuration root, so it works from any buffer or working directory.
+
+#+name: starter-setup-literate-01-1
+#+begin_src emacs-lisp
+;;; starter-setup-literate.el --- Edit and build the literate source -*- lexical-binding: t; -*-
+;; Generated from literate/80-maintenance.org; edit the Org source, then tangle.
+;;; Commentary:
+;; Development addition: keep authoring explicit and startup independent of Org.
+;;; Code:
+
+(defun starter-literate-open (&rest _)
+  "Open the literate configuration's reading guide."
+  (interactive)
+  (find-file (expand-file-name "literate/index.org" lem-emacs-dir)))
+#+end_src
+
+** Build in a clean Emacs subprocess
+
+Unsaved Org buffers are rejected before reading files from disk. A separate -Q process uses the bundled Org without loading personal startup; its output is displayed for review. Successful generation still requires a restart to apply configuration changes.
+
+#+name: starter-setup-literate-02-1
+#+begin_src emacs-lisp
+(defun starter-literate--build (write)
+  "Run the isolated literate builder; WRITE selects generation over checking."
+  (let ((source-dir (expand-file-name "literate/" lem-emacs-dir))
+        (output (get-buffer-create "*Emacs-Dots literate build*")))
+    (dolist (buffer (buffer-list))
+      (when-let* ((file (buffer-file-name buffer)))
+        (when (and (file-in-directory-p file source-dir)
+                   (buffer-modified-p buffer))
+          (user-error "Save %s before building the literate configuration" file))))
+    (with-current-buffer output
+      (let ((inhibit-read-only t)) (erase-buffer)))
+    (let ((status
+           (call-process (expand-file-name invocation-name invocation-directory)
+                         nil (list output t) nil
+                         "-Q" "--batch" "-l"
+                         (expand-file-name "tools/tangle.el" lem-emacs-dir)
+                         "--" (if write "--write" "--check"))))
+      (display-buffer output)
+      (unless (equal status 0)
+        (user-error "Literate build failed; see %s" (buffer-name output)))
+      (message (if write
+                   "Lisp regenerated. Restart Emacs to apply configuration changes."
+                 "Literate sources and deployed Lisp agree.")))))
+#+end_src
+
+** Regenerate the deployed Lisp
+
+This is the explicit write operation. The builder stages and validates all declared outputs before copying changed files into the configuration tree.
+
+#+name: starter-setup-literate-03-1
+#+begin_src emacs-lisp
+(defun starter-literate-tangle ()
+  "Regenerate deployed Lisp from saved literate sources."
+  (interactive)
+  (starter-literate--build t))
+#+end_src
+
+** Detect source/output drift
+
+This read-only mode compares staged output with deployed Lisp. It catches edits to generated files and forgotten rebuilds without silently choosing one version.
+
+#+name: starter-setup-literate-04-1
+#+begin_src emacs-lisp
+(defun starter-literate-check ()
+  "Check that deployed Lisp matches saved literate sources without writing it."
+  (interactive)
+  (starter-literate--build nil))
+#+end_src
+
+** Publish the module
+
+The core require/provide protocol records that this file loaded. Later requires can reuse the feature without evaluating the module again.
+
+#+name: starter-setup-literate-05-1
+#+begin_src emacs-lisp
+(provide 'starter-setup-literate)
+;;; starter-setup-literate.el ends here
+#+end_src
+

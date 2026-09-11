@@ -21,6 +21,9 @@
              (expand-file-name file dots-test-root)))
 (copy-directory (expand-file-name "lambda-library" dots-test-source)
                 (expand-file-name "lambda-library" dots-test-root) nil t)
+(dolist (directory '("literate" "tools"))
+  (copy-directory (expand-file-name directory dots-test-source)
+                  (expand-file-name directory dots-test-root) nil t))
 (setq user-emacs-directory (file-name-as-directory dots-test-root)
       default-directory user-emacs-directory
       user-init-file (expand-file-name "init.el" user-emacs-directory)
@@ -55,7 +58,7 @@
                        "Persistent Customize file was not loaded")
       (dots-test-check (string-suffix-p "var/etc/custom.el" custom-file)
                        "Customize file is not in persistent state")
-      (dolist (feature '(config starter-setup-dashboard starter-setup-meow
+      (dolist (feature '(config starter-setup-literate starter-setup-dashboard starter-setup-meow
                         starter-setup-treesit starter-setup-languages
                         starter-setup-terminal starter-setup-org starter-setup-ui))
         (dots-test-check (featurep feature) (format "Missing feature %s" feature)))
@@ -78,6 +81,15 @@
           (run-hooks 'post-command-hook)
           (dots-test-check (eq (key-binding (kbd "?")) #'starter-dashboard-open-cheatsheet)
                            "Dashboard shortcut is hidden by modal editing")
+          (goto-char (point-min))
+          (search-forward "Config")
+          (widget-button-press (1- (point)))
+          (dots-test-check (and (derived-mode-p 'org-mode)
+                                (file-equal-p buffer-file-name
+                                              (expand-file-name "literate/index.org" lem-emacs-dir)))
+                           "Dashboard Config did not open the literate guide")
+          (dashboard-open) (set-buffer dashboard-buffer-name)
+          (run-hooks 'post-command-hook)
           (goto-char (point-min))
           (search-forward "Keys & commands")
           ;; Activate the actual widget, including its callback arguments.

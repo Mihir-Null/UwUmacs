@@ -1,4 +1,5 @@
 ;;; starter-setup-org.el --- Minimal portable Org policy -*- lexical-binding: t; -*-
+;; Generated from literate/70-org.org; edit the Org source, then tangle.
 
 ;;; Commentary:
 ;; Lambda supplies the substantial Org configuration. This module owns only enough
@@ -7,14 +8,11 @@
 ;;; Code:
 
 (require 'starter-platform)
-
 (unless (file-directory-p starter-org-directory)
   (make-directory starter-org-directory t))
-
 (setopt org-directory starter-org-directory
         org-default-notes-file (expand-file-name "inbox.org" starter-org-directory)
         org-agenda-files (list starter-org-directory))
-
 (with-eval-after-load 'org
   (setopt org-log-done 'time
           org-catch-invisible-edits 'show-and-error
@@ -29,6 +27,5 @@
             ("n" "Inbox note" entry
              (file ,org-default-notes-file)
              "* %?\n  %U\n"))))
-
 (provide 'starter-setup-org)
 ;;; starter-setup-org.el ends here
