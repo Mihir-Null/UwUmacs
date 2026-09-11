@@ -40,6 +40,49 @@
   (interactive)
   (call-interactively #'org-agenda))
 
+(defun starter-dashboard-center-lines ()
+  "Center each visible dashboard line using its rendered pixel width.
+Measure the actual buffer so heading display overlays and icon faces count.
+Exclude trailing padding and compensate for leading indentation."
+  (let ((inhibit-read-only t)
+        (inhibit-redisplay t)
+        (buffer (current-buffer)))
+    (save-window-excursion
+      ;; During after-init this buffer may not have been displayed yet.
+      (set-window-buffer (selected-window) buffer)
+      (with-current-buffer buffer
+        (remove-text-properties (point-min) (point-max)
+                                '(line-prefix nil wrap-prefix nil indent-prefix nil))
+        (save-excursion
+          (goto-char (point-min))
+          (while (not (eobp))
+            (let* ((start (line-beginning-position))
+                   (end (line-end-position))
+                   (first (progn (skip-chars-forward " \t" end) (point)))
+                   (last (save-excursion
+                           (goto-char end)
+                           (skip-chars-backward " \t" start)
+                           (point))))
+              (when (< first last)
+                (let* ((width (car (window-text-pixel-size
+                                    (selected-window) start last t)))
+                       (indent (car (window-text-pixel-size
+                                     (selected-window) start first t)))
+                       (offset (/ (+ width indent) 2.0))
+                       (prefix (propertize
+                                " " 'display
+                                `(space :align-to (- center (,offset))))))
+                  (add-text-properties start end
+                                       `(line-prefix ,prefix wrap-prefix ,prefix)))))
+            (forward-line)))))))
+
+(defun starter-dashboard-recenter (&rest _)
+  "Recompute visible dashboard text metrics after a font or theme change."
+  (when-let* ((window (get-buffer-window dashboard-buffer-name t)))
+    (with-selected-window window
+      (with-current-buffer dashboard-buffer-name
+        (starter-dashboard-center-lines)))))
+
 (use-package dashboard
   :ensure t
   :demand t
@@ -77,7 +120,8 @@
                                     dashboard-insert-navigator
                                     dashboard-insert-newline
                                     dashboard-insert-init-info
-                                    dashboard-insert-items)
+                                    dashboard-insert-items
+                                    starter-dashboard-center-lines)
         dashboard-init-info
         (lambda ()
           (format "Emacs %s · ready in %s"
@@ -108,6 +152,10 @@
                       :weight 'semi-bold)
 
   (define-key dashboard-mode-map (kbd "?") #'starter-dashboard-open-cheatsheet)
+
+  (add-hook 'window-setup-hook #'starter-dashboard-recenter 100)
+  (add-hook 'after-setting-font-hook #'starter-dashboard-recenter 100)
+  (add-hook 'lem-after-load-theme-hook #'starter-dashboard-recenter 100)
 
   ;; Skip the home page when Emacs was invoked with a file argument.
   (dashboard-setup-startup-hook))
