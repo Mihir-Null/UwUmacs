@@ -2,6 +2,48 @@
 
 Prepared 2026-09-13. Start here when continuing this project.
 
+## Session update — 2026-09-13, Phase 1 complete
+
+**Phase 1 is done. Do not repeat it.** The alignment review is committed as `5c04812` and recorded in
+[docs/ADRs/alignment-review.md](../ADRs/alignment-review.md). Read that file and the
+[current-state log](../ADRs/implementation-state.md) first; the rest of this handoff remains the standing
+contract except where this section corrects it.
+
+What changed since the original handoff was written:
+
+| Item | Corrected state |
+|---|---|
+| Phase 1 review | **Complete.** Nine findings (F1–F9); execution gate recorded. No structural refactor of the plan was justified. |
+| Central mechanism | **Verified**, not merely asserted. A symbol added to `emulation-mode-map-alists` with an explicit numeric ORDER shadows a genuinely active `meow-keypad` SPC and restores it cleanly on deactivation. |
+| Architecture | Two corrections applied in `5c04812`: the explicit ORDER requirement (section 6) and the accurate `embark-consult` status (section 9). |
+| Graphical baseline | **Unverified.** All 8 graphical tests skip in batch and no runner is committed. The earlier "three GUI tests passing" claim is not reproducible. See F2 and [gui-runner-notes.md](gui-runner-notes.md). |
+| `superpowers` skill | **Was not installed** during the review session, so the review used a plain controller workflow. The user has since installed the plugin in the terminal. Use `superpowers:subagent-driven-development` as originally intended. |
+| Isolated checkout | **User decision: work in the original checkout** (`C:/Users/walnu/.config/emacs-dots`, branch `uwumacs`). The temporary `uwumacs-impl` worktree created during the review has been removed and its branch deleted. This supersedes the worktree instruction in "Verified repository snapshot" below. Because this checkout also serves the live Emacs deployment, keep runtime edits tangled and coherent, and do not leave the tree in a half-regenerated state. |
+| Branch position | `uwumacs` at `5c04812`, one commit **ahead of** `origin/uwumacs` (not pushed; pushing is still unauthorized). |
+
+**Your next action is P00**, carrying these explicit deliverables:
+
+1. The graphical runner (finding F2). [gui-runner-notes.md](gui-runner-notes.md) preserves a working
+   `-Q` prototype, three hazards already paid for, and the one open problem: an `--init-directory` start does
+   not reproduce `verify-config.el`'s module loading. Consider loading the config explicitly inside a
+   graphical Emacs instead.
+2. `tests/uwumacs-test-helper.el` and the temporary-directory fixtures from plan section 2.
+3. The runtime observed-key capture. Three of its data points are already established and need only
+   confirmation at runtime, not rediscovery: `SPC l`'s effective owner is the LSP submenu
+   (`60-programming.org:470` overwrites `vertico-repeat` from `40-editing.org:97`); the only literally
+   unreachable `project-prefix-map` keys are `C-x` (giving `C-x s`) and `C-b`; and both `kind-icon`
+   (vendored `lem-setup-completion.el:555`) and `nerd-icons-corfu` (`starter-setup-ui.el:123`) register Corfu
+   margin formatters.
+4. Record `51c19c1` as the reviewed rollback point. It already exists — do not create a duplicate commit.
+
+**Two gates carried forward.** P02 may not close until its fixtures include the F1 negative control: assert
+`(key-binding (kbd "SPC"))` is `meow-keypad` *before* activating UwUmacs, enter state with
+`(meow--switch-state 'normal)` plus `(should (meow-normal-mode-p))`, and assert restoration after
+deactivation. Calling `(meow-normal-mode 1)` on an already-normal buffer silently deactivates Meow's state
+keymap, which lets the central acceptance test pass while proving nothing. P06 may not close until the
+graphical runner executes both suites with zero skips. P17 must resolve or document F8: this host has only
+Emacs 31.1, so the 30.1 floor has no executable environment.
+
 ## Instructions to the next agent
 
 First review **all plans, changes and relevant documents produced so far** for alignment with the user's intent and likely effectiveness. Verify the claims against code, actual behavior and primary upstream sources. Correct material gaps before dependent implementation. Then begin **subagent-driven development** of the existing P00–P17 roadmap, keeping current state and material decisions in [the ADR folder](../ADRs/README.md). The user has selected this execution method; do not ask them to choose it again.
