@@ -111,13 +111,15 @@ Prototype work done in this session (kept in scratch, not committed) established
 
 1. The runner pattern itself is sound: under `emacs -Q` it detects the display, discovers and runs ERT tests, writes a UTF-8 result and exits only its own process (`EMACS-DOTS-GUI PASS`).
 2. A hang must be assumed. A modal Windows dialog freezes the event loop and every timer with it, so a watchdog timer alone cannot rescue a blocked run. The runner must also disable `use-dialog-box` and `use-file-dialog`, and append per-test progress so a block names the test that caused it.
-3. Isolation must arm before any config code runs. A first attempt appended the package-directory override and install blocker to the end of the copied `early-init.el`; that code was never reached, and the session began downloading packages into the temp root. A wrapper `early-init.el` that arms the override and then loads the real file prevents this (verified: 0 downloads). Even so, an `--init-directory` start did not reproduce normal module loading (`meow` and `which-key` not loaded), unlike `tests/verify-config.el`, which loads `early-init.el` and `init.el` itself and succeeds.
+3. Isolation must arm before any config code runs. A first attempt appended the package-directory override and install blocker to the end of the copied `early-init.el`; that code was never reached, and the session began downloading packages into the temp root. A wrapper `early-init.el` that arms the override and then loads the real file prevents this (verified: 0 downloads). **Corrected by P00:** this bullet originally ended "Even so, an `--init-directory` start did not reproduce normal module loading (`meow` and `which-key` not loaded), unlike `tests/verify-config.el`". That is wrong. An `--init-directory` start does reproduce normal module loading provided the wrapper also advises `package-initialize :before` to re-pin `package-user-dir`, because `early-init.el` recomputes it from `user-emacs-directory` after the wrapper's plain `setq` and before its own `(package-initialize)`. Observed with the advice: `package-activated-list` 144, every module loaded, `meow-global-mode` and `which-key-mode` on. Observed with the advice deleted: nothing activated and roughly a hundred attempted installs. The explicit-load alternative was measured and rejected: it runs `emacs-startup-hook` twice.
 
 No user Emacs process was running at any point. Every instance started here was stopped, all temp roots were removed, and the real `var/elpa` (145 packages) and the working tree were verified unchanged afterwards.
 
 **User impact:** milestone 1 acceptance, frames policy and the physical-hint rendering claims all rest on graphical behavior that currently has no executable evidence.
 
 **Disposition:** P00 builds `tests/gui-setup.el` and `tests/gui-run.el` (or equivalent) using the wrapper isolation above, then re-runs both graphical suites and records explicit results. Until then the graphical baseline is unverified, not passing. **Owner:** P00, then P06. **Verification:** a committed runner reporting 5/5 frame and 3/3 hint tests executed, with zero skips.
+
+**Resolved by P00.** `tests/gui-setup.el`, `tests/gui-run.el` and `tools/run-gui-tests.ps1` are committed; `pwsh tools/run-gui-tests.ps1 -Suite all` reports 5/5 frame and 3/3 hint tests executed with zero skips on an ordinary graphical startup.
 
 ### F3 — Emulation-map ordering verified, with one required correction (Medium)
 
@@ -166,14 +168,23 @@ The kind-icon writer lives in the vendored Lambda tree, which architecture secti
 
 ### F7 — `project-prefix-map` modified keys enumerated (Low)
 
-Exactly two entries are unreachable literally, confirming the architecture's caution with concrete data:
+Exactly two entries carry a real modifier, confirming the architecture's caution with concrete data:
 
 | Key | Binding |
 |---|---|
 | `C-x` | nested keymap, giving `C-x s` for `project-save-some-buffers` |
 | `C-b` | `project-list-buffers` |
 
-All 20 other entries are plain or shift-modified printable keys. P05 can define the literal submenu from this list without re-deriving it.
+**Corrected by P00 from runtime data** (`var/uwumacs-audit/observed-keys.json`, captured in a graphical session). This finding originally said "All **20** other entries are plain or shift-modified". The map has **25** entries: 23 plain or shift-modified, plus those 2 modified ones. And the damage is **4 leaves, not 2**. Because Meow's keypad sends `C-<key>` first at depth two or more, the two modified keys additionally **shadow** their plain neighbours:
+
+| Typed | Intended | What the keypad actually reaches |
+|---|---|---|
+| `SPC p C-b` | — | unreachable: no keypad prefix produces `C-` |
+| `SPC p C-x` | — | unreachable: no keypad prefix produces `C-` |
+| `SPC p b` | `consult-project-buffer` | `project-list-buffers` |
+| `SPC p x` | `project-execute-extended-command` | the `C-x` sub-keymap, so `SPC p x s` runs `project-save-some-buffers` |
+
+The two commands actually lost are **`consult-project-buffer`** and **`project-execute-extended-command`**; neither has another leader path. `lambda-library/lambda-user/keybindings.org` still advertises `SPC p b` as `consult-project-buffer`, which is true of `lem+leader-map` and false of the key as typed. Walking the whole leader tree found 4 damaged leaves in 253 nodes; the rest is clean. The shadowing table is a faithful simulation — `meow--keypad-format-keys` and `meow--keypad-lookup-key` were called directly, not typed at a keyboard. P05 builds the literal project submenu from this corrected list.
 
 ### F8 — The Emacs 30.1 compatibility floor has no executable environment (Medium)
 

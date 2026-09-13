@@ -1,8 +1,14 @@
 # Graphical test runner — prototype and findings
 
-Preserved 2026-09-13 from the Phase 1 review session, before scratch cleanup. This is **unreviewed
+Preserved 2026-09-13 from the Phase 1 review session, before scratch cleanup. This was **unreviewed
 prototype material**, not a committed runner and not evidence of a passing graphical suite. It exists so P00
 does not have to rediscover the hazards below. See [alignment review](../ADRs/alignment-review.md) finding F2.
+
+> **Superseded by P00.** The runner is now committed as `tests/gui-setup.el` (isolated root),
+> `tests/gui-run.el` (in-session executor) and `tools/run-gui-tests.ps1` (parent deadline and cleanup).
+> Run it with `pwsh tools/run-gui-tests.ps1 -Suite all`. Read those files, not the prototypes below, which
+> are kept only as the record of how the hazards were found. Hazard 3 as originally written is **wrong**;
+> it is corrected in place below.
 
 ## Why this is needed
 
@@ -28,13 +34,28 @@ Each of these cost a failed run; they are the substance of this note.
    root (29 entries including `archives/`). A wrapper `early-init.el` that arms the override first and then
    loads the real file as a payload prevents this — verified 0 downloads afterwards.
 
-3. **`--init-directory` does not reproduce `verify-config.el`'s startup.** Even with the wrapper and zero
-   downloads, an `--init-directory` start left `meow` and `which-key` unloaded (`package-alist` empty).
-   `early-init.el:404` does call `(package-initialize)` explicitly, so a `:before` advice there is the right
-   pin point, but the last observed run still did not activate packages. **This is the open problem P00 must
-   finish.** `tests/verify-config.el` succeeds because it sets `user-emacs-directory` itself and then loads
-   `early-init.el` and `init.el` directly — consider driving the GUI session the same way (load the config
-   explicitly inside a graphical Emacs) instead of relying on `--init-directory`.
+3. **CORRECTED BY P00 — `--init-directory` does reproduce a full startup; the missing piece was one advice.**
+   This entry originally read "`--init-directory` does not reproduce `verify-config.el`'s startup … the last
+   observed run still did not activate packages. This is the open problem P00 must finish." That is **wrong**,
+   and so is the suggestion to drive the GUI session by loading the configuration explicitly instead.
+
+   Root cause, established by a differential experiment and then by the committed runner: `early-init.el`
+   recomputes `package-user-dir` from `user-emacs-directory` (line ~397) *after* any plain `setq` in the
+   wrapper and *before* its own `(package-initialize)` (line ~404). The `package-initialize :before` advice —
+   which the prototype below already contains — is the only pin point that survives. Observed with it:
+   `package-alist` 144, `package-activated-list` 144, every module loaded, `meow-global-mode` and
+   `which-key-mode` on. Observed with that single form deleted: `package-activated-list` empty, no module
+   loaded, and roughly a hundred attempted network installs, which is exactly the symptom recorded here.
+
+   The explicit-load alternative was measured and **rejected**: command-line `-l` files are processed in
+   `command-line-1` before Emacs runs `emacs-startup-hook` itself, so a driver that runs the hooks by hand
+   makes `emacs-startup-hook` execute **twice** (observed: 2 versus 1 under `--init-directory`).
+
+   Two further blockers the committed runner handles, which this note did not know about:
+   `dots-frames-magit-status-quit` calls `magit-status` on the configuration root, so the isolated root must
+   be a Git repository with a commit or Magit blocks on a prompt forever; and the session writes into
+   `HOME`/`XDG_CACHE_HOME` (observed: `org-persist` cache entries), so the runner points the home variables
+   at a disposable directory inside the root.
 
 4. **The runner pattern itself is sound.** Under `emacs -Q` the prototype detects the display, discovers ERT
    tests by prefix, runs them, writes a UTF-8 result and exits only its own process:
@@ -200,3 +221,18 @@ $env:EMACS_DOTS_GUI_SELECTOR = '^dots-frames-'
 A committed runner that reports **5/5 frame tests and 3/3 graphical hint tests executed with zero skips**, on
 an ordinary graphical startup, exiting only its own process and leaving the user's `var/` untouched. Anything
 less is recorded as a capability limitation, not as a pass.
+
+**Met.** `pwsh tools/run-gui-tests.ps1 -Suite frames -Repeat 3` and `-Suite hints -Repeat 3` each reported
+three consecutive `EMACS-DOTS-GUI PASS` runs — 5/5 and 3/3, `discovered` equal to the expected count, zero
+skips, zero invariant violations, zero package operations, zero writes into the real `var/`.
+
+## Baseline checkpoint
+
+`51c19c1` ("feat: show physical Meow keys in command hints") is the **reviewed hint rollback point**. It
+already exists; no duplicate checkpoint commit was created. Verified at P00 time: of the eight files that
+commit touched, seven are byte-identical in the working tree (`git diff --stat 51c19c1 -- <paths>` empty) and
+only `tests/key-hints-gui-tests.el` differs, by the P00 timing-race hardening, which changed no assertion.
+The independent half of the gate is `docs/uwumacs/validate-plan.py --check-source-snapshot`, whose
+`source_hashes` cover 31 files — of the eight above, only
+`lambda-library/lambda-user/starter-setup-meow.el` is among them, so the two halves are both needed and
+neither subsumes the other. Never re-record those digests from `git show`: they are CRLF worktree digests.
