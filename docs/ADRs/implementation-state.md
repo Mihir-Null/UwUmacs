@@ -6,15 +6,15 @@ Updated 2026-09-13 after the user resumed development and authorized GitHub sync
 
 | Field | Recorded state |
 |---|---|
-| Phase | Phase 1 and P00 complete; P01 resumed |
+| Phase | Phase 1 and P00–P01 complete; P02 next |
 | Repository / branch | `C:/Users/walnu/.config/emacs-dots/var/worktrees/uwumacs`, `uwumacs` |
 | Reviewed P00 code | `21dbebc..ad49657`; all eight scoped fix findings addressed, no new Critical/Important breakage per the recorded re-review |
 | Runtime baseline | Frames in `1f70a93`; physical hints in `51c19c1`; no UwUmacs literal runtime exists |
 | Working checkout | Isolated linked worktree; deployed main checkout remains separate |
-| Active roadmap task | P01 native maps and customization |
+| Active roadmap task | P02 state activation and localleaders |
 | Integration acceptance | All 194 tickets remain pending; P00 fixture completion is not adapter acceptance |
 | Review evidence | Phase 1 in [alignment-review.md](alignment-review.md); P00 review and findings summarized below |
-| Next action | Implement and independently review P01, then continue the ordered roadmap and sync reviewed commits to GitHub |
+| Next action | Implement P02 using the reviewed P01 interfaces, then continue P03–P17 with review and GitHub sync |
 
 ### P00 evidence inspected
 
@@ -45,7 +45,7 @@ The reviewed P00 workflow selected an isolated GUI root with a wrapper early-ini
 | Task | Deliverable | Status |
 |---|---|---|
 | P00 | Baseline verification and fixtures | complete — `21dbebc..ad49657`, review clean |
-| P01 | Native maps and customization | pending |
+| P01 | Native maps and customization | complete — `e703f7e..075fb53`, review clean |
 | P02 | State activation and localleaders | pending |
 | P03 | Registry and lifecycle | pending |
 | P04 | Discovery and annotations | pending |
@@ -66,6 +66,8 @@ The reviewed P00 workflow selected an isolated GUI root with a wrapper early-ini
 Keep this table synchronized with plan checkboxes and the per-ticket progress file when created. A capability limitation or parked review finding is not completed acceptance.
 
 ## Execution log
+
+- 2026-09-13 — P01 complete, implementation `73d403f`, reviewed metadata fix `075fb53`; scoped re-review found both findings addressed and no new breakage. Focused ERT 13/13; tangle 20 matching outputs; strict compilation 3/3; inert isolated core load and dependency scan passed. Equivalent native events now share metadata identity, and explicit empty metadata stays empty. P01 builds native maps/customization without enabling the host. No integration ticket is marked accepted merely by the foundation. Updated ADR-0003/0005/0009/0019 implementation descriptions and reconciled historical ADR-0036/0037 hold text. User explicitly selected full P01–P17 scope in this run. Next: P02; add exactly one successful Customize refresh, genuine active-Meow restoration tests, isolated localleaders and actual graphical state evidence. Emacs 30.1 and Linux dependencies are being provisioned separately; no compatibility execution is claimed yet.
 
 - 2026-09-13 — User resumed development and explicitly authorized GitHub sync for all commits. Reconciled branch `uwumacs` at `9913dbc` with `origin/uwumacs` (equal), created the isolated linked worktree, and verified the documentation census gate, tangle (17 matching outputs), and helper tests (10/10). Read-only architecture review found no need to restructure P01–P06; native-map composition, transactional validation, genuine Meow-state fixtures and effective lookup remain the gates. The named architecture-first pair-programming skill was unavailable after bounded local search; architecture review uses the tracked spec/ADRs and GNU/Meow primary sources. Next: P01. Earlier pause entries below are historical.
 

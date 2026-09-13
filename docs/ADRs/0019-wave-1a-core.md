@@ -3,7 +3,7 @@
 - Status: **selected**
 - Origin: **agent-selected**
 - Recorded: 2026-09-13 (backfilled from the cited evidence; not an invented original decision date)
-- Implementation: **planned**
+- Implementation: **P01 files-map foundation implemented; individual Wave 1A acceptance pending**
 - Decision maker: user for explicitly stated product requirements; Codex for the agent-selected design details described below. Inherited choices retain unknown historical authorship.
 
 ## Context

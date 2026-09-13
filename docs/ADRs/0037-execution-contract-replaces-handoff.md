@@ -3,7 +3,7 @@
 - Status: **accepted**
 - Origin: **user-request-with-agent-record-layout**
 - Recorded: 2026-09-13
-- Implementation: **migration complete; handoff removed and every reference re-pointed**
+- Implementation: **handoff migration complete; execution resumed by the user on 2026-09-13**
 - Decision maker: user instructed the deletion of the consumed handoff; Codex selected the destination record and the migration boundary.
 
 ## Context

@@ -1,6 +1,6 @@
 # UwUmacs :3 — architecture contract
 
-Status: design for implementation; no UwUmacs runtime has been installed by this planning change.
+Status: implementation in progress. P01 native maps/customization exist; the host is not yet activated. See the tracked implementation-state log for reviewed revisions and later gates.
 Date: 2026-09-13. Development branch: `uwumacs`.
 Baseline: `1f70a93ff5e18b2c4b2fe3b6683ae4bc27243108`, plus the physical-hint implementation committed as `51c19c1` (originally carried from `feat/meow-physical-key-hints`).
 
@@ -46,7 +46,7 @@ Decision context, alternatives, provenance and consequences now live in the [ded
 
 Decision records: [ADR-0009](../../ADRs/0009-literate-files-and-modules.md).
 
-All listed Lisp outputs are new **planned** files in `lambda-library/lambda-user/`.
+The Lisp outputs live in `lambda-library/lambda-user/`. P01 has implemented `uwumacs.el`, `uwumacs-maps.el` and the initial files binding in `uwumacs-integration-core.el`; remaining components are planned until recorded in the implementation-state log.
 
 | File | Single responsibility |
 |---|---|
@@ -85,7 +85,7 @@ Existing composition changes belong in `20-user-policy.org`; Meow grammar stays 
 
 Decision records: [ADR-0005](../../ADRs/0005-composition-and-conflicts.md), [ADR-0006](../../ADRs/0006-integration-registry.md).
 
-The following signatures are contracts for implementation, not APIs already present.
+The following signatures are implementation contracts. P01 customization and public maps are present; state, registry and discovery APIs remain pending their tasks.
 
 | Interface | Contract |
 |---|---|

@@ -198,14 +198,16 @@ ADR-0008 and the global constraints set a 30.1 minimum, and P17 requires running
 
 `C-c C-SPC` and `C-c SPC` are both unbound in vanilla Emacs 31.1. Note that Meow's default leader is `mode-specific-map`, the global `C-c` map; the current config overrides this with `(add-to-list 'meow-keymap-alist (cons 'leader lem+leader-map))` in `starter-setup-meow.el:25`, so the alt leader does not collide with the host's leader contents. P05 should keep that override in mind when retiring `meow-leader-define-key` writers.
 
-## 6. Acknowledged limitations of this review
+## 6. Acknowledged limitations of this historical review
 
 - No graphical test was executed (F2). Frames and rendered-hint behavior remain unverified in this session.
 - No Emacs 30.1, Linux, or daemon/terminal environment was exercised (F8).
 - Probe scripts were run in scratch and are not committed. Their results are reproduced above rather than being re-runnable from the repository until P00 lands fixtures.
 - The catalogue's 194 tickets were checked for structural coverage via the validator, not individually re-derived against each installed package's source.
 
-## 7. Execution gate
+## 7. Historical Phase 1 execution gate
+
+P00 subsequently completed the graphical runner and genuine-state fixture, as recorded in [implementation-state.md](implementation-state.md). The table below is the original Phase 1 gate, retained as review history; it is not the current checkpoint.
 
 | Prerequisite | State |
 |---|---|

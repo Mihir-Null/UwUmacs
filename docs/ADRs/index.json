@@ -37,7 +37,7 @@
       "status": "selected",
       "origin": "agent-selected",
       "recorded": "2026-09-13",
-      "implementation": "planned",
+      "implementation": "P01 native maps implemented; state activation and host migration pending",
       "tasks": [
         "P01",
         "P02",
@@ -65,7 +65,7 @@
       "status": "selected",
       "origin": "agent-selected",
       "recorded": "2026-09-13",
-      "implementation": "planned",
+      "implementation": "P01 transactional map composition implemented; localleader and registry lifecycle pending",
       "tasks": [
         "P01",
         "P02",
@@ -124,7 +124,7 @@
       "status": "selected",
       "origin": "agent-selected",
       "recorded": "2026-09-13",
-      "implementation": "planned",
+      "implementation": "P01 literate core and three flat outputs implemented; remaining modules pending",
       "tasks": [
         "P01",
         "P04",
@@ -286,7 +286,7 @@
       "status": "selected",
       "origin": "agent-selected",
       "recorded": "2026-09-13",
-      "implementation": "planned",
+      "implementation": "P01 files-map foundation implemented; individual Wave 1A acceptance pending",
       "tasks": [
         "P01"
       ],
@@ -703,7 +703,7 @@
       "status": "accepted",
       "origin": "user-workflow-with-agent-record-layout",
       "recorded": "2026-09-13",
-      "implementation": "Phase 1 and P00 complete; entry point replaced by ADR-0037; P01 onward paused",
+      "implementation": "Phase 1 and P00 complete; P01 resumed under the current execution contract",
       "tasks": [
         "P00",
         "P01",
@@ -733,7 +733,7 @@
       "status": "accepted",
       "origin": "user-request-with-agent-record-layout",
       "recorded": "2026-09-13",
-      "implementation": "migration complete; handoff removed and every reference re-pointed",
+      "implementation": "handoff migration complete; execution resumed by the user on 2026-09-13",
       "tasks": [],
       "integration_ids": []
     }

@@ -3,7 +3,7 @@
 - Status: **accepted**
 - Origin: **user-workflow-with-agent-record-layout**
 - Recorded: 2026-09-13
-- Implementation: **Phase 1 and P00 complete; entry point replaced by ADR-0037; P01 onward paused**
+- Implementation: **Phase 1 and P00 complete; P01 resumed under the current execution contract**
 - Decision maker: user selected review-first subagent development and ADR logging; Codex selected the linked record layout and operational detail.
 
 Entry-point clause superseded by [ADR-0037](0037-execution-contract-replaces-handoff.md). The review-first workflow, refactor authority and record layout remain in force. Current user instruction pauses P01 onward.
