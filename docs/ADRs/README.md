@@ -2,6 +2,8 @@
 
 This folder is the dedicated decision log for UwUmacs and its relevant existing Emacs-Dots foundation. It backfills the agent-selected choices in the architecture/roadmap, all 194 individual integration contracts, the implemented frame/hint work, and the documented host boundaries already relied on by the design. It does not invent historical authorship or claim to reconstruct undocumented decisions in every vendored package.
 
+Start or resume implementation through the [handoff](../uwumacs/HANDOFF.md) and [current-state log](implementation-state.md). The Phase 1 findings and execution gate are recorded in the [alignment review](alignment-review.md). The user has authorized review-first subagent development, including plan changes and significant refactors justified by the review; [ADR-0036](0036-review-first-development-handoff.md) records the scope. Execution state stays in this folder alongside decision records.
+
 ## Authority and status
 
 - **accepted**: an explicit user requirement, implemented choice, or documented inherited policy. Read Origin; this does not mean the user personally selected every technical detail.
@@ -61,6 +63,7 @@ The structure follows the [Nygard ADR format](https://adr.github.io/adr-template
 | [ADR-0033](0033-inherited-windows-terminal.md) | Retain child-scoped Windows terminal adaptation | accepted | inherited-documented-policy | existing host policy |
 | [ADR-0034](0034-inherited-language-tooling.md) | Retain pinned grammar recipes and explicit language tooling | accepted | inherited-documented-policy | existing host policy |
 | [ADR-0035](0035-inherited-org-policy.md) | Retain the minimal Org storage boundary | accepted | inherited-documented-policy | existing host policy |
+| [ADR-0036](0036-review-first-development-handoff.md) | Review alignment before subagent development and retain execution state | accepted | user-workflow-with-agent-record-layout | handoff and initial state prepared; review and execution pending |
 
 ## Coverage
 

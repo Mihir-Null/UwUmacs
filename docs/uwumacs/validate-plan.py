@@ -89,7 +89,8 @@ assert [r['text'] for r in adr_index['constraints']] == [
 assert all(r['adr'] in adrs for r in adr_index['constraints'])
 
 for file in (spec, plan, catalogue, here / 'README.md', root / 'AGENTS.md',
-             adr_dir / 'README.md', *(adr_dir / r['file'] for r in adrs.values())):
+             adr_dir / 'README.md', adr_dir / 'implementation-state.md', here / 'HANDOFF.md',
+             *(adr_dir / r['file'] for r in adrs.values())):
     text = file.read_text(encoding='utf-8')
     assert not re.search(r'\bTBD\b|fill in details|implement later', text, re.I), file
     for link in re.findall(r'\[[^\]\n]*\]\(([^)\n]+)\)', text):

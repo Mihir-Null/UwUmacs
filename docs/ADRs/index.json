@@ -695,6 +695,36 @@
       "implementation": "existing host policy",
       "tasks": [],
       "integration_ids": []
+    },
+    {
+      "id": "ADR-0036",
+      "file": "0036-review-first-development-handoff.md",
+      "title": "Review alignment before subagent development and retain execution state",
+      "status": "accepted",
+      "origin": "user-workflow-with-agent-record-layout",
+      "recorded": "2026-09-13",
+      "implementation": "handoff and initial state log prepared; review and roadmap execution pending",
+      "tasks": [
+        "P00",
+        "P01",
+        "P02",
+        "P03",
+        "P04",
+        "P05",
+        "P06",
+        "P07",
+        "P08",
+        "P09",
+        "P10",
+        "P11",
+        "P12",
+        "P13",
+        "P14",
+        "P15",
+        "P16",
+        "P17"
+      ],
+      "integration_ids": []
     }
   ],
   "architecture_sections": {

@@ -2,6 +2,8 @@
 
 Status: architecture and roadmap prepared; runtime implementation starts at P00. Work is on branch `uwumacs`, based on `1f70a93`, with the physical-key-hint implementation committed separately as `51c19c1`.
 
+For the next implementation agent: read the [review-first handoff](HANDOFF.md) and [current-state log](../ADRs/implementation-state.md). The handoff authorizes review-driven plan corrections and significant refactors, then subagent-driven execution.
+
 Read the [dedicated ADRs](../ADRs/README.md) for decision provenance, alternatives and consequences.
 
 Read the implementation documents in this order:

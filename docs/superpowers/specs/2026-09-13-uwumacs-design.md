@@ -142,7 +142,7 @@ Lazy readiness states are `disabled`, `pending`, `ready`, `unavailable` and `fai
 
 Decision records: [ADR-0003](../../ADRs/0003-native-literal-dispatch.md), [ADR-0004](../../ADRs/0004-owned-state-layer.md), [ADR-0005](../../ADRs/0005-composition-and-conflicts.md).
 
-1. Register one symbol, `uwumacs--emulation-alist`, ahead of Meow's ordinary state entries in `emulation-mode-map-alists`. Do not alter terminal-local overriding maps.
+1. Register one symbol, `uwumacs--emulation-alist`, ahead of Meow's ordinary state entries in `emulation-mode-map-alists`. Meow adds its three state entries as literal alists with `add-to-ordered-list` and **no ORDER argument**, so they sort to the end of that list; UwUmacs must therefore pass an explicit numeric ORDER. An unordered `add-to-list` would land after Meow and be shadowed. Do not alter terminal-local overriding maps. Verified against Meow 20260714.1200 in [the alignment review](../../ADRs/alignment-review.md) finding F3.
 2. Keep that symbol's value and active-state flags buffer-local. Maps for Normal, Motion and the modified fallback are built from UwUmacs-owned data.
 3. Observe Meow state/mode hooks and major-mode changes. Refresh eligibility after state changes; do not replace Meow state commands or call a state minor-mode function repeatedly to force its existing state.
 4. Disable literal leader maps in Insert, minibuffers, terminal character input and unsupported Meow states. Beacon is excluded initially; its keypad/macro workflow remains available explicitly.
@@ -218,7 +218,7 @@ Decision records: [ADR-0009](../../ADRs/0009-literate-files-and-modules.md), [AD
 | `tests/key-hints-*.el` | Preserve as baseline evidence, then replace translation-specific cases with native-lookup and discovery cases. |
 | `literate/index.org`, `keybindings.org` | Link architecture, live help and the key migration table. |
 
-Current source findings requiring explicit tickets: `SPC l` has two writers with the LSP submenu taking precedence; both kind-icon and nerd-icons-corfu add formatters; `embark-consult` is declared but unavailable; native project prefixes must not be imported blindly. These are planning findings, not claims of completed fixes.
+Current source findings requiring explicit tickets, each re-verified in [the alignment review](../../ADRs/alignment-review.md): `SPC l` has two writers with the LSP submenu taking precedence (F6); both kind-icon and nerd-icons-corfu add formatters, the kind-icon writer living in the vendored `lambda-setup` tree so the duplicate must be resolved at runtime (F5); `embark-consult` is **not declared anywhere** — it is only assumed to install transitively by a comment in `10-bootstrap.org`, and it is absent from `var/elpa` (F4); native project prefixes must not be imported blindly, the two unreachable modified keys being `C-x` (giving `C-x s`) and `C-b` (F7). These are planning findings, not claims of completed fixes.
 
 ## 10. Verification and release gates
 
