@@ -3,8 +3,10 @@
 - Status: **accepted**
 - Origin: **user-workflow-with-agent-record-layout**
 - Recorded: 2026-09-13
-- Implementation: **handoff and initial state log prepared; review and roadmap execution pending**
+- Implementation: **Phase 1 and P00 complete; entry point replaced by ADR-0037; P01 onward paused**
 - Decision maker: user selected review-first subagent development and ADR logging; Codex selected the linked record layout and operational detail.
+
+Entry-point clause superseded by [ADR-0037](0037-execution-contract-replaces-handoff.md). The review-first workflow, refactor authority and record layout remain in force. Current user instruction pauses P01 onward.
 
 ## Context
 
@@ -12,7 +14,7 @@ The user requested a handoff directing the next agent to review all plans, chang
 
 ## Decision
 
-Use the [implementation handoff](../uwumacs/HANDOFF.md) as the entry point. Require an evidence-based alignment review before dependent implementation, then execute the existing P00–P17 roadmap using bounded implementer tasks and independent review. Keep a tracked current-state log in docs/ADRs/implementation-state.md and create docs/ADRs/alignment-review.md during the review. Preserve numbered ADRs for material decisions; synchronize their implementation evidence with the existing per-ticket progress format and plan checkboxes. Scratch subagent ledgers supplement these tracked records.
+Use the [retired handoff successor](execution-contract.md) as the entry point. Require an evidence-based alignment review before dependent implementation, then execute the existing P00–P17 roadmap using bounded implementer tasks and independent review. Keep a tracked current-state log in docs/ADRs/implementation-state.md and create docs/ADRs/alignment-review.md during the review. Preserve numbered ADRs for material decisions; synchronize their implementation evidence with the existing per-ticket progress format and plan checkboxes. Scratch subagent ledgers supplement these tracked records.
 
 The controller serializes shared-file work and documentation reconciliation. Review findings may correct agent-selected choices with recorded evidence; the review is not a reason to ask again for the already-requested implementation. The user subsequently explicitly authorized changes to the plan and significant structural or other refactors when the review finds them necessary. Earlier agent-selected architecture and task order may therefore be revised; preserve user goals, enabled scope and original-to-revised task coverage. Record the justification, alternatives, migration/rollback implications and verification, supersede affected decisions where needed, and synchronize the plan before dependent implementation. Refactor size alone does not require renewed approval. Preserve milestone acceptance outcomes and report capability limitations honestly.
 
@@ -26,4 +28,4 @@ Current state and decisions remain together under the user-selected ADR folder, 
 
 ## Provenance and implementation references
 
-User request of 2026-09-13: prepare a handoff asking the next agent first to review alignment and efficacy, then begin subagent-driven roadmap development and log current state and decisions in the ADRs; followed by explicit authorization to revise the plan and perform significant structural or other refactors when review establishes a need. See [handoff](../uwumacs/HANDOFF.md), [initial state](implementation-state.md), [roadmap](../superpowers/plans/2026-09-13-uwumacs.md) and [ADR-0001](0001-record-decisions-and-provenance.md). The separation of decision rationale from execution evidence extends the existing local policy; [ADR templates](https://adr.github.io/adr-templates/) inform the record structure, not a claim of consensus on this workflow.
+User request of 2026-09-13: prepare a handoff asking the next agent first to review alignment and efficacy, then begin subagent-driven roadmap development and log current state and decisions in the ADRs; followed by explicit authorization to revise the plan and perform significant structural or other refactors when review establishes a need. See [execution contract](execution-contract.md), [initial state](implementation-state.md), [roadmap](../superpowers/plans/2026-09-13-uwumacs.md) and [ADR-0001](0001-record-decisions-and-provenance.md). The separation of decision rationale from execution evidence extends the existing local policy; [ADR templates](https://adr.github.io/adr-templates/) inform the record structure, not a claim of consensus on this workflow.

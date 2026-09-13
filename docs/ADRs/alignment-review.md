@@ -1,6 +1,8 @@
 # UwUmacs Phase 1 alignment and efficacy review
 
-Performed 2026-09-13 by the resuming agent, before any roadmap implementation. This tracked file is the Phase 1 evidence record required by the [handoff](../uwumacs/HANDOFF.md) and [ADR-0036](0036-review-first-development-handoff.md). It is not a numbered architectural decision.
+Performed 2026-09-13 by the resuming agent, before any roadmap implementation. This tracked file is the Phase 1 evidence record required by the [execution contract](execution-contract.md) and [ADR-0036](0036-review-first-development-handoff.md). It is not a numbered architectural decision.
+
+Later disposition: P00 is now complete; F2 is resolved and the F1 fixture control exists. The original review below remains dated evidence; use [current state](implementation-state.md) for active gates. P01 onward is paused by the user.
 
 ## 1. Scope, environment and disposition
 

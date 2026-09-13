@@ -703,7 +703,7 @@
       "status": "accepted",
       "origin": "user-workflow-with-agent-record-layout",
       "recorded": "2026-09-13",
-      "implementation": "handoff and initial state log prepared; review and roadmap execution pending",
+      "implementation": "Phase 1 and P00 complete; entry point replaced by ADR-0037; P01 onward paused",
       "tasks": [
         "P00",
         "P01",
@@ -724,6 +724,17 @@
         "P16",
         "P17"
       ],
+      "integration_ids": []
+    },
+    {
+      "id": "ADR-0037",
+      "file": "0037-execution-contract-replaces-handoff.md",
+      "title": "Replace the consumed handoff with a standing execution contract",
+      "status": "accepted",
+      "origin": "user-request-with-agent-record-layout",
+      "recorded": "2026-09-13",
+      "implementation": "migration complete; handoff removed and every reference re-pointed",
+      "tasks": [],
       "integration_ids": []
     }
   ],
