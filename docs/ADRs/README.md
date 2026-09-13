@@ -30,13 +30,13 @@ The structure follows the [Nygard ADR format](https://adr.github.io/adr-template
 |---|---|---|---|---|
 | [ADR-0001](0001-record-decisions-and-provenance.md) | Record material decisions with explicit provenance | accepted | user-request-with-agent-format | documentation implemented |
 | [ADR-0002](0002-meow-interaction-layer.md) | Keep Meow as the editing engine and build an interaction layer | selected | user-direction-with-agent-design | planned |
-| [ADR-0003](0003-native-literal-dispatch.md) | Use native literal prefix lookup | selected | agent-selected | P01 native maps implemented; state activation and host migration pending |
-| [ADR-0004](0004-owned-state-layer.md) | Own a reversible state-aware emulation layer | selected | agent-selected | planned |
-| [ADR-0005](0005-composition-and-conflicts.md) | Compose localleaders and reject ambiguous defaults | selected | agent-selected | P01 transactional map composition implemented; localleader and registry lifecycle pending |
+| [ADR-0003](0003-native-literal-dispatch.md) | Use native literal prefix lookup | selected | agent-selected | P01-P02 native maps and activation implemented; host migration pending |
+| [ADR-0004](0004-owned-state-layer.md) | Own a reversible state-aware emulation layer | selected | agent-selected | P02 owned activation and buffer lifecycle implemented |
+| [ADR-0005](0005-composition-and-conflicts.md) | Compose localleaders and reject ambiguous defaults | selected | agent-selected | P01-P02 transactional maps and localleaders implemented; registry lifecycle pending |
 | [ADR-0006](0006-integration-registry.md) | Use a small lazy integration registry | selected | agent-selected | planned |
 | [ADR-0007](0007-discovery-from-effective-maps.md) | Derive discovery from effective executable maps | selected | agent-selected | planned |
 | [ADR-0008](0008-compatibility-floor.md) | Select a core runtime floor and explicit test targets | selected | agent-selected | planned |
-| [ADR-0009](0009-literate-files-and-modules.md) | Keep flat generated outputs and focused modules | selected | agent-selected | P01 literate core and three flat outputs implemented; remaining modules pending |
+| [ADR-0009](0009-literate-files-and-modules.md) | Keep flat generated outputs and focused modules | selected | agent-selected | P01-P02 literate core and four flat outputs implemented; remaining modules pending |
 | [ADR-0010](0010-host-boundary.md) | Preserve host policy behind a temporary Lambda bridge | selected | agent-selected-with-inherited-constraints | planned |
 | [ADR-0011](0011-key-vocabulary.md) | Preserve useful keys and make collisions explicit | selected | agent-selected | planned |
 | [ADR-0012](0012-branding.md) | Use the user-selected :3 identity with optional presentation | selected | user-brand-with-agent-presentation | planned |

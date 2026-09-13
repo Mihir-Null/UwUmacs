@@ -85,7 +85,7 @@ Existing composition changes belong in `20-user-policy.org`; Meow grammar stays 
 
 Decision records: [ADR-0005](../../ADRs/0005-composition-and-conflicts.md), [ADR-0006](../../ADRs/0006-integration-registry.md).
 
-The following signatures are implementation contracts. P01 customization and public maps are present; state, registry and discovery APIs remain pending their tasks.
+The following signatures are implementation contracts. P01 customization/maps and P02 state/localleader APIs are present; registry and discovery APIs remain pending their tasks.
 
 | Interface | Contract |
 |---|---|
@@ -97,7 +97,9 @@ The following signatures are implementation contracts. P01 customization and pub
 | `uwumacs-leader-map` | Public base prefix map. Commands/submaps are ordinary Emacs bindings. |
 | `uwumacs-user-leader-map` | Public override map composed above base and adapter leader bindings. |
 | `uwumacs-user-state-maps` | Alist from Normal/Motion state symbols to user maps. |
+| `uwumacs-localleader-map` (variable) | Buffer-owned user localleader overrides; reset by major-mode changes. |
 | `(uwumacs-localleader-map &optional BUFFER)` | Return the effective composed localleader map for BUFFER; never mutate another buffer's map. |
+| `uwumacs-map-context-function` | Optional pure current-buffer provider of P01 sources under `:leader-sources`, `:localleader-sources`, and Normal/Motion `:state-sources`; P03 supplies readiness selection. |
 | `(uwumacs-register-integration ID &rest SPEC)` | Validate/replace descriptor data and return ID. Registration never installs a package. |
 | `(uwumacs-enable-integration ID)` | Enable a registered ID and its declared selected dependencies; return status symbol. |
 | `(uwumacs-disable-integration ID)` | Remove owned effects. Refuse while enabled dependants require ID, naming those dependants. |
@@ -150,7 +152,7 @@ Decision records: [ADR-0003](../../ADRs/0003-native-literal-dispatch.md), [ADR-0
 6. Compose a buffer-local leader root, with its localleader child computed for that buffer. Bind the literal and modified leader to that same effective map. Do not implement localleader using a function that reads another key loop.
 7. On disable, remove only the owned alist entry, hooks, named advice and cleanup effects. Do not restore an entire old package map over subsequent user changes.
 
-Conflicting non-user bindings at the same specificity are configuration errors. Validation names both owners and retains the last valid map set. No silent last-writer-wins behavior. User maps intentionally override defaults without error.
+Conflicting non-user bindings at the same specificity are configuration errors. Validation names both owners and retains the last valid map set. No silent last-writer-wins behavior. User maps intentionally override defaults without error, except the reserved localleader suffix: put localleader overrides in the buffer-local user localleader map. P02 builds all selected buffer candidates before committing any; failed Customize candidates preserve prior option values and maps. See ADR-0004 and ADR-0005 for the conservative terminal exclusions and concrete provider seam.
 
 Temporary input has higher authority. Transient, isearch, query-replace, completion and process input fixtures must prove that ordinary input and cancellation remain usable. Text/overlay keymaps can also affect lookup; discovery uses effective maps in the actual context rather than assuming the emulation layer always wins.
 

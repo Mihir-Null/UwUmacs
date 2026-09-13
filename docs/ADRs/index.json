@@ -37,7 +37,7 @@
       "status": "selected",
       "origin": "agent-selected",
       "recorded": "2026-09-13",
-      "implementation": "P01 native maps implemented; state activation and host migration pending",
+      "implementation": "P01-P02 native maps and activation implemented; host migration pending",
       "tasks": [
         "P01",
         "P02",
@@ -52,7 +52,7 @@
       "status": "selected",
       "origin": "agent-selected",
       "recorded": "2026-09-13",
-      "implementation": "planned",
+      "implementation": "P02 owned activation and buffer lifecycle implemented",
       "tasks": [
         "P02"
       ],
@@ -65,7 +65,7 @@
       "status": "selected",
       "origin": "agent-selected",
       "recorded": "2026-09-13",
-      "implementation": "P01 transactional map composition implemented; localleader and registry lifecycle pending",
+      "implementation": "P01-P02 transactional maps and localleaders implemented; registry lifecycle pending",
       "tasks": [
         "P01",
         "P02",
@@ -124,7 +124,7 @@
       "status": "selected",
       "origin": "agent-selected",
       "recorded": "2026-09-13",
-      "implementation": "P01 literate core and three flat outputs implemented; remaining modules pending",
+      "implementation": "P01-P02 literate core and four flat outputs implemented; remaining modules pending",
       "tasks": [
         "P01",
         "P04",

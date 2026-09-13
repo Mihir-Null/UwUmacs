@@ -3,7 +3,7 @@
 - Status: **selected**
 - Origin: **agent-selected**
 - Recorded: 2026-09-13 (backfilled from the cited evidence; not an invented original decision date)
-- Implementation: **P01 native maps implemented; state activation and host migration pending**
+- Implementation: **P01-P02 native maps and activation implemented; host migration pending**
 - Decision maker: user for explicitly stated product requirements; Codex for the agent-selected design details described below. Inherited choices retain unknown historical authorship.
 
 ## Context

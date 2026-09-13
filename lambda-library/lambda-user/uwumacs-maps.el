@@ -7,6 +7,9 @@
 (require 'seq)
 (require 'subr-x)
 
+(declare-function uwumacs--prepare-buffers "uwumacs-state" (buffers leader localleader alternate))
+(declare-function uwumacs--commit-buffers "uwumacs-state" (candidates))
+
 (defconst uwumacs--prefix-default-values
   '((uwumacs-leader-key . "SPC")
     (uwumacs-localleader-key . "m")
@@ -61,7 +64,14 @@
                        value
                      (uwumacs--prefix-value 'uwumacs-leader-alt-key))))
     (uwumacs--validate-prefix-values leader localleader alternate)
-    (set-default symbol value)))
+    (let ((candidates
+           (when (fboundp 'uwumacs--prepare-buffers)
+             (uwumacs--prepare-buffers
+              (if (bound-and-true-p uwumacs-mode) (buffer-list) (list (current-buffer)))
+              leader localleader alternate))))
+      (set-default symbol value)
+      (when (and candidates (bound-and-true-p uwumacs-mode))
+        (uwumacs--commit-buffers candidates)))))
 
 (defcustom uwumacs-leader-key "SPC"
   "Literal leader key used in eligible Normal and Motion buffers."

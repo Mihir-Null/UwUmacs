@@ -205,3 +205,12 @@ report must be machine-readable with its capture block attached."
       (should (equal (plist-get report :errors) [])))))
 
 (provide 'uwumacs-runner-tests)
+
+(ert-deftest uwumacs-runner-explicit-missing-packages-fails-before-spawn ()
+  (let ((missing (expand-file-name "missing-p02-packages" temporary-file-directory)))
+    (with-temp-buffer
+      (should-not
+       (zerop (call-process "pwsh" nil t nil "-NoProfile" "-File"
+                            (expand-file-name "tools/run-gui-tests.ps1" uwumacs-test-source-directory)
+                            "-Suite" "state" "-Packages" missing)))
+      (should (string-match-p "No package directory at" (buffer-string))))))

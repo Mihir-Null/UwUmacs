@@ -41,29 +41,32 @@
 #>
 [CmdletBinding()]
 param(
-    [ValidateSet('frames', 'hints', 'audit', 'all')]
+    [ValidateSet('frames', 'hints', 'audit', 'state', 'all')]
     [string]$Suite = 'all',
     [int]$Repeat = 1,
     [int]$TimeoutSeconds = 240,
     [string]$Emacs = 'C:/Program Files/Emacs/emacs-31.1/bin/emacs.exe',
+    [string]$Packages = $env:EMACS_DOTS_TEST_PACKAGES,
     [switch]$KeepRoot
 )
 
 $ErrorActionPreference = 'Stop'
 $repository = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path -replace '\\', '/'
-$packages = "$repository/var/elpa"
+if (-not $Packages) { $Packages = "$repository/var/elpa" }
 $reports = "$repository/var/uwumacs-audit/runs"
 
 if (-not (Test-Path $Emacs)) { throw "No Emacs at $Emacs" }
-if (-not (Test-Path $packages)) { throw "No package directory at $packages" }
+if (-not (Test-Path -LiteralPath $Packages -PathType Container)) { throw "No package directory at $packages" }
+$Packages = (Resolve-Path -LiteralPath $Packages).Path -replace '\\', '/'
 New-Item -ItemType Directory -Force -Path $reports | Out-Null
 
 $Suites = @{
     frames = @{ Tests = 'tests/frames-tests.el'; Selector = '^dots-frames-'; Expect = 5 }
     hints  = @{ Tests = 'tests/key-hints-gui-tests.el'; Selector = '^dots-hints-gui-'; Expect = 3 }
+    state  = @{ Tests = 'tests/uwumacs-state-gui-tests.el'; Selector = '^uwumacs-state-'; Expect = 12 }
     audit  = @{ Tests = ''; Selector = ''; Expect = 0; Audit = 'observed-keys.json' }
 }
-$order = if ($Suite -eq 'all') { @('frames', 'hints', 'audit') } else { @($Suite) }
+$order = if ($Suite -eq 'all') { @('frames', 'hints', 'audit', 'state') } else { @($Suite) }
 
 function Get-EmacsPids {
     @(Get-Process emacs*, runemacs* -ErrorAction SilentlyContinue | ForEach-Object { $_.Id })

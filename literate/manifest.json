@@ -21,6 +21,7 @@
     "lambda-library/lambda-user/starter-setup-terminal.el",
     "lambda-library/lambda-user/starter-setup-meow.el",
     "lambda-library/lambda-user/uwumacs.el",
+    "lambda-library/lambda-user/uwumacs-state.el",
     "lambda-library/lambda-user/uwumacs-maps.el",
     "lambda-library/lambda-user/uwumacs-integration-core.el",
     "lambda-library/lambda-user/starter-setup-key-hints.el",

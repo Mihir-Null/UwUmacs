@@ -10,6 +10,7 @@
 
 (require 'uwumacs-maps)
 (require 'uwumacs-integration-core)
+(require 'uwumacs-state)
 
 (uwumacs--replace-leader-definitions uwumacs-integration-core-map-sources)
 
