@@ -69,6 +69,16 @@ Keep only the selected topics from Lambda's catalogue before the installer runs.
                   lem-packages-alist))
 #+end_src
 
+** Add the personal frame package
+
+Install the frame policy with the existing windows topic before user modules
+load. Keep this addition in user policy rather than modifying Lambda's catalogue.
+
+#+begin_src emacs-lisp
+(setf (alist-get 'windows lem-packages-alist)
+      (append (alist-get 'windows lem-packages-alist) '(frames-only-mode)))
+#+end_src
+
 ** Keep warnings visible
 
 The user layer keeps useful startup warnings instead of adopting a personal upstream preference to suppress them.
@@ -330,6 +340,9 @@ UI is intentionally a user module rather than Lambda's `lem-setup-modeline'. It 
   ;; It supplies Sonokai, doom-modeline, workspace-tab presentation, optional
   ;; Nerd Icons, and modest spacing while retaining ordinary OS-managed frames.
   (require 'starter-setup-ui)
+
+  ;; Apply frame policy after Lambda's Help, Org and UI defaults.
+  (require 'starter-setup-frames)
 
   )
 #+end_src

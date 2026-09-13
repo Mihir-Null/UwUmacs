@@ -112,6 +112,9 @@
   ;; Nerd Icons, and modest spacing while retaining ordinary OS-managed frames.
   (require 'starter-setup-ui)
 
+  ;; Apply frame policy after Lambda's Help, Org and UI defaults.
+  (require 'starter-setup-frames)
+
   )
 (add-hook 'emacs-startup-hook #'starter-after-startup)
 ;;;; Discoverability

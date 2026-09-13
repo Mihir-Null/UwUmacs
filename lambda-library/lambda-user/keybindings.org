@@ -86,8 +86,11 @@ Special buffers such as the dashboard keep their own shortcuts in motion state.
 | SPC p p   | Open project workspace     | tabspaces-open-or-create-project-and-workspace |
 | SPC p f   | Find a project file        | project-find-file               |
 | SPC p b   | Switch project buffer      | consult-project-buffer          |
-| C-x 2     | Split above/below          | split-window-below              |
-| C-x 3     | Split side by side         | split-window-right              |
+| C-x 2     | New OS frame               | make-frame-command              |
+| C-x 3     | New OS frame               | make-frame-command              |
+| C-x 5 f   | File in another frame      | find-file-other-frame           |
+| C-x 5 b   | Buffer in another frame    | switch-to-buffer-other-frame     |
+| C-x 5 0   | Close this OS frame        | delete-frame                    |
 | C-x o     | Move to another window     | other-window                    |
 | C-x 0     | Close this window          | delete-window                   |
 | C-x 1     | Keep only this window      | delete-other-windows             |
@@ -96,7 +99,11 @@ Special buffers such as the dashboard keep their own shortcuts in motion state.
 | SPC TAB   | Select a workspace tab     | lem-tab-bar-select-tab-dwim      |
 
 =SPC w= shows window commands; =SPC W= shows workspace commands.
-A window is a pane, a buffer holds text, and a tab remembers a window layout.
+Frames are OS windows managed by your desktop. A window is an internal pane,
+a buffer holds text, and a tab remembers a window layout. With frames-only-mode,
+=SPC w h= / =SPC w v= also create frames and =C-x 4= uses other-frame commands.
+Completion panels remain inside the editor. =M-x frames-only-mode= toggles the
+policy and restores the original split keys when disabled.
 For Git without optional packages, start with =M-x vc-dir=.
 
 * Terminals and language tools
