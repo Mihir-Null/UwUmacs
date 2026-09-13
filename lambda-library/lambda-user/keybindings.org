@@ -9,7 +9,9 @@ This sheet describes the Meow + Lambda bindings in Emacs-Dots.
 Keys separated by spaces are pressed in sequence; uppercase letters use Shift.
 
 In Meow normal or motion state, press =SPC= and pause for the which-key menu.
-In insert state, use =C-c C-SPC= for the same leader map, or Escape first.
+In insert state, use =C-c C-SPC= for native access to the leader map, or Escape
+first for Meow keypad. These routes differ where a submenu has Control bindings;
+see the project exceptions below.
 Use =M-x= to run any command below by name. =C-g= cancels a prompt.
 
 The SPC menu title shows the physical keys already entered; its rows show the
@@ -29,11 +31,16 @@ the command name or select a candidate while the M-x prompt itself is open.
 | C-h k     | Explain the next key sequence | describe-key                    |
 | C-h m     | Help for this buffer's modes | describe-mode                    |
 | C-h f     | Help for a command/function  | describe-function                |
-| SPC ?     | Search available commands    | consult-apropos                  |
+| M-x apropos-command | Search commands by name/pattern | apropos-command             |
 
 Try =M-x meow-tutor= for guided editing practice. For the complete live maps,
 run =M-x describe-keymap= and choose =lem+leader-map= or =meow-normal-state-keymap=.
 Those live maps include your later customizations; this sheet is a curated guide.
+A raw map entry is not proof that a command exists or that keypad input reaches
+it. =SPC ?= currently names =consult-apropos=, which is unavailable in the
+inspected installation. Use =M-x apropos-command= or search directly in =M-x=.
+The hints-only change describes the current bindings; it does not repair that
+underlying dead binding.
 
 * Meow: select, then act
 
@@ -82,6 +89,7 @@ Special buffers such as the dashboard keep their own shortcuts in motion state.
 | SPC ]   | Next user buffer               | lem-next-user-buffer  |
 | SPC d   | Open containing directory      | dired-jump            |
 | SPC s s | Search lines in this buffer    | consult-line          |
+| SPC s l | Repeat a previous completion session | vertico-repeat    |
 | SPC s d | Search files with ripgrep      | consult-ripgrep       |
 | SPC k   | Choose previously copied text  | consult-yank-from-kill-ring |
 
@@ -93,7 +101,8 @@ Special buffers such as the dashboard keep their own shortcuts in motion state.
 |-----------+----------------------------+---------------------------------|
 | SPC p p   | Open project workspace     | tabspaces-open-or-create-project-and-workspace |
 | SPC p f   | Find a project file        | project-find-file               |
-| SPC p b   | Switch project buffer      | consult-project-buffer          |
+| M-x consult-project-buffer | Switch project buffer | consult-project-buffer     |
+| M-x project-execute-extended-command | Run a command in the project | project-execute-extended-command |
 | C-x 2     | New OS frame               | make-frame-command              |
 | C-x 3     | New OS frame               | make-frame-command              |
 | C-x 5 f   | File in another frame      | find-file-other-frame           |
@@ -106,10 +115,42 @@ Special buffers such as the dashboard keep their own shortcuts in motion state.
 | SPC { / } | Previous / next tab        | tab-bar-switch-to-prev/next-tab  |
 | SPC TAB   | Select a workspace tab     | lem-tab-bar-select-tab-dwim      |
 
+** Project keypad exceptions
+
+At the second and later keypad keys, Meow tries Control first and then the
+literal key. The native project map contains both forms, so typing the same
+letters through keypad can reach a different binding:
+
+| Input             | Current keypad result                                  |
+|-------------------+--------------------------------------------------------|
+| =SPC p b=         | =project-list-buffers= (the map's =C-b= entry)           |
+| =SPC p x=         | Opens the map's =C-x= prefix; it does not run a command  |
+| =SPC p x s=       | =project-save-some-buffers=                             |
+
+Use =M-x consult-project-buffer= to switch project buffers and
+=M-x project-execute-extended-command= to run a command in the project.
+Native leader input also bypasses keypad translation: =C-c C-SPC p b= and
+=C-c C-SPC p x= reach those respective commands. Press the initial Control
+chords as shown, then release Control for the remaining letters. Reaching the
+native Control entries explicitly instead requires =C-c C-SPC p C-b= or
+=C-c C-SPC p C-x s=.
+
+The audit found 25 top-level project entries: 23 plain/Shift and two Control
+entries. The two Control entries also shadow =b= and =x= under keypad, producing
+four affected map paths, not just two. The keypad results above were checked
+with Meow's own lookup functions; that is dispatch simulation, not a claim
+that each key sequence was physically exercised in a graphical session.
+
+** Frames and internal windows
+
 =SPC w= shows window commands; =SPC W= shows workspace commands.
 Frames are OS windows managed by your desktop. A window is an internal pane,
 a buffer holds text, and a tab remembers a window layout. With frames-only-mode,
-=SPC w h= / =SPC w v= also create frames and =C-x 4= uses other-frame commands.
+=C-c C-SPC w h= / =C-c C-SPC w v= create frames and =C-x 4= uses
+other-frame commands. The frame tests exercise the native Control leader route;
+they do not establish that =SPC w h= / =SPC w v= apply the same command
+remapping through Meow keypad. Use the native forms above for verified frame
+actions.
 Completion panels remain inside the editor. =M-x frames-only-mode= toggles the
 policy and restores the original split keys when disabled.
 For Git without optional packages, start with =M-x vc-dir=.
@@ -130,6 +171,9 @@ For Git without optional packages, start with =M-x vc-dir=.
 | SPC l h | Documentation                 | eldoc-doc-buffer          |
 | SPC l q | Shut down language server     | eglot-shutdown            |
 
+=SPC l= is the language-tools submenu. Completion history already has the
+separate =SPC s l= binding; it is not a new binding awaiting a future migration.
+
 The normal Windows shell is PowerShell. Language servers must be installed
 separately; they do not start automatically in this configuration.
 
@@ -147,6 +191,19 @@ separately; they do not start automatically in this configuration.
 | starter-literate-tangle    | Regenerate Lisp from saved Org sources      |
 | starter-literate-check     | Check source/output agreement without writing |
 | starter-treesit-refresh-mode-remaps | Recheck installed grammars          |
+
+* Completion setup and known integration gaps
+
+The current stack uses Vertico for minibuffer candidates, Consult for commands
+such as line search, Orderless for matching, Marginalia for annotations, Embark
+for candidate actions, and Corfu for completion at point. Which-key explains
+prefix maps. The hints-only branch keeps this stack and Meow keypad behavior.
+
+The P00 review found no =embark-consult= package or explicit declaration in the
+inspected setup; do not assume Consult-specific Embark integration is active.
+The graphical audit also found both =kind-icon-margin-formatter= and
+=nerd-icons-corfu-formatter= configured, with kind-icon first. Those are recorded
+integration issues, not repairs or package changes made by this guide.
 
 * Symbols not showing?
 
@@ -166,3 +223,5 @@ separately; they do not start automatically in this configuration.
 - [[file:../../literate/60-programming.org][Editable language configuration]] and [[file:../../literate/30-platform.org][terminal configuration]].
 
 - [[file:../../literate/index.org][Literate guide: ownership, editing and rebuilding]].
+
+- [[file:../../docs/ADRs/0038-hints-guide-audit-corrections.md][Audit evidence and scope of these guide corrections]].
