@@ -65,6 +65,7 @@ The structure follows the [Nygard ADR format](https://adr.github.io/adr-template
 | [ADR-0035](0035-inherited-org-policy.md) | Retain the minimal Org storage boundary | accepted | inherited-documented-policy | existing host policy |
 | [ADR-0036](0036-review-first-development-handoff.md) | Review alignment before subagent development and retain execution state | accepted | user-workflow-with-agent-record-layout | Phase 1 and P00 complete; P01 resumed under the current execution contract |
 | [ADR-0037](0037-execution-contract-replaces-handoff.md) | Retire the consumed handoff; preserve the standing execution contract | accepted | user-request-with-agent-record-layout | handoff migration complete; execution resumed by the user on 2026-09-13 |
+| [ADR-0038](0038-foundational-acceptance-ownership.md) | Assign foundational acceptance to its actual prerequisites | selected | agent-selected-under-user-review-authority | acceptance ownership documented; runtime evidence remains per ticket |
 
 ## Coverage
 

@@ -21,7 +21,7 @@ Explicit user requirements outrank agent design choices. The [architecture](../s
 
 ## Current execution authority
 
-On 2026-09-13 the user explicitly resumed UwUmacs development using subagent-driven development and relevant architecture-first practices, and requested that all commits be synced to remote GitHub. This lifts the earlier P01 hold. Continue the ordered roadmap from P01 with independent task reviews, durable evidence and coherent commits on `uwumacs`; push reviewed development commits to `origin/uwumacs` and verify synchronization.
+On 2026-09-13 the user explicitly resumed UwUmacs development using subagent-driven development and relevant architecture-first practices, and requested that all commits be synced to remote GitHub. The user also explicitly selected the full P01-P17 roadmap, rather than stopping at the first usable milestone. This lifts the earlier P01 hold. Continue the ordered roadmap from P01 with independent task reviews, durable evidence and coherent commits on `uwumacs`; push reviewed development commits to `origin/uwumacs` and verify synchronization.
 
 ## Execution method
 

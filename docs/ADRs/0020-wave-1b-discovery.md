@@ -34,3 +34,5 @@ Each ticket is independently reviewable. Existing native package actions remain 
 ## Provenance and implementation references
 
 [Integration catalogue](../uwumacs/integrations.md), wave 1B; [Implementation plan](../superpowers/plans/2026-09-13-uwumacs.md), P06; architecture sections 4/9/10. Input evidence is the 2026-09-13 configured-package census, not the installed directory alone.
+
+Acceptance execution owners are clarified in [ADR-0038](0038-foundational-acceptance-ownership.md) and the inventory; task references do not imply blanket ticket completion.

@@ -46,3 +46,5 @@ The order is an agent-selected implementation dependency sequence, not a calenda
 ## Provenance and implementation references
 
 [Implementation plan](../superpowers/plans/2026-09-13-uwumacs.md), P00–P17; [Integration catalogue](../uwumacs/integrations.md). Per-wave ADRs preserve every individual planned integration contract.
+
+Acceptance execution owners are clarified in [ADR-0038](0038-foundational-acceptance-ownership.md) and the inventory; task references do not imply blanket ticket completion.

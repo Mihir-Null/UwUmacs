@@ -8,11 +8,12 @@ Read [the architecture](../superpowers/specs/2026-09-13-uwumacs-design.md) and [
 
 ## Execution rules
 
-1. Follow the numbered order within each wave. Provision the wave's existing dependencies before its first test; dependency tickets describe compatibility review order, not the package manager's installation order.
+1. Retain catalogue/review numbering and P01-P17 implementation order. Execute acceptance at each inventory row's `acceptance_task` after its prerequisites exist; see the [foundational ownership table](../superpowers/plans/2026-09-13-uwumacs.md#foundational-acceptance-ownership). Provision existing package dependencies before their consuming test; package dependencies differ from integration dependencies.
 2. Resolve the API of the installed target version before binding an action. Tests use temporary buffers/files, repositories, process data and Org stores. Never use the real notes vault or working projects as test fixtures.
 3. Add one focused ERT case named `uwumacs-<package>-<behavior>` for the acceptance outcome. A package without a public feature of the same name is tested through its owning package/command (not forced `require`).
 4. Run the failing case; implement in the wave's adapter; rerun that case and the wave suite. Run graphical checks when popup, frame or state interaction changes. Commit only the completed ticket or small coherent adjacent set after review.
-5. Gates for an optional external executable must distinguish unavailable capability from a passing execution test. No remote connection, server launch, installation or package upgrade occurs just by enabling UwUmacs.
+5. Apply named-test, version, code-revision and limitation evidence throughout P01-P17. Task completion is not blanket ticket acceptance; revalidate covering behavior after relevant changes.
+6. Gates for an optional external executable must distinguish unavailable capability from a passing execution test. No remote connection, server launch, installation or package upgrade occurs just by enabling UwUmacs.
 
 ## Package availability findings
 

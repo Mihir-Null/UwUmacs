@@ -6,15 +6,15 @@ Updated 2026-09-13 after the user resumed development and authorized GitHub sync
 
 | Field | Recorded state |
 |---|---|
-| Phase | Phase 1 and P00–P01 complete; P02 next |
+| Phase | Phase 1 and P00–P02 complete; P03 next |
 | Repository / branch | `C:/Users/walnu/.config/emacs-dots/var/worktrees/uwumacs`, `uwumacs` |
 | Reviewed P00 code | `21dbebc..ad49657`; all eight scoped fix findings addressed, no new Critical/Important breakage per the recorded re-review |
-| Runtime baseline | Frames in `1f70a93`; physical hints in `51c19c1`; no UwUmacs literal runtime exists |
+| Runtime baseline | P01–P02 native maps/state runtime at `e915905`; host migration remains P05; inherited frames/hints remain active in the host |
 | Working checkout | Isolated linked worktree; deployed main checkout remains separate |
-| Active roadmap task | P02 state activation and localleaders |
-| Integration acceptance | All 194 tickets remain pending; P00 fixture completion is not adapter acceptance |
-| Review evidence | Phase 1 in [alignment-review.md](alignment-review.md); P00 review and findings summarized below |
-| Next action | Implement P02 using the reviewed P01 interfaces, then continue P03–P17 with review and GitHub sync |
+| Active roadmap task | P03 registry, readiness and lifecycle |
+| Integration acceptance | All 194 tickets remain pending; P01/P02 foundation completion is not individual integration acceptance; ADR-0038 assigns each acceptance task |
+| Review evidence | Phase 1 in [alignment-review.md](alignment-review.md); P01 review clean; P02 original review plus three scoped fix reviews, summarized below |
+| Next action | Implement P03 with the reviewed native-map/state interfaces, eight assigned support checks and exact Windows Emacs 30.1; continue through P17 with review and GitHub sync |
 
 ### P00 evidence inspected
 
@@ -22,7 +22,7 @@ Updated 2026-09-13 after the user resumed development and authorized GitHub sync
 - Reviewed GUI run records: frames 5/5 and hints 3/3, at least three consecutive green runs per suite, zero skips. The missing package-initialize advice resolved F2; graphical tests were timing-hardened without changing their assertions.
 - Read `var/uwumacs-audit/observed-keys.json`: graphical capture stamped `ad49657276a7da4dfc6af58431089d439465b56a`, worktree dirty=false at capture, 144 activated packages, errors empty. The artifact is ignored local evidence; its generator is tracked at `tools/observed-keys.el`.
 - Scoped fix review over `94e8611..ad49657` records all eight findings addressed. The no-execution guard and its six-case regression make PASS unreachable if nothing ran. The independent audit provenance check closes the artifact verification gap noted by that review.
-- F1's helper negative-control fixture is now tested; P02 still must test the future implementation's activation/restoration against genuinely active Meow. F8 (Emacs 30.1 unavailable) remains a P17 capability limit.
+- F1 is now resolved for the P02 implementation: genuinely active Meow resolves SPC to meow-keypad before activation and is restored after disable. F8's runtime-availability limitation is resolved by isolated Windows/Linux 30.1 provisioning; actual minimum-version core acceptance is P03, with final P17 revalidation still required.
 
 ### Findings preserved from ignored review scratch
 
@@ -46,7 +46,7 @@ The reviewed P00 workflow selected an isolated GUI root with a wrapper early-ini
 |---|---|---|
 | P00 | Baseline verification and fixtures | complete — `21dbebc..ad49657`, review clean |
 | P01 | Native maps and customization | complete — `e703f7e..075fb53`, review clean |
-| P02 | State activation and localleaders | pending |
+| P02 | State activation and localleaders | complete — `19129aa..e915905`, review clean |
 | P03 | Registry and lifecycle | pending |
 | P04 | Discovery and annotations | pending |
 | P05 | Host migration | pending |
@@ -66,6 +66,12 @@ The reviewed P00 workflow selected an isolated GUI root with a wrapper early-ini
 Keep this table synchronized with plan checkboxes and the per-ticket progress file when created. A capability limitation or parked review finding is not completed acceptance.
 
 ## Execution log
+
+- 2026-09-13 — P02 complete at `e9159050074538fdad5f0be658e085403cc9ba4c` (initial `a4eadf8`, fixes `f389685`, `71e6fb1` and `e915905`). Independent initial review found equal-priority defaults bypass and first EAT input interception; scoped round 1 addressed both but found public base-map edits lost on refresh; scoped round 2 addressed public edits but found a false conflict between overlapping native composed layers; round 3 addressed that traversal defect with no new Critical/Important breakage. Fresh focused core/state/runner ERT 45/45, graphical state 24/24 with zero failures/skips/invariant violations, 21 generated outputs matching and strict compilation 4/4 passed. The unchanged tangle-tool regression last passed 8/8 at the preceding fix and was not rerun as if it were new evidence. Final graphical artifact `state-1-20260913-181552` matches the runtime commit; only controller-owned documentation was dirty, and the generic JSON records counts rather than embedding the commit. All owned GUI processes/frames/roots were cleaned. A PowerShell cache write stayed inside the disposable home and was removed. P02 does not enable the host or complete the 194 integration tickets.
+
+  P02 rulings: validate foundation and context together to reject equal-specificity conflicts; observe EAT exec/exit hooks synchronously before the next key lookup; retain committed map metadata for discovery; reconcile actual native public base edits on refresh (unchanged definitions retain declaration ownership/priority, changes use public-base priority zero), while user overrides stay directly composed. Alternatives were silent overlay order, late pre-command observation and reconstruction from stale declarations; each produced a confirmed regression. ADR-0003/0004/0005/0009 and the architecture record the implemented boundaries. Broader temporary-input, terminal, daemon/TUI and minimum-version acceptance remain their assigned tasks.
+
+  ADR-0038 assigns acceptance ownership throughout P01-P17 without changing any of the 194 contracts or historical census hashes. I009 runs first at P03 and again at P17; I020 final acceptance follows hint retirement at P06. Windows30.1 official complete ZIP SHA-256 `a58e44f1d3ecf5bac1a920fe9d83656f0c45ef3034ac4b4d185ee5c057ac7a4a` and GNU signatures were verified (signer fingerprint `ECE77CF417C76C1ACFCE7C2B5B6135511580F007`). Linux30.1 uses Nixpkgs `bf9fa86a9b1005d932f842edf2c38eeecc98eef3`; both environments have isolated runtime probes only so far. Retained source-only Meow is snapshot `20260714.1200`, commit `aa8aec19e70369b547176e625f5b95c4a8565e8e`. Installed packages and system profiles were not modified. Next: P03 registry/lifecycle and eight assigned foundational checks; actual package/core acceptance has not been inferred from provisioning.
 
 - 2026-09-13 — P01 complete, implementation `73d403f`, reviewed metadata fix `075fb53`; scoped re-review found both findings addressed and no new breakage. Focused ERT 13/13; tangle 20 matching outputs; strict compilation 3/3; inert isolated core load and dependency scan passed. Equivalent native events now share metadata identity, and explicit empty metadata stays empty. P01 builds native maps/customization without enabling the host. No integration ticket is marked accepted merely by the foundation. Updated ADR-0003/0005/0009/0019 implementation descriptions and reconciled historical ADR-0036/0037 hold text. User explicitly selected full P01–P17 scope in this run. Next: P02; add exactly one successful Customize refresh, genuine active-Meow restoration tests, isolated localleaders and actual graphical state evidence. Emacs 30.1 and Linux dependencies are being provisioned separately; no compatibility execution is claimed yet.
 

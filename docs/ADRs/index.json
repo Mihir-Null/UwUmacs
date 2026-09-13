@@ -288,7 +288,13 @@
       "recorded": "2026-09-13",
       "implementation": "P01 files-map foundation implemented; individual Wave 1A acceptance pending",
       "tasks": [
-        "P01"
+        "P01",
+        "P03",
+        "P05",
+        "P06",
+        "P08",
+        "P09",
+        "P16"
       ],
       "integration_ids": [
         "I001",
@@ -321,6 +327,8 @@
       "recorded": "2026-09-13",
       "implementation": "planned",
       "tasks": [
+        "P04",
+        "P05",
         "P06"
       ],
       "integration_ids": [
@@ -735,6 +743,25 @@
       "recorded": "2026-09-13",
       "implementation": "handoff migration complete; execution resumed by the user on 2026-09-13",
       "tasks": [],
+      "integration_ids": []
+    },
+    {
+      "id": "ADR-0038",
+      "file": "0038-foundational-acceptance-ownership.md",
+      "title": "Assign foundational acceptance to its actual prerequisites",
+      "status": "selected",
+      "origin": "agent-selected-under-user-review-authority",
+      "recorded": "2026-09-13",
+      "implementation": "acceptance ownership documented; runtime evidence remains per ticket",
+      "tasks": [
+        "P03",
+        "P05",
+        "P06",
+        "P08",
+        "P09",
+        "P16",
+        "P17"
+      ],
       "integration_ids": []
     }
   ],
