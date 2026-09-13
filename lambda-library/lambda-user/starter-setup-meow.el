@@ -164,6 +164,7 @@
     (modify-syntax-entry ?@ "_" org-mode-syntax-table))
 
   (starter-meow-setup)
-  (meow-global-mode 1))
+  (meow-global-mode 1)
+  (require 'starter-setup-key-hints))
 (provide 'starter-setup-meow)
 ;;; starter-setup-meow.el ends here
