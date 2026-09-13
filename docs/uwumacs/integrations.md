@@ -23,6 +23,8 @@ Read [the architecture](../superpowers/specs/2026-09-13-uwumacs-design.md) and [
 - Provisioned-only and install-only entries, including unrelated writing, notes, LSP and macOS packages, are recorded separately without activation or removal.
 
 ## Wave 1A: Engine, native input and support libraries
+
+Agent-selected contracts and rationale: [decision record](../ADRs/0019-wave-1a-core.md).
 Adapter: `lambda-library/lambda-user/uwumacs-integration-core.el`. Tests: `tests/uwumacs-core-tests.el`. The core/discovery waves may delegate to the core files defined by the architecture.
 | Order | Package / surface | Integration contract | Acceptance check |
 |---|---|---|---|
@@ -47,6 +49,8 @@ Adapter: `lambda-library/lambda-user/uwumacs-integration-core.el`. Tests: `tests
 | I019 | `spinner` | Preserve package activity indicators; no menu | An indicator starts and stops without taking input or leaving a timer after cleanup |
 
 ## Wave 1B: Discovery, home page and frame policy
+
+Agent-selected contracts and rationale: [decision record](../ADRs/0020-wave-1b-discovery.md).
 Adapter: `lambda-library/lambda-user/uwumacs-integration-discovery.el`. Tests: `tests/uwumacs-discovery-tests.el`. The core/discovery waves may delegate to the core files defined by the architecture.
 | Order | Package / surface | Integration contract | Acceptance check |
 |---|---|---|---|
@@ -58,6 +62,8 @@ Adapter: `lambda-library/lambda-user/uwumacs-integration-discovery.el`. Tests: `
 | I025 | `popper` | Keep popup selection/history while frame policy owns placement | Toggle a popup without a competing split or stolen completion frame |
 
 ## Wave 2A: Completion and candidate actions
+
+Agent-selected contracts and rationale: [decision record](../ADRs/0021-wave-2a-completion.md).
 Adapter: `lambda-library/lambda-user/uwumacs-integration-completion.el`. Tests: `tests/uwumacs-completion-tests.el`. The core/discovery waves may delegate to the core files defined by the architecture.
 | Order | Package / surface | Integration contract | Acceptance check |
 |---|---|---|---|
@@ -79,6 +85,8 @@ Adapter: `lambda-library/lambda-user/uwumacs-integration-completion.el`. Tests: 
 | I041 | `nerd-icons-corfu` | Default to the existing Nerd Icons visual family when available | Exactly one completion icon column appears with a text fallback when the font is unavailable |
 
 ## Wave 2B: Help and documentation
+
+Agent-selected contracts and rationale: [decision record](../ADRs/0022-wave-2b-help.md).
 Adapter: `lambda-library/lambda-user/uwumacs-integration-help.el`. Tests: `tests/uwumacs-help-tests.el`. The core/discovery waves may delegate to the core files defined by the architecture.
 | Order | Package / surface | Integration contract | Acceptance check |
 |---|---|---|---|
@@ -91,6 +99,8 @@ Adapter: `lambda-library/lambda-user/uwumacs-integration-help.el`. Tests: `tests
 | I048 | `info-colors` | Keep Info fontification; no new keys | Fontification survives state switches and theme changes |
 
 ## Wave 2C: File management
+
+Agent-selected contracts and rationale: [decision record](../ADRs/0023-wave-2c-dired.md).
 Adapter: `lambda-library/lambda-user/uwumacs-integration-dired.el`. Tests: `tests/uwumacs-dired-tests.el`. The core/discovery waves may delegate to the core files defined by the architecture.
 | Order | Package / surface | Integration contract | Acceptance check |
 |---|---|---|---|
@@ -105,6 +115,8 @@ Adapter: `lambda-library/lambda-user/uwumacs-integration-dired.el`. Tests: `test
 | I057 | `nerd-icons-dired` | Keep optional icon presentation | Directory rows remain aligned with and without the Nerd Font |
 
 ## Wave 2D: Version control and temporary interfaces
+
+Agent-selected contracts and rationale: [decision record](../ADRs/0024-wave-2d-vc.md).
 Adapter: `lambda-library/lambda-user/uwumacs-integration-vc.el`. Tests: `tests/uwumacs-vc-tests.el`. The core/discovery waves may delegate to the core files defined by the architecture.
 | Order | Package / surface | Integration contract | Acceptance check |
 |---|---|---|---|
@@ -125,6 +137,8 @@ Adapter: `lambda-library/lambda-user/uwumacs-integration-vc.el`. Tests: `tests/u
 | I072 | `flyspell` | Honor the current git-commit hook; gate missing spelling executables | Commit text remains editable when no spelling executable exists |
 
 ## Wave 2E: Projects, buffers, search and workspaces
+
+Agent-selected contracts and rationale: [decision record](../ADRs/0025-wave-2e-navigation.md).
 Adapter: `lambda-library/lambda-user/uwumacs-integration-navigation.el`. Tests: `tests/uwumacs-navigation-tests.el`. The core/discovery waves may delegate to the core files defined by the architecture.
 | Order | Package / surface | Integration contract | Acceptance check |
 |---|---|---|---|
@@ -152,6 +166,8 @@ Adapter: `lambda-library/lambda-user/uwumacs-integration-navigation.el`. Tests: 
 | I094 | `register` | Keep Consult register access and native register semantics | Store and restore a fixture point without modifying unrelated registers |
 
 ## Wave 2F: Org workflows
+
+Agent-selected contracts and rationale: [decision record](../ADRs/0026-wave-2f-org.md).
 Adapter: `lambda-library/lambda-user/uwumacs-integration-org.el`. Tests: `tests/uwumacs-org-tests.el`. The core/discovery waves may delegate to the core files defined by the architecture.
 | Order | Package / surface | Integration contract | Acceptance check |
 |---|---|---|---|
@@ -165,6 +181,8 @@ Adapter: `lambda-library/lambda-user/uwumacs-integration-org.el`. Tests: `tests/
 | I102 | `ox` | Use Org's export dispatch rather than a replacement export UI | Export a temporary document and close the dispatch cleanly |
 
 ## Wave 2G: Structural editing and programming
+
+Agent-selected contracts and rationale: [decision record](../ADRs/0027-wave-2g-programming.md).
 Adapter: `lambda-library/lambda-user/uwumacs-integration-programming.el`. Tests: `tests/uwumacs-programming-tests.el`. The core/discovery waves may delegate to the core files defined by the architecture.
 | Order | Package / surface | Integration contract | Acceptance check |
 |---|---|---|---|
@@ -196,6 +214,8 @@ Adapter: `lambda-library/lambda-user/uwumacs-integration-programming.el`. Tests:
 | I128 | `repeat` | Allow repeat maps to own their temporary keys | Repeat a supported fixture action and exit without a stuck leader state |
 
 ## Wave 2H: Shells, terminals and processes
+
+Agent-selected contracts and rationale: [decision record](../ADRs/0028-wave-2h-terminal.md).
 Adapter: `lambda-library/lambda-user/uwumacs-integration-terminal.el`. Tests: `tests/uwumacs-terminal-tests.el`. The core/discovery waves may delegate to the core files defined by the architecture.
 | Order | Package / surface | Integration contract | Acceptance check |
 |---|---|---|---|
@@ -225,6 +245,8 @@ Adapter: `lambda-library/lambda-user/uwumacs-integration-terminal.el`. Tests: `t
 | I152 | `server` | Keep existing server naming and explicit daemon lifecycle | UwUmacs activation does not start or stop an Emacs server |
 
 ## Wave 2I: Appearance and visual feedback
+
+Agent-selected contracts and rationale: [decision record](../ADRs/0029-wave-2i-appearance.md).
 Adapter: `lambda-library/lambda-user/uwumacs-integration-appearance.el`. Tests: `tests/uwumacs-appearance-tests.el`. The core/discovery waves may delegate to the core files defined by the architecture.
 | Order | Package / surface | Integration contract | Acceptance check |
 |---|---|---|---|
@@ -251,6 +273,8 @@ Adapter: `lambda-library/lambda-user/uwumacs-integration-appearance.el`. Tests: 
 | I173 | `fringe` | Keep existing fringe settings and indicators | Diagnostics and selection fringes coexist in a narrow frame |
 
 ## Wave 2J: Persistence, input and remaining built-in configuration
+
+Agent-selected contracts and rationale: [decision record](../ADRs/0030-wave-2j-runtime.md).
 Adapter: `lambda-library/lambda-user/uwumacs-integration-runtime.el`. Tests: `tests/uwumacs-runtime-tests.el`. The core/discovery waves may delegate to the core files defined by the architecture.
 | Order | Package / surface | Integration contract | Acceptance check |
 |---|---|---|---|

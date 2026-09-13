@@ -1,0 +1,812 @@
+{
+  "schema_version": 1,
+  "recorded": "2026-09-13",
+  "hint_commit": "51c19c1",
+  "records": [
+    {
+      "id": "ADR-0001",
+      "file": "0001-record-decisions-and-provenance.md",
+      "title": "Record material decisions with explicit provenance",
+      "status": "accepted",
+      "origin": "user-request-with-agent-format",
+      "recorded": "2026-09-13",
+      "implementation": "documentation implemented",
+      "tasks": [],
+      "integration_ids": []
+    },
+    {
+      "id": "ADR-0002",
+      "file": "0002-meow-interaction-layer.md",
+      "title": "Keep Meow as the editing engine and build an interaction layer",
+      "status": "selected",
+      "origin": "user-direction-with-agent-design",
+      "recorded": "2026-09-13",
+      "implementation": "planned",
+      "tasks": [
+        "P01",
+        "P02",
+        "P03",
+        "P17"
+      ],
+      "integration_ids": []
+    },
+    {
+      "id": "ADR-0003",
+      "file": "0003-native-literal-dispatch.md",
+      "title": "Use native literal prefix lookup",
+      "status": "selected",
+      "origin": "agent-selected",
+      "recorded": "2026-09-13",
+      "implementation": "planned",
+      "tasks": [
+        "P01",
+        "P02",
+        "P05"
+      ],
+      "integration_ids": []
+    },
+    {
+      "id": "ADR-0004",
+      "file": "0004-owned-state-layer.md",
+      "title": "Own a reversible state-aware emulation layer",
+      "status": "selected",
+      "origin": "agent-selected",
+      "recorded": "2026-09-13",
+      "implementation": "planned",
+      "tasks": [
+        "P02"
+      ],
+      "integration_ids": []
+    },
+    {
+      "id": "ADR-0005",
+      "file": "0005-composition-and-conflicts.md",
+      "title": "Compose localleaders and reject ambiguous defaults",
+      "status": "selected",
+      "origin": "agent-selected",
+      "recorded": "2026-09-13",
+      "implementation": "planned",
+      "tasks": [
+        "P01",
+        "P02",
+        "P03"
+      ],
+      "integration_ids": []
+    },
+    {
+      "id": "ADR-0006",
+      "file": "0006-integration-registry.md",
+      "title": "Use a small lazy integration registry",
+      "status": "selected",
+      "origin": "agent-selected",
+      "recorded": "2026-09-13",
+      "implementation": "planned",
+      "tasks": [
+        "P03",
+        "P17"
+      ],
+      "integration_ids": []
+    },
+    {
+      "id": "ADR-0007",
+      "file": "0007-discovery-from-effective-maps.md",
+      "title": "Derive discovery from effective executable maps",
+      "status": "selected",
+      "origin": "agent-selected",
+      "recorded": "2026-09-13",
+      "implementation": "planned",
+      "tasks": [
+        "P04",
+        "P07",
+        "P08"
+      ],
+      "integration_ids": []
+    },
+    {
+      "id": "ADR-0008",
+      "file": "0008-compatibility-floor.md",
+      "title": "Select a core runtime floor and explicit test targets",
+      "status": "selected",
+      "origin": "agent-selected",
+      "recorded": "2026-09-13",
+      "implementation": "planned",
+      "tasks": [
+        "P00",
+        "P06",
+        "P17"
+      ],
+      "integration_ids": []
+    },
+    {
+      "id": "ADR-0009",
+      "file": "0009-literate-files-and-modules.md",
+      "title": "Keep flat generated outputs and focused modules",
+      "status": "selected",
+      "origin": "agent-selected",
+      "recorded": "2026-09-13",
+      "implementation": "planned",
+      "tasks": [
+        "P01",
+        "P04",
+        "P05",
+        "P07",
+        "P17"
+      ],
+      "integration_ids": []
+    },
+    {
+      "id": "ADR-0010",
+      "file": "0010-host-boundary.md",
+      "title": "Preserve host policy behind a temporary Lambda bridge",
+      "status": "selected",
+      "origin": "agent-selected-with-inherited-constraints",
+      "recorded": "2026-09-13",
+      "implementation": "planned",
+      "tasks": [
+        "P05",
+        "P17"
+      ],
+      "integration_ids": []
+    },
+    {
+      "id": "ADR-0011",
+      "file": "0011-key-vocabulary.md",
+      "title": "Preserve useful keys and make collisions explicit",
+      "status": "selected",
+      "origin": "agent-selected",
+      "recorded": "2026-09-13",
+      "implementation": "planned",
+      "tasks": [
+        "P00",
+        "P05",
+        "P07",
+        "P11"
+      ],
+      "integration_ids": []
+    },
+    {
+      "id": "ADR-0012",
+      "file": "0012-branding.md",
+      "title": "Use the user-selected :3 identity with optional presentation",
+      "status": "selected",
+      "origin": "user-brand-with-agent-presentation",
+      "recorded": "2026-09-13",
+      "implementation": "planned",
+      "tasks": [
+        "P06",
+        "P15"
+      ],
+      "integration_ids": []
+    },
+    {
+      "id": "ADR-0013",
+      "file": "0013-enabled-scope-and-inventory.md",
+      "title": "Prioritize enabled configurations and distinguish evidence",
+      "status": "selected",
+      "origin": "user-scope-with-agent-classification",
+      "recorded": "2026-09-13",
+      "implementation": "planned",
+      "tasks": [
+        "P00",
+        "P07",
+        "P16"
+      ],
+      "integration_ids": []
+    },
+    {
+      "id": "ADR-0014",
+      "file": "0014-milestones-and-order.md",
+      "title": "Build foundations before ordered enabled integrations and packaging",
+      "status": "selected",
+      "origin": "user-milestones-with-agent-order",
+      "recorded": "2026-09-13",
+      "implementation": "planned",
+      "tasks": [
+        "P00",
+        "P01",
+        "P02",
+        "P03",
+        "P04",
+        "P05",
+        "P06",
+        "P07",
+        "P08",
+        "P09",
+        "P10",
+        "P11",
+        "P12",
+        "P13",
+        "P14",
+        "P15",
+        "P16",
+        "P17"
+      ],
+      "integration_ids": []
+    },
+    {
+      "id": "ADR-0015",
+      "file": "0015-verification-and-recovery.md",
+      "title": "Use behavior-based gates and recoverable migration checkpoints",
+      "status": "selected",
+      "origin": "agent-selected",
+      "recorded": "2026-09-13",
+      "implementation": "planned",
+      "tasks": [
+        "P00",
+        "P06",
+        "P17"
+      ],
+      "integration_ids": []
+    },
+    {
+      "id": "ADR-0016",
+      "file": "0016-standalone-release.md",
+      "title": "Extract a minimal reusable artifact after integration validation",
+      "status": "selected",
+      "origin": "agent-selected",
+      "recorded": "2026-09-13",
+      "implementation": "planned",
+      "tasks": [
+        "P17"
+      ],
+      "integration_ids": []
+    },
+    {
+      "id": "ADR-0017",
+      "file": "0017-frames-only-integration.md",
+      "title": "Use frames-only-mode with scoped display exceptions",
+      "status": "accepted",
+      "origin": "user-request-with-agent-implementation",
+      "recorded": "2026-09-13",
+      "implementation": "implemented; retained host policy",
+      "tasks": [
+        "P06"
+      ],
+      "integration_ids": []
+    },
+    {
+      "id": "ADR-0018",
+      "file": "0018-physical-hint-adapter.md",
+      "title": "Bridge the current keypad with physical-key hints",
+      "status": "accepted",
+      "origin": "user-request-with-agent-implementation",
+      "recorded": "2026-09-13",
+      "implementation": "implemented; planned replacement",
+      "tasks": [
+        "P00",
+        "P04",
+        "P05"
+      ],
+      "integration_ids": []
+    },
+    {
+      "id": "ADR-0019",
+      "file": "0019-wave-1a-core.md",
+      "title": "Foundational library contracts",
+      "status": "selected",
+      "origin": "agent-selected",
+      "recorded": "2026-09-13",
+      "implementation": "planned",
+      "tasks": [
+        "P01"
+      ],
+      "integration_ids": [
+        "I001",
+        "I002",
+        "I003",
+        "I004",
+        "I005",
+        "I006",
+        "I007",
+        "I008",
+        "I009",
+        "I010",
+        "I011",
+        "I012",
+        "I013",
+        "I014",
+        "I015",
+        "I016",
+        "I017",
+        "I018",
+        "I019"
+      ]
+    },
+    {
+      "id": "ADR-0020",
+      "file": "0020-wave-1b-discovery.md",
+      "title": "Home, menus and display policy",
+      "status": "selected",
+      "origin": "agent-selected",
+      "recorded": "2026-09-13",
+      "implementation": "planned",
+      "tasks": [
+        "P06"
+      ],
+      "integration_ids": [
+        "I020",
+        "I021",
+        "I022",
+        "I023",
+        "I024",
+        "I025"
+      ]
+    },
+    {
+      "id": "ADR-0021",
+      "file": "0021-wave-2a-completion.md",
+      "title": "Completion and candidate-action integrations",
+      "status": "selected",
+      "origin": "agent-selected",
+      "recorded": "2026-09-13",
+      "implementation": "planned",
+      "tasks": [
+        "P07"
+      ],
+      "integration_ids": [
+        "I026",
+        "I027",
+        "I028",
+        "I029",
+        "I030",
+        "I031",
+        "I032",
+        "I033",
+        "I034",
+        "I035",
+        "I036",
+        "I037",
+        "I038",
+        "I039",
+        "I040",
+        "I041"
+      ]
+    },
+    {
+      "id": "ADR-0022",
+      "file": "0022-wave-2b-help.md",
+      "title": "Help and documentation integrations",
+      "status": "selected",
+      "origin": "agent-selected",
+      "recorded": "2026-09-13",
+      "implementation": "planned",
+      "tasks": [
+        "P08"
+      ],
+      "integration_ids": [
+        "I042",
+        "I043",
+        "I044",
+        "I045",
+        "I046",
+        "I047",
+        "I048"
+      ]
+    },
+    {
+      "id": "ADR-0023",
+      "file": "0023-wave-2c-dired.md",
+      "title": "Dired and extension integrations",
+      "status": "selected",
+      "origin": "agent-selected",
+      "recorded": "2026-09-13",
+      "implementation": "planned",
+      "tasks": [
+        "P09"
+      ],
+      "integration_ids": [
+        "I049",
+        "I050",
+        "I051",
+        "I052",
+        "I053",
+        "I054",
+        "I055",
+        "I056",
+        "I057"
+      ]
+    },
+    {
+      "id": "ADR-0024",
+      "file": "0024-wave-2d-vc.md",
+      "title": "Version-control and temporary-interface integrations",
+      "status": "selected",
+      "origin": "agent-selected",
+      "recorded": "2026-09-13",
+      "implementation": "planned",
+      "tasks": [
+        "P10"
+      ],
+      "integration_ids": [
+        "I058",
+        "I059",
+        "I060",
+        "I061",
+        "I062",
+        "I063",
+        "I064",
+        "I065",
+        "I066",
+        "I067",
+        "I068",
+        "I069",
+        "I070",
+        "I071",
+        "I072"
+      ]
+    },
+    {
+      "id": "ADR-0025",
+      "file": "0025-wave-2e-navigation.md",
+      "title": "Projects, navigation and workspaces",
+      "status": "selected",
+      "origin": "agent-selected",
+      "recorded": "2026-09-13",
+      "implementation": "planned",
+      "tasks": [
+        "P11"
+      ],
+      "integration_ids": [
+        "I073",
+        "I074",
+        "I075",
+        "I076",
+        "I077",
+        "I078",
+        "I079",
+        "I080",
+        "I081",
+        "I082",
+        "I083",
+        "I084",
+        "I085",
+        "I086",
+        "I087",
+        "I088",
+        "I089",
+        "I090",
+        "I091",
+        "I092",
+        "I093",
+        "I094"
+      ]
+    },
+    {
+      "id": "ADR-0026",
+      "file": "0026-wave-2f-org.md",
+      "title": "Enabled Org workflows",
+      "status": "selected",
+      "origin": "agent-selected",
+      "recorded": "2026-09-13",
+      "implementation": "planned",
+      "tasks": [
+        "P12"
+      ],
+      "integration_ids": [
+        "I095",
+        "I096",
+        "I097",
+        "I098",
+        "I099",
+        "I100",
+        "I101",
+        "I102"
+      ]
+    },
+    {
+      "id": "ADR-0027",
+      "file": "0027-wave-2g-programming.md",
+      "title": "Structural editing and programming integrations",
+      "status": "selected",
+      "origin": "agent-selected",
+      "recorded": "2026-09-13",
+      "implementation": "planned",
+      "tasks": [
+        "P13"
+      ],
+      "integration_ids": [
+        "I103",
+        "I104",
+        "I105",
+        "I106",
+        "I107",
+        "I108",
+        "I109",
+        "I110",
+        "I111",
+        "I112",
+        "I113",
+        "I114",
+        "I115",
+        "I116",
+        "I117",
+        "I118",
+        "I119",
+        "I120",
+        "I121",
+        "I122",
+        "I123",
+        "I124",
+        "I125",
+        "I126",
+        "I127",
+        "I128"
+      ]
+    },
+    {
+      "id": "ADR-0028",
+      "file": "0028-wave-2h-terminal.md",
+      "title": "Shell and terminal integrations",
+      "status": "selected",
+      "origin": "agent-selected",
+      "recorded": "2026-09-13",
+      "implementation": "planned",
+      "tasks": [
+        "P14"
+      ],
+      "integration_ids": [
+        "I129",
+        "I130",
+        "I131",
+        "I132",
+        "I133",
+        "I134",
+        "I135",
+        "I136",
+        "I137",
+        "I138",
+        "I139",
+        "I140",
+        "I141",
+        "I142",
+        "I143",
+        "I144",
+        "I145",
+        "I146",
+        "I147",
+        "I148",
+        "I149",
+        "I150",
+        "I151",
+        "I152"
+      ]
+    },
+    {
+      "id": "ADR-0029",
+      "file": "0029-wave-2i-appearance.md",
+      "title": "Appearance and visual compatibility",
+      "status": "selected",
+      "origin": "agent-selected",
+      "recorded": "2026-09-13",
+      "implementation": "planned",
+      "tasks": [
+        "P15"
+      ],
+      "integration_ids": [
+        "I153",
+        "I154",
+        "I155",
+        "I156",
+        "I157",
+        "I158",
+        "I159",
+        "I160",
+        "I161",
+        "I162",
+        "I163",
+        "I164",
+        "I165",
+        "I166",
+        "I167",
+        "I168",
+        "I169",
+        "I170",
+        "I171",
+        "I172",
+        "I173"
+      ]
+    },
+    {
+      "id": "ADR-0030",
+      "file": "0030-wave-2j-runtime.md",
+      "title": "Remaining runtime compatibility",
+      "status": "selected",
+      "origin": "agent-selected",
+      "recorded": "2026-09-13",
+      "implementation": "planned",
+      "tasks": [
+        "P16"
+      ],
+      "integration_ids": [
+        "I174",
+        "I175",
+        "I176",
+        "I177",
+        "I178",
+        "I179",
+        "I180",
+        "I181",
+        "I182",
+        "I183",
+        "I184",
+        "I185",
+        "I186",
+        "I187",
+        "I188",
+        "I189",
+        "I190",
+        "I191",
+        "I192",
+        "I193",
+        "I194"
+      ]
+    },
+    {
+      "id": "ADR-0031",
+      "file": "0031-inherited-deployment.md",
+      "title": "Retain documented deployment and state ownership",
+      "status": "accepted",
+      "origin": "inherited-documented-policy",
+      "recorded": "2026-09-13",
+      "implementation": "existing policy; historical details require live verification",
+      "tasks": [],
+      "integration_ids": []
+    },
+    {
+      "id": "ADR-0032",
+      "file": "0032-inherited-theme-and-fonts.md",
+      "title": "Retain the documented theme, font and dashboard architecture",
+      "status": "accepted",
+      "origin": "inherited-documented-policy",
+      "recorded": "2026-09-13",
+      "implementation": "existing policy; branding and formatter reconciliation planned",
+      "tasks": [],
+      "integration_ids": []
+    },
+    {
+      "id": "ADR-0033",
+      "file": "0033-inherited-windows-terminal.md",
+      "title": "Retain child-scoped Windows terminal adaptation",
+      "status": "accepted",
+      "origin": "inherited-documented-policy",
+      "recorded": "2026-09-13",
+      "implementation": "existing host policy",
+      "tasks": [],
+      "integration_ids": []
+    },
+    {
+      "id": "ADR-0034",
+      "file": "0034-inherited-language-tooling.md",
+      "title": "Retain pinned grammar recipes and explicit language tooling",
+      "status": "accepted",
+      "origin": "inherited-documented-policy",
+      "recorded": "2026-09-13",
+      "implementation": "existing host policy",
+      "tasks": [],
+      "integration_ids": []
+    },
+    {
+      "id": "ADR-0035",
+      "file": "0035-inherited-org-policy.md",
+      "title": "Retain the minimal Org storage boundary",
+      "status": "accepted",
+      "origin": "inherited-documented-policy",
+      "recorded": "2026-09-13",
+      "implementation": "existing host policy",
+      "tasks": [],
+      "integration_ids": []
+    }
+  ],
+  "architecture_sections": {
+    "1": [
+      "ADR-0002",
+      "ADR-0012",
+      "ADR-0013"
+    ],
+    "2": [
+      "ADR-0002",
+      "ADR-0004",
+      "ADR-0005",
+      "ADR-0006",
+      "ADR-0008",
+      "ADR-0009",
+      "ADR-0010"
+    ],
+    "3": [
+      "ADR-0002",
+      "ADR-0003",
+      "ADR-0004",
+      "ADR-0006"
+    ],
+    "4": [
+      "ADR-0009"
+    ],
+    "5": [
+      "ADR-0005",
+      "ADR-0006"
+    ],
+    "6": [
+      "ADR-0003",
+      "ADR-0004",
+      "ADR-0005"
+    ],
+    "7": [
+      "ADR-0011"
+    ],
+    "8": [
+      "ADR-0007",
+      "ADR-0012"
+    ],
+    "9": [
+      "ADR-0009",
+      "ADR-0010",
+      "ADR-0017",
+      "ADR-0018"
+    ],
+    "10": [
+      "ADR-0008",
+      "ADR-0015",
+      "ADR-0016"
+    ],
+    "11": [
+      "ADR-0002",
+      "ADR-0003",
+      "ADR-0004",
+      "ADR-0007"
+    ]
+  },
+  "constraints": [
+    {
+      "text": "Minimum supported core runtime: GNU Emacs 30.1.",
+      "adr": "ADR-0008"
+    },
+    {
+      "text": "First exercised host: native Windows Emacs 31.1, with GUI and daemon/terminal checks kept distinct.",
+      "adr": "ADR-0008"
+    },
+    {
+      "text": "Initial Meow compatibility target: installed Meow snapshot 20260714.1200. Record its source revision before standalone release; do not invent an upstream tag for this snapshot.",
+      "adr": "ADR-0008"
+    },
+    {
+      "text": "Meow owns editing grammar, selection, grabs, Beacon and states. UwUmacs owns its keymaps, registry, menu labels and compatibility hooks.",
+      "adr": "ADR-0002"
+    },
+    {
+      "text": "UwUmacs core has no package manager, network access, machine paths, fonts, themes or `lem-*` dependencies.",
+      "adr": "ADR-0002"
+    },
+    {
+      "text": "Keep PowerShell default, MSYS2 explicit, language-server startup opt-in and the independent notes vault untouched.",
+      "adr": "ADR-0010"
+    },
+    {
+      "text": "Preserve the current completion stack and the frames-only preference. Frames-only is a host-selected adapter, not a mandatory dependency of core.",
+      "adr": "ADR-0010"
+    },
+    {
+      "text": "Every runtime change is authored in literate Org and tangled; generated Lisp remains tracked. Startup never tangles.",
+      "adr": "ADR-0009"
+    },
+    {
+      "text": "Keep generated files directly in `lambda-library/lambda-user/` initially. The current tangle validator rejects nested outputs; this design does not weaken that boundary.",
+      "adr": "ADR-0009"
+    },
+    {
+      "text": "Do not modify installed files under `var/elpa/`. Preserve Lambda provenance and existing licenses.",
+      "adr": "ADR-0010"
+    },
+    {
+      "text": "User overrides win deterministically. Re-enabling a mode or reloading an adapter must not duplicate bindings, hooks, advice or formatters.",
+      "adr": "ADR-0005"
+    },
+    {
+      "text": "Package integrations are selected explicitly. Loading core must not force every selected target package to load.",
+      "adr": "ADR-0006"
+    },
+    {
+      "text": "Temporary input interfaces retain control. UwUmacs must not globally commandeer minibuffers, Transient, query-replace, isearch or terminal character input.",
+      "adr": "ADR-0004"
+    }
+  ]
+}

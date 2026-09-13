@@ -2,11 +2,13 @@
 
 Status: design for implementation; no UwUmacs runtime has been installed by this planning change.
 Date: 2026-09-13. Development branch: `uwumacs`.
-Baseline: `1f70a93ff5e18b2c4b2fe3b6683ae4bc27243108`, plus the existing uncommitted physical-hint changes carried from `feat/meow-physical-key-hints`.
+Baseline: `1f70a93ff5e18b2c4b2fe3b6683ae4bc27243108`, plus the physical-hint implementation committed as `51c19c1` (originally carried from `feat/meow-physical-key-hints`).
 
 Read the [implementation plan](../plans/2026-09-13-uwumacs.md) and [ordered integration catalogue](../../uwumacs/integrations.md) together with this contract. The [inventory](../../uwumacs/package-inventory.json) records source hashes, declaration evidence, installed versions and individual ticket IDs.
 
 ## 1. Product and scope
+
+Decision records: [ADR-0002](../../ADRs/0002-meow-interaction-layer.md), [ADR-0012](../../ADRs/0012-branding.md), [ADR-0013](../../ADRs/0013-enabled-scope-and-inventory.md).
 
 UwUmacs is a configurable Meow interaction layer: literal leader maps, discoverable command menus and individually selectable package integrations. Its first host is the existing Lambda-based Emacs-Dots configuration. Its identity is `:3 UwUmacs`; the ASCII `:3` mark must work without a font installation or image backend.
 
@@ -15,6 +17,8 @@ The initial roadmap covers **enabled configurations**, including configured pack
 A use-package declaration and an installed archive are not proof that a feature successfully loaded. Inventory `observed_loaded` is a startup observation, not an enablement flag. Mode names, command surfaces and internal libraries are labelled as such rather than counted as distinct user-facing packages.
 
 ## 2. Fixed decisions and constraints
+
+Decision records: [ADR-0002](../../ADRs/0002-meow-interaction-layer.md), [ADR-0004](../../ADRs/0004-owned-state-layer.md), [ADR-0005](../../ADRs/0005-composition-and-conflicts.md), [ADR-0006](../../ADRs/0006-integration-registry.md), [ADR-0008](../../ADRs/0008-compatibility-floor.md), [ADR-0009](../../ADRs/0009-literate-files-and-modules.md), [ADR-0010](../../ADRs/0010-host-boundary.md).
 
 - Minimum supported core runtime: GNU Emacs 30.1.
 - First exercised host: native Windows Emacs 31.1, with GUI and daemon/terminal checks kept distinct.
@@ -32,25 +36,15 @@ A use-package declaration and an installed archive are not proof that a feature 
 
 These constraints apply verbatim to every implementation task.
 
-## 3. Why this structure
+## 3. Decision rationale
 
-The strongest shared practice is use of normal Emacs keymaps with explicit mode/state scope. Meow supports binding a keymap in its state maps; Evil Collection demonstrates per-package adapters and an explicit selection list. Neither implies that all communities favor the same key layout.
+Decision records: [ADR-0002](../../ADRs/0002-meow-interaction-layer.md), [ADR-0003](../../ADRs/0003-native-literal-dispatch.md), [ADR-0004](../../ADRs/0004-owned-state-layer.md), [ADR-0006](../../ADRs/0006-integration-registry.md).
 
-We choose a small **UwUmacs-owned state-aware emulation layer** for all UwUmacs bindings, including the leader. This avoids saving and restoring a growing number of edits to Meow or package maps. It also makes per-buffer integration maps possible. Ordinary minor-mode bindings alone are insufficient because Meow's state maps have higher precedence.
-
-Alternatives considered:
-
-| Alternative | Decision |
-|---|---|
-| Continue keypad plus physical-hint reconstruction | Useful current bridge, but retains the translation policy the user wants to stop maintaining. |
-| Put all bindings directly into global Meow state maps | Good for a few personal keys, but awkward for reversible package-specific overrides and per-buffer localleaders. |
-| Native emulation maps owned by UwUmacs | Selected. More explicit lifecycle work, with native key lookup and clear ownership. |
-| Fork Meow, adopt Evil, or replace package management | Outside scope; does not advance the chosen interaction model. |
-| Require General or introduce a large binding DSL | Not needed initially. Public maps and a small data registry are sufficient. |
-
-Helheim's current `hel-leader` translates Space into Emacs prefixes, so it is a modularity reference, not evidence for our literal input mechanism.
+Decision context, alternatives, provenance and consequences now live in the [dedicated ADR folder](../../ADRs/README.md). The selected architecture uses UwUmacs-owned native emulation maps, with Meow retaining editing/state ownership and the host retaining package policy. ADR-0002 through ADR-0006 record why this was selected and what remains unimplemented.
 
 ## 4. Components and file ownership
+
+Decision records: [ADR-0009](../../ADRs/0009-literate-files-and-modules.md).
 
 All listed Lisp outputs are new **planned** files in `lambda-library/lambda-user/`.
 
@@ -88,6 +82,8 @@ Literate authoring chapters:
 Existing composition changes belong in `20-user-policy.org`; Meow grammar stays in `40-editing.org`. Update `literate/manifest.json` with every new source and flat output before tangling.
 
 ## 5. Public interfaces
+
+Decision records: [ADR-0005](../../ADRs/0005-composition-and-conflicts.md), [ADR-0006](../../ADRs/0006-integration-registry.md).
 
 The following signatures are contracts for implementation, not APIs already present.
 
@@ -144,6 +140,8 @@ Lazy readiness states are `disabled`, `pending`, `ready`, `unavailable` and `fai
 
 ## 6. Lookup and lifecycle algorithm
 
+Decision records: [ADR-0003](../../ADRs/0003-native-literal-dispatch.md), [ADR-0004](../../ADRs/0004-owned-state-layer.md), [ADR-0005](../../ADRs/0005-composition-and-conflicts.md).
+
 1. Register one symbol, `uwumacs--emulation-alist`, ahead of Meow's ordinary state entries in `emulation-mode-map-alists`. Do not alter terminal-local overriding maps.
 2. Keep that symbol's value and active-state flags buffer-local. Maps for Normal, Motion and the modified fallback are built from UwUmacs-owned data.
 3. Observe Meow state/mode hooks and major-mode changes. Refresh eligibility after state changes; do not replace Meow state commands or call a state minor-mode function repeatedly to force its existing state.
@@ -159,6 +157,8 @@ Temporary input has higher authority. Transient, isearch, query-replace, complet
 The framework must preserve native command-loop behavior: remapping, prefix arguments, recording/replay, `this-command`, hooks and ordinary quit semantics. Bind command symbols rather than manufacturing keyboard macros or calling a command through a generic dispatcher.
 
 ## 7. Initial key vocabulary and deliberate migrations
+
+Decision records: [ADR-0011](../../ADRs/0011-key-vocabulary.md).
 
 Keep established useful sequences. Own the maps rather than mutating shared vendor maps.
 
@@ -187,6 +187,8 @@ Publish a migration table for every changed sequence. Keep the modified recovery
 
 ## 8. Discovery and menu contract
 
+Decision records: [ADR-0007](../../ADRs/0007-discovery-from-effective-maps.md), [ADR-0012](../../ADRs/0012-branding.md).
+
 The executable keymaps are authoritative. Labels decorate the maps; they are not a second independently maintained command tree.
 
 - Which-key uses its normal public configuration and effective prefix maps. Remove the new private keypad-popup advice when literal leader takes over.
@@ -198,6 +200,8 @@ The executable keymaps are authoritative. Labels decorate the maps; they are not
 - `:3` branding never replaces the visible Meow state indicator.
 
 ## 9. Existing configuration changes
+
+Decision records: [ADR-0009](../../ADRs/0009-literate-files-and-modules.md), [ADR-0010](../../ADRs/0010-host-boundary.md), [ADR-0017](../../ADRs/0017-frames-only-integration.md), [ADR-0018](../../ADRs/0018-physical-hint-adapter.md).
 
 | Source | Change |
 |---|---|
@@ -218,6 +222,8 @@ Current source findings requiring explicit tickets: `SPC l` has two writers with
 
 ## 10. Verification and release gates
 
+Decision records: [ADR-0008](../../ADRs/0008-compatibility-floor.md), [ADR-0015](../../ADRs/0015-verification-and-recovery.md), [ADR-0016](../../ADRs/0016-standalone-release.md).
+
 Milestone 1 requires ordinary startup plus real GUI key execution and rendered menu/annotation checks. Test a buffer pair with different localleaders, Insert and Motion states, disabling/re-enabling, prefix arguments, command remapping, recording/replay, callback load order and missing packages.
 
 Meow keypad has special selection/grab/Beacon behavior. Literal maps do not promise automatic equivalence. A fixture suite must explicitly establish which actions retain the same semantics. Keep Beacon unchanged initially and label any documented differences before migration.
@@ -227,6 +233,8 @@ Milestone 2 is complete only when every scheduled catalogue ticket has passed it
 Milestone 3 validates loading the reusable core without Lambda, starts a minimal example with selected adapters only, proves core unload/disable behavior and documents the supported version matrix. Keep Windows GUI, Windows daemon/terminal and Linux smoke runs distinct. Do not inherit the sibling dev-ci checkout's CI claims as evidence for this branch.
 
 ## 11. Research basis
+
+Decision records: [ADR-0002](../../ADRs/0002-meow-interaction-layer.md), [ADR-0003](../../ADRs/0003-native-literal-dispatch.md), [ADR-0004](../../ADRs/0004-owned-state-layer.md), [ADR-0007](../../ADRs/0007-discovery-from-effective-maps.md).
 
 The architecture is a synthesis of documented mechanisms, not a claim of universal community consensus.
 

@@ -46,7 +46,50 @@ for line in constraints.splitlines():
 for n in range(18):
     assert f'P{n:02}' in plan_text, n
 
-for file in (spec, plan, catalogue, here / 'README.md'):
+adr_dir = root / 'docs/ADRs'
+adr_index = json.loads((adr_dir / 'index.json').read_text(encoding='utf-8'))
+adrs = {r['id']: r for r in adr_index['records']}
+assert len(adrs) == len(adr_index['records']), 'duplicate ADR IDs'
+adr_texts = {}
+covered_tickets = []
+covered_tasks = set()
+for adr_id, adr in adrs.items():
+    assert re.fullmatch(r'ADR-\d{4}', adr_id), adr_id
+    assert adr['file'].startswith(adr_id[4:] + '-'), adr_id
+    assert adr['status'] in {'accepted', 'selected', 'superseded'}, adr_id
+    assert adr['origin'] and adr['implementation'] and adr['recorded'], adr_id
+    body = (adr_dir / adr['file']).read_text(encoding='utf-8')
+    adr_texts[adr_id] = body
+    assert body.startswith(f"# {adr_id}: {adr['title']}\n"), adr_id
+    for key in ('status', 'origin', 'implementation'):
+        assert f"- {key.title()}: **{adr[key]}**" in body, (adr_id, key)
+    for heading in ('Context', 'Decision', 'Alternatives considered', 'Consequences',
+                    'Provenance and implementation references'):
+        assert f'## {heading}\n' in body, (adr_id, heading)
+    covered_tickets.extend(adr['integration_ids'])
+    covered_tasks.update(adr['tasks'])
+assert set(covered_tickets) == ids, 'ADR integration coverage mismatch'
+assert len(covered_tickets) == len(ids), 'integration assigned to multiple ADRs'
+assert covered_tasks == {f'P{n:02}' for n in range(18)}, 'ADR task coverage mismatch'
+for r in records:
+    adr_path = (here / r['decision_adr']).resolve()
+    matches = [key for key, value in adrs.items()
+               if (adr_dir / value['file']).resolve() == adr_path]
+    assert len(matches) == 1, 'unknown ADR link: ' + r['id']
+    adr_id = matches[0]
+    assert adr_id in adrs and r['id'] in adrs[adr_id]['integration_ids'], r['id']
+    assert r['action'] in adr_texts[adr_id], 'ADR contract drift: ' + r['id']
+sections = adr_index['architecture_sections']
+assert set(sections) == set(re.findall(r'^## (\d+)\.', spec_text, re.M))
+for section, references in sections.items():
+    assert references and set(references) <= adrs.keys(), section
+assert [r['text'] for r in adr_index['constraints']] == [
+    line[2:] for line in constraints.splitlines() if line.startswith('- ')
+], 'ADR constraint coverage mismatch'
+assert all(r['adr'] in adrs for r in adr_index['constraints'])
+
+for file in (spec, plan, catalogue, here / 'README.md', root / 'AGENTS.md',
+             adr_dir / 'README.md', *(adr_dir / r['file'] for r in adrs.values())):
     text = file.read_text(encoding='utf-8')
     assert not re.search(r'\bTBD\b|fill in details|implement later', text, re.I), file
     for link in re.findall(r'\[[^\]\n]*\]\(([^)\n]+)\)', text):
@@ -61,4 +104,4 @@ if args.check_source_snapshot:
 print(f"UWUMACS PLAN PASS: {len(records)} ordered tickets, "
       f"{len(inventory['configured_names'])} configured names, "
       f"{inventory['installed_count']} installed packages accounted for, "
-      f"{len(excluded)} inventory-only entries")
+      f"{len(excluded)} inventory-only entries, {len(adrs)} ADRs with full contract coverage")

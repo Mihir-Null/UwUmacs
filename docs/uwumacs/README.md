@@ -1,8 +1,10 @@
 # :3 UwUmacs development map
 
-Status: architecture and roadmap prepared; runtime implementation starts at P00. Work is on branch `uwumacs`, based on `1f70a93`, with the earlier uncommitted physical-key-hint work preserved.
+Status: architecture and roadmap prepared; runtime implementation starts at P00. Work is on branch `uwumacs`, based on `1f70a93`, with the physical-key-hint implementation committed separately as `51c19c1`.
 
-Read in this order:
+Read the [dedicated ADRs](../ADRs/README.md) for decision provenance, alternatives and consequences.
+
+Read the implementation documents in this order:
 
 1. [Architecture contract](../superpowers/specs/2026-09-13-uwumacs-design.md): ownership, public interfaces, keymap precedence, lifecycle, localleader behavior and migration decisions.
 2. [Implementation plan](../superpowers/plans/2026-09-13-uwumacs.md): P00–P17, exact source/output/test files, dependencies, review steps and release gates.
@@ -30,6 +32,6 @@ python docs/uwumacs/validate-plan.py --check-source-snapshot
 git diff --check
 ```
 
-The optional snapshot check compares the original inspected source files with their recorded hashes. It is expected to report drift once implementation changes those files; update the census deliberately when re-planning. Without that flag, the validator checks document links, inventory coverage, ticket order and shared constraints.
+The optional snapshot check compares the original inspected source files with their recorded hashes. It is expected to report drift once implementation changes those files; update the census deliberately when re-planning. Without that flag, the validator checks document links, inventory coverage, ticket order, shared constraints and ADR coverage/status metadata.
 
-The planning commit contains only these documents and their validation helper. Earlier uncommitted hint code remains separate. No package was installed, no UwUmacs runtime was enabled, and no remote publication is implied by this roadmap.
+The planning commit contains only these documents and their validation helper. Hint code is committed separately as `51c19c1`; the UwUmacs runtime is still planned. No package was installed, no UwUmacs runtime was enabled, and no remote publication is implied by this roadmap.

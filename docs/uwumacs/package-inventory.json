@@ -778,7 +778,8 @@
         "I002"
       ],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-core.el",
-      "test_file": "tests/uwumacs-core-tests.el"
+      "test_file": "tests/uwumacs-core-tests.el",
+      "decision_adr": "../ADRs/0019-wave-1a-core.md"
     },
     {
       "id": "I002",
@@ -876,7 +877,8 @@
       "package_dependencies": [],
       "dependency_tickets": [],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-core.el",
-      "test_file": "tests/uwumacs-core-tests.el"
+      "test_file": "tests/uwumacs-core-tests.el",
+      "decision_adr": "../ADRs/0019-wave-1a-core.md"
     },
     {
       "id": "I003",
@@ -913,7 +915,8 @@
       "package_dependencies": [],
       "dependency_tickets": [],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-core.el",
-      "test_file": "tests/uwumacs-core-tests.el"
+      "test_file": "tests/uwumacs-core-tests.el",
+      "decision_adr": "../ADRs/0019-wave-1a-core.md"
     },
     {
       "id": "I004",
@@ -984,7 +987,8 @@
       "package_dependencies": [],
       "dependency_tickets": [],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-core.el",
-      "test_file": "tests/uwumacs-core-tests.el"
+      "test_file": "tests/uwumacs-core-tests.el",
+      "decision_adr": "../ADRs/0019-wave-1a-core.md"
     },
     {
       "id": "I005",
@@ -1012,7 +1016,8 @@
       "package_dependencies": [],
       "dependency_tickets": [],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-core.el",
-      "test_file": "tests/uwumacs-core-tests.el"
+      "test_file": "tests/uwumacs-core-tests.el",
+      "decision_adr": "../ADRs/0019-wave-1a-core.md"
     },
     {
       "id": "I006",
@@ -1045,7 +1050,8 @@
       "package_dependencies": [],
       "dependency_tickets": [],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-core.el",
-      "test_file": "tests/uwumacs-core-tests.el"
+      "test_file": "tests/uwumacs-core-tests.el",
+      "decision_adr": "../ADRs/0019-wave-1a-core.md"
     },
     {
       "id": "I007",
@@ -1082,7 +1088,8 @@
       "package_dependencies": [],
       "dependency_tickets": [],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-core.el",
-      "test_file": "tests/uwumacs-core-tests.el"
+      "test_file": "tests/uwumacs-core-tests.el",
+      "decision_adr": "../ADRs/0019-wave-1a-core.md"
     },
     {
       "id": "I008",
@@ -1119,7 +1126,8 @@
       "package_dependencies": [],
       "dependency_tickets": [],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-core.el",
-      "test_file": "tests/uwumacs-core-tests.el"
+      "test_file": "tests/uwumacs-core-tests.el",
+      "decision_adr": "../ADRs/0019-wave-1a-core.md"
     },
     {
       "id": "I009",
@@ -1156,7 +1164,8 @@
       "package_dependencies": [],
       "dependency_tickets": [],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-core.el",
-      "test_file": "tests/uwumacs-core-tests.el"
+      "test_file": "tests/uwumacs-core-tests.el",
+      "decision_adr": "../ADRs/0019-wave-1a-core.md"
     },
     {
       "id": "I010",
@@ -1189,7 +1198,8 @@
       "package_dependencies": [],
       "dependency_tickets": [],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-core.el",
-      "test_file": "tests/uwumacs-core-tests.el"
+      "test_file": "tests/uwumacs-core-tests.el",
+      "decision_adr": "../ADRs/0019-wave-1a-core.md"
     },
     {
       "id": "I011",
@@ -1206,7 +1216,8 @@
       "package_dependencies": [],
       "dependency_tickets": [],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-core.el",
-      "test_file": "tests/uwumacs-core-tests.el"
+      "test_file": "tests/uwumacs-core-tests.el",
+      "decision_adr": "../ADRs/0019-wave-1a-core.md"
     },
     {
       "id": "I012",
@@ -1247,7 +1258,8 @@
         "I002"
       ],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-core.el",
-      "test_file": "tests/uwumacs-core-tests.el"
+      "test_file": "tests/uwumacs-core-tests.el",
+      "decision_adr": "../ADRs/0019-wave-1a-core.md"
     },
     {
       "id": "I013",
@@ -1288,7 +1300,8 @@
         "I002"
       ],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-core.el",
-      "test_file": "tests/uwumacs-core-tests.el"
+      "test_file": "tests/uwumacs-core-tests.el",
+      "decision_adr": "../ADRs/0019-wave-1a-core.md"
     },
     {
       "id": "I014",
@@ -1325,7 +1338,8 @@
       "package_dependencies": [],
       "dependency_tickets": [],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-core.el",
-      "test_file": "tests/uwumacs-core-tests.el"
+      "test_file": "tests/uwumacs-core-tests.el",
+      "decision_adr": "../ADRs/0019-wave-1a-core.md"
     },
     {
       "id": "I015",
@@ -1370,7 +1384,8 @@
         "I013"
       ],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-core.el",
-      "test_file": "tests/uwumacs-core-tests.el"
+      "test_file": "tests/uwumacs-core-tests.el",
+      "decision_adr": "../ADRs/0019-wave-1a-core.md"
     },
     {
       "id": "I016",
@@ -1407,7 +1422,8 @@
       "package_dependencies": [],
       "dependency_tickets": [],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-core.el",
-      "test_file": "tests/uwumacs-core-tests.el"
+      "test_file": "tests/uwumacs-core-tests.el",
+      "decision_adr": "../ADRs/0019-wave-1a-core.md"
     },
     {
       "id": "I017",
@@ -1424,7 +1440,8 @@
       "package_dependencies": [],
       "dependency_tickets": [],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-core.el",
-      "test_file": "tests/uwumacs-core-tests.el"
+      "test_file": "tests/uwumacs-core-tests.el",
+      "decision_adr": "../ADRs/0019-wave-1a-core.md"
     },
     {
       "id": "I018",
@@ -1441,7 +1458,8 @@
       "package_dependencies": [],
       "dependency_tickets": [],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-core.el",
-      "test_file": "tests/uwumacs-core-tests.el"
+      "test_file": "tests/uwumacs-core-tests.el",
+      "decision_adr": "../ADRs/0019-wave-1a-core.md"
     },
     {
       "id": "I019",
@@ -1462,7 +1480,8 @@
         "I002"
       ],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-core.el",
-      "test_file": "tests/uwumacs-core-tests.el"
+      "test_file": "tests/uwumacs-core-tests.el",
+      "decision_adr": "../ADRs/0019-wave-1a-core.md"
     },
     {
       "id": "I020",
@@ -1479,7 +1498,8 @@
       "package_dependencies": [],
       "dependency_tickets": [],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-discovery.el",
-      "test_file": "tests/uwumacs-discovery-tests.el"
+      "test_file": "tests/uwumacs-discovery-tests.el",
+      "decision_adr": "../ADRs/0020-wave-1b-discovery.md"
     },
     {
       "id": "I021",
@@ -1520,7 +1540,8 @@
         "I002"
       ],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-discovery.el",
-      "test_file": "tests/uwumacs-discovery-tests.el"
+      "test_file": "tests/uwumacs-discovery-tests.el",
+      "decision_adr": "../ADRs/0020-wave-1b-discovery.md"
     },
     {
       "id": "I022",
@@ -1561,7 +1582,8 @@
         "I002"
       ],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-discovery.el",
-      "test_file": "tests/uwumacs-discovery-tests.el"
+      "test_file": "tests/uwumacs-discovery-tests.el",
+      "decision_adr": "../ADRs/0020-wave-1b-discovery.md"
     },
     {
       "id": "I023",
@@ -1594,7 +1616,8 @@
       "package_dependencies": [],
       "dependency_tickets": [],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-discovery.el",
-      "test_file": "tests/uwumacs-discovery-tests.el"
+      "test_file": "tests/uwumacs-discovery-tests.el",
+      "decision_adr": "../ADRs/0020-wave-1b-discovery.md"
     },
     {
       "id": "I024",
@@ -1627,7 +1650,8 @@
       "package_dependencies": [],
       "dependency_tickets": [],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-discovery.el",
-      "test_file": "tests/uwumacs-discovery-tests.el"
+      "test_file": "tests/uwumacs-discovery-tests.el",
+      "decision_adr": "../ADRs/0020-wave-1b-discovery.md"
     },
     {
       "id": "I025",
@@ -1668,7 +1692,8 @@
         "I002"
       ],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-discovery.el",
-      "test_file": "tests/uwumacs-discovery-tests.el"
+      "test_file": "tests/uwumacs-discovery-tests.el",
+      "decision_adr": "../ADRs/0020-wave-1b-discovery.md"
     },
     {
       "id": "I026",
@@ -1711,7 +1736,8 @@
         "I010"
       ],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-completion.el",
-      "test_file": "tests/uwumacs-completion-tests.el"
+      "test_file": "tests/uwumacs-completion-tests.el",
+      "decision_adr": "../ADRs/0021-wave-2a-completion.md"
     },
     {
       "id": "I027",
@@ -1748,7 +1774,8 @@
       "package_dependencies": [],
       "dependency_tickets": [],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-completion.el",
-      "test_file": "tests/uwumacs-completion-tests.el"
+      "test_file": "tests/uwumacs-completion-tests.el",
+      "decision_adr": "../ADRs/0021-wave-2a-completion.md"
     },
     {
       "id": "I028",
@@ -1789,7 +1816,8 @@
       "package_dependencies": [],
       "dependency_tickets": [],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-completion.el",
-      "test_file": "tests/uwumacs-completion-tests.el"
+      "test_file": "tests/uwumacs-completion-tests.el",
+      "decision_adr": "../ADRs/0021-wave-2a-completion.md"
     },
     {
       "id": "I029",
@@ -1830,7 +1858,8 @@
       "package_dependencies": [],
       "dependency_tickets": [],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-completion.el",
-      "test_file": "tests/uwumacs-completion-tests.el"
+      "test_file": "tests/uwumacs-completion-tests.el",
+      "decision_adr": "../ADRs/0021-wave-2a-completion.md"
     },
     {
       "id": "I030",
@@ -1869,7 +1898,8 @@
         "I010"
       ],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-completion.el",
-      "test_file": "tests/uwumacs-completion-tests.el"
+      "test_file": "tests/uwumacs-completion-tests.el",
+      "decision_adr": "../ADRs/0021-wave-2a-completion.md"
     },
     {
       "id": "I031",
@@ -1916,7 +1946,8 @@
         "I010"
       ],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-completion.el",
-      "test_file": "tests/uwumacs-completion-tests.el"
+      "test_file": "tests/uwumacs-completion-tests.el",
+      "decision_adr": "../ADRs/0021-wave-2a-completion.md"
     },
     {
       "id": "I032",
@@ -1961,7 +1992,8 @@
         "I031"
       ],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-completion.el",
-      "test_file": "tests/uwumacs-completion-tests.el"
+      "test_file": "tests/uwumacs-completion-tests.el",
+      "decision_adr": "../ADRs/0021-wave-2a-completion.md"
     },
     {
       "id": "I033",
@@ -2000,7 +2032,8 @@
         "I010"
       ],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-completion.el",
-      "test_file": "tests/uwumacs-completion-tests.el"
+      "test_file": "tests/uwumacs-completion-tests.el",
+      "decision_adr": "../ADRs/0021-wave-2a-completion.md"
     },
     {
       "id": "I034",
@@ -2043,7 +2076,8 @@
         "I010"
       ],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-completion.el",
-      "test_file": "tests/uwumacs-completion-tests.el"
+      "test_file": "tests/uwumacs-completion-tests.el",
+      "decision_adr": "../ADRs/0021-wave-2a-completion.md"
     },
     {
       "id": "I035",
@@ -2084,7 +2118,8 @@
       "package_dependencies": [],
       "dependency_tickets": [],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-completion.el",
-      "test_file": "tests/uwumacs-completion-tests.el"
+      "test_file": "tests/uwumacs-completion-tests.el",
+      "decision_adr": "../ADRs/0021-wave-2a-completion.md"
     },
     {
       "id": "I036",
@@ -2127,7 +2162,8 @@
         "I010"
       ],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-completion.el",
-      "test_file": "tests/uwumacs-completion-tests.el"
+      "test_file": "tests/uwumacs-completion-tests.el",
+      "decision_adr": "../ADRs/0021-wave-2a-completion.md"
     },
     {
       "id": "I037",
@@ -2166,7 +2202,8 @@
         "I010"
       ],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-completion.el",
-      "test_file": "tests/uwumacs-completion-tests.el"
+      "test_file": "tests/uwumacs-completion-tests.el",
+      "decision_adr": "../ADRs/0021-wave-2a-completion.md"
     },
     {
       "id": "I038",
@@ -2194,7 +2231,8 @@
       "package_dependencies": [],
       "dependency_tickets": [],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-completion.el",
-      "test_file": "tests/uwumacs-completion-tests.el"
+      "test_file": "tests/uwumacs-completion-tests.el",
+      "decision_adr": "../ADRs/0021-wave-2a-completion.md"
     },
     {
       "id": "I039",
@@ -2237,7 +2275,8 @@
         "I002"
       ],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-completion.el",
-      "test_file": "tests/uwumacs-completion-tests.el"
+      "test_file": "tests/uwumacs-completion-tests.el",
+      "decision_adr": "../ADRs/0021-wave-2a-completion.md"
     },
     {
       "id": "I040",
@@ -2280,7 +2319,8 @@
         "I159"
       ],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-completion.el",
-      "test_file": "tests/uwumacs-completion-tests.el"
+      "test_file": "tests/uwumacs-completion-tests.el",
+      "decision_adr": "../ADRs/0021-wave-2a-completion.md"
     },
     {
       "id": "I041",
@@ -2323,7 +2363,8 @@
         "I156"
       ],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-completion.el",
-      "test_file": "tests/uwumacs-completion-tests.el"
+      "test_file": "tests/uwumacs-completion-tests.el",
+      "decision_adr": "../ADRs/0021-wave-2a-completion.md"
     },
     {
       "id": "I042",
@@ -2356,7 +2397,8 @@
       "package_dependencies": [],
       "dependency_tickets": [],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-help.el",
-      "test_file": "tests/uwumacs-help-tests.el"
+      "test_file": "tests/uwumacs-help-tests.el",
+      "decision_adr": "../ADRs/0022-wave-2b-help.md"
     },
     {
       "id": "I043",
@@ -2389,7 +2431,8 @@
       "package_dependencies": [],
       "dependency_tickets": [],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-help.el",
-      "test_file": "tests/uwumacs-help-tests.el"
+      "test_file": "tests/uwumacs-help-tests.el",
+      "decision_adr": "../ADRs/0022-wave-2b-help.md"
     },
     {
       "id": "I044",
@@ -2434,7 +2477,8 @@
         "I046"
       ],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-help.el",
-      "test_file": "tests/uwumacs-help-tests.el"
+      "test_file": "tests/uwumacs-help-tests.el",
+      "decision_adr": "../ADRs/0022-wave-2b-help.md"
     },
     {
       "id": "I045",
@@ -2475,7 +2519,8 @@
         "I002"
       ],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-help.el",
-      "test_file": "tests/uwumacs-help-tests.el"
+      "test_file": "tests/uwumacs-help-tests.el",
+      "decision_adr": "../ADRs/0022-wave-2b-help.md"
     },
     {
       "id": "I046",
@@ -2498,7 +2543,8 @@
         "I014"
       ],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-help.el",
-      "test_file": "tests/uwumacs-help-tests.el"
+      "test_file": "tests/uwumacs-help-tests.el",
+      "decision_adr": "../ADRs/0022-wave-2b-help.md"
     },
     {
       "id": "I047",
@@ -2515,7 +2561,8 @@
       "package_dependencies": [],
       "dependency_tickets": [],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-help.el",
-      "test_file": "tests/uwumacs-help-tests.el"
+      "test_file": "tests/uwumacs-help-tests.el",
+      "decision_adr": "../ADRs/0022-wave-2b-help.md"
     },
     {
       "id": "I048",
@@ -2558,7 +2605,8 @@
         "I007"
       ],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-help.el",
-      "test_file": "tests/uwumacs-help-tests.el"
+      "test_file": "tests/uwumacs-help-tests.el",
+      "decision_adr": "../ADRs/0022-wave-2b-help.md"
     },
     {
       "id": "I049",
@@ -2595,7 +2643,8 @@
       "package_dependencies": [],
       "dependency_tickets": [],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-dired.el",
-      "test_file": "tests/uwumacs-dired-tests.el"
+      "test_file": "tests/uwumacs-dired-tests.el",
+      "decision_adr": "../ADRs/0023-wave-2c-dired.md"
     },
     {
       "id": "I050",
@@ -2612,7 +2661,8 @@
       "package_dependencies": [],
       "dependency_tickets": [],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-dired.el",
-      "test_file": "tests/uwumacs-dired-tests.el"
+      "test_file": "tests/uwumacs-dired-tests.el",
+      "decision_adr": "../ADRs/0023-wave-2c-dired.md"
     },
     {
       "id": "I051",
@@ -2653,7 +2703,8 @@
         "I002"
       ],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-dired.el",
-      "test_file": "tests/uwumacs-dired-tests.el"
+      "test_file": "tests/uwumacs-dired-tests.el",
+      "decision_adr": "../ADRs/0023-wave-2c-dired.md"
     },
     {
       "id": "I052",
@@ -2698,7 +2749,8 @@
         "I002"
       ],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-dired.el",
-      "test_file": "tests/uwumacs-dired-tests.el"
+      "test_file": "tests/uwumacs-dired-tests.el",
+      "decision_adr": "../ADRs/0023-wave-2c-dired.md"
     },
     {
       "id": "I053",
@@ -2721,7 +2773,8 @@
         "I002"
       ],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-dired.el",
-      "test_file": "tests/uwumacs-dired-tests.el"
+      "test_file": "tests/uwumacs-dired-tests.el",
+      "decision_adr": "../ADRs/0023-wave-2c-dired.md"
     },
     {
       "id": "I054",
@@ -2762,7 +2815,8 @@
         "I002"
       ],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-dired.el",
-      "test_file": "tests/uwumacs-dired-tests.el"
+      "test_file": "tests/uwumacs-dired-tests.el",
+      "decision_adr": "../ADRs/0023-wave-2c-dired.md"
     },
     {
       "id": "I055",
@@ -2803,7 +2857,8 @@
       "package_dependencies": [],
       "dependency_tickets": [],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-dired.el",
-      "test_file": "tests/uwumacs-dired-tests.el"
+      "test_file": "tests/uwumacs-dired-tests.el",
+      "decision_adr": "../ADRs/0023-wave-2c-dired.md"
     },
     {
       "id": "I056",
@@ -2846,7 +2901,8 @@
         "I010"
       ],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-dired.el",
-      "test_file": "tests/uwumacs-dired-tests.el"
+      "test_file": "tests/uwumacs-dired-tests.el",
+      "decision_adr": "../ADRs/0023-wave-2c-dired.md"
     },
     {
       "id": "I057",
@@ -2915,7 +2971,8 @@
         "I156"
       ],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-dired.el",
-      "test_file": "tests/uwumacs-dired-tests.el"
+      "test_file": "tests/uwumacs-dired-tests.el",
+      "decision_adr": "../ADRs/0023-wave-2c-dired.md"
     },
     {
       "id": "I058",
@@ -2948,7 +3005,8 @@
       "package_dependencies": [],
       "dependency_tickets": [],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-vc.el",
-      "test_file": "tests/uwumacs-vc-tests.el"
+      "test_file": "tests/uwumacs-vc-tests.el",
+      "decision_adr": "../ADRs/0024-wave-2d-vc.md"
     },
     {
       "id": "I059",
@@ -2977,7 +3035,8 @@
         "I011"
       ],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-vc.el",
-      "test_file": "tests/uwumacs-vc-tests.el"
+      "test_file": "tests/uwumacs-vc-tests.el",
+      "decision_adr": "../ADRs/0024-wave-2d-vc.md"
     },
     {
       "id": "I060",
@@ -3004,7 +3063,8 @@
         "I062"
       ],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-vc.el",
-      "test_file": "tests/uwumacs-vc-tests.el"
+      "test_file": "tests/uwumacs-vc-tests.el",
+      "decision_adr": "../ADRs/0024-wave-2d-vc.md"
     },
     {
       "id": "I061",
@@ -3025,7 +3085,8 @@
         "I002"
       ],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-vc.el",
-      "test_file": "tests/uwumacs-vc-tests.el"
+      "test_file": "tests/uwumacs-vc-tests.el",
+      "decision_adr": "../ADRs/0024-wave-2d-vc.md"
     },
     {
       "id": "I062",
@@ -3048,7 +3109,8 @@
         "I010"
       ],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-vc.el",
-      "test_file": "tests/uwumacs-vc-tests.el"
+      "test_file": "tests/uwumacs-vc-tests.el",
+      "decision_adr": "../ADRs/0024-wave-2d-vc.md"
     },
     {
       "id": "I063",
@@ -3107,7 +3169,8 @@
         "I060"
       ],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-vc.el",
-      "test_file": "tests/uwumacs-vc-tests.el"
+      "test_file": "tests/uwumacs-vc-tests.el",
+      "decision_adr": "../ADRs/0024-wave-2d-vc.md"
     },
     {
       "id": "I064",
@@ -3124,7 +3187,8 @@
       "package_dependencies": [],
       "dependency_tickets": [],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-vc.el",
-      "test_file": "tests/uwumacs-vc-tests.el"
+      "test_file": "tests/uwumacs-vc-tests.el",
+      "decision_adr": "../ADRs/0024-wave-2d-vc.md"
     },
     {
       "id": "I065",
@@ -3161,7 +3225,8 @@
       "package_dependencies": [],
       "dependency_tickets": [],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-vc.el",
-      "test_file": "tests/uwumacs-vc-tests.el"
+      "test_file": "tests/uwumacs-vc-tests.el",
+      "decision_adr": "../ADRs/0024-wave-2d-vc.md"
     },
     {
       "id": "I066",
@@ -3198,7 +3263,8 @@
       "package_dependencies": [],
       "dependency_tickets": [],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-vc.el",
-      "test_file": "tests/uwumacs-vc-tests.el"
+      "test_file": "tests/uwumacs-vc-tests.el",
+      "decision_adr": "../ADRs/0024-wave-2d-vc.md"
     },
     {
       "id": "I067",
@@ -3235,7 +3301,8 @@
       "package_dependencies": [],
       "dependency_tickets": [],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-vc.el",
-      "test_file": "tests/uwumacs-vc-tests.el"
+      "test_file": "tests/uwumacs-vc-tests.el",
+      "decision_adr": "../ADRs/0024-wave-2d-vc.md"
     },
     {
       "id": "I068",
@@ -3252,7 +3319,8 @@
       "package_dependencies": [],
       "dependency_tickets": [],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-vc.el",
-      "test_file": "tests/uwumacs-vc-tests.el"
+      "test_file": "tests/uwumacs-vc-tests.el",
+      "decision_adr": "../ADRs/0024-wave-2d-vc.md"
     },
     {
       "id": "I069",
@@ -3269,7 +3337,8 @@
       "package_dependencies": [],
       "dependency_tickets": [],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-vc.el",
-      "test_file": "tests/uwumacs-vc-tests.el"
+      "test_file": "tests/uwumacs-vc-tests.el",
+      "decision_adr": "../ADRs/0024-wave-2d-vc.md"
     },
     {
       "id": "I070",
@@ -3286,7 +3355,8 @@
       "package_dependencies": [],
       "dependency_tickets": [],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-vc.el",
-      "test_file": "tests/uwumacs-vc-tests.el"
+      "test_file": "tests/uwumacs-vc-tests.el",
+      "decision_adr": "../ADRs/0024-wave-2d-vc.md"
     },
     {
       "id": "I071",
@@ -3307,7 +3377,8 @@
         "I002"
       ],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-vc.el",
-      "test_file": "tests/uwumacs-vc-tests.el"
+      "test_file": "tests/uwumacs-vc-tests.el",
+      "decision_adr": "../ADRs/0024-wave-2d-vc.md"
     },
     {
       "id": "I072",
@@ -3324,7 +3395,8 @@
       "package_dependencies": [],
       "dependency_tickets": [],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-vc.el",
-      "test_file": "tests/uwumacs-vc-tests.el"
+      "test_file": "tests/uwumacs-vc-tests.el",
+      "decision_adr": "../ADRs/0024-wave-2d-vc.md"
     },
     {
       "id": "I073",
@@ -3361,7 +3433,8 @@
       "package_dependencies": [],
       "dependency_tickets": [],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-navigation.el",
-      "test_file": "tests/uwumacs-navigation-tests.el"
+      "test_file": "tests/uwumacs-navigation-tests.el",
+      "decision_adr": "../ADRs/0025-wave-2e-navigation.md"
     },
     {
       "id": "I074",
@@ -3398,7 +3471,8 @@
       "package_dependencies": [],
       "dependency_tickets": [],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-navigation.el",
-      "test_file": "tests/uwumacs-navigation-tests.el"
+      "test_file": "tests/uwumacs-navigation-tests.el",
+      "decision_adr": "../ADRs/0025-wave-2e-navigation.md"
     },
     {
       "id": "I075",
@@ -3435,7 +3509,8 @@
       "package_dependencies": [],
       "dependency_tickets": [],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-navigation.el",
-      "test_file": "tests/uwumacs-navigation-tests.el"
+      "test_file": "tests/uwumacs-navigation-tests.el",
+      "decision_adr": "../ADRs/0025-wave-2e-navigation.md"
     },
     {
       "id": "I076",
@@ -3452,7 +3527,8 @@
       "package_dependencies": [],
       "dependency_tickets": [],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-navigation.el",
-      "test_file": "tests/uwumacs-navigation-tests.el"
+      "test_file": "tests/uwumacs-navigation-tests.el",
+      "decision_adr": "../ADRs/0025-wave-2e-navigation.md"
     },
     {
       "id": "I077",
@@ -3493,7 +3569,8 @@
         "I002"
       ],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-navigation.el",
-      "test_file": "tests/uwumacs-navigation-tests.el"
+      "test_file": "tests/uwumacs-navigation-tests.el",
+      "decision_adr": "../ADRs/0025-wave-2e-navigation.md"
     },
     {
       "id": "I078",
@@ -3534,7 +3611,8 @@
       "package_dependencies": [],
       "dependency_tickets": [],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-navigation.el",
-      "test_file": "tests/uwumacs-navigation-tests.el"
+      "test_file": "tests/uwumacs-navigation-tests.el",
+      "decision_adr": "../ADRs/0025-wave-2e-navigation.md"
     },
     {
       "id": "I079",
@@ -3577,7 +3655,8 @@
         "I073"
       ],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-navigation.el",
-      "test_file": "tests/uwumacs-navigation-tests.el"
+      "test_file": "tests/uwumacs-navigation-tests.el",
+      "decision_adr": "../ADRs/0025-wave-2e-navigation.md"
     },
     {
       "id": "I080",
@@ -3618,7 +3697,8 @@
         "I081"
       ],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-navigation.el",
-      "test_file": "tests/uwumacs-navigation-tests.el"
+      "test_file": "tests/uwumacs-navigation-tests.el",
+      "decision_adr": "../ADRs/0025-wave-2e-navigation.md"
     },
     {
       "id": "I081",
@@ -3641,7 +3721,8 @@
         "I007"
       ],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-navigation.el",
-      "test_file": "tests/uwumacs-navigation-tests.el"
+      "test_file": "tests/uwumacs-navigation-tests.el",
+      "decision_adr": "../ADRs/0025-wave-2e-navigation.md"
     },
     {
       "id": "I082",
@@ -3678,7 +3759,8 @@
       "package_dependencies": [],
       "dependency_tickets": [],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-navigation.el",
-      "test_file": "tests/uwumacs-navigation-tests.el"
+      "test_file": "tests/uwumacs-navigation-tests.el",
+      "decision_adr": "../ADRs/0025-wave-2e-navigation.md"
     },
     {
       "id": "I083",
@@ -3715,7 +3797,8 @@
       "package_dependencies": [],
       "dependency_tickets": [],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-navigation.el",
-      "test_file": "tests/uwumacs-navigation-tests.el"
+      "test_file": "tests/uwumacs-navigation-tests.el",
+      "decision_adr": "../ADRs/0025-wave-2e-navigation.md"
     },
     {
       "id": "I084",
@@ -3756,7 +3839,8 @@
         "I002"
       ],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-navigation.el",
-      "test_file": "tests/uwumacs-navigation-tests.el"
+      "test_file": "tests/uwumacs-navigation-tests.el",
+      "decision_adr": "../ADRs/0025-wave-2e-navigation.md"
     },
     {
       "id": "I085",
@@ -3789,7 +3873,8 @@
       "package_dependencies": [],
       "dependency_tickets": [],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-navigation.el",
-      "test_file": "tests/uwumacs-navigation-tests.el"
+      "test_file": "tests/uwumacs-navigation-tests.el",
+      "decision_adr": "../ADRs/0025-wave-2e-navigation.md"
     },
     {
       "id": "I086",
@@ -3830,7 +3915,8 @@
       "package_dependencies": [],
       "dependency_tickets": [],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-navigation.el",
-      "test_file": "tests/uwumacs-navigation-tests.el"
+      "test_file": "tests/uwumacs-navigation-tests.el",
+      "decision_adr": "../ADRs/0025-wave-2e-navigation.md"
     },
     {
       "id": "I087",
@@ -3867,7 +3953,8 @@
       "package_dependencies": [],
       "dependency_tickets": [],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-navigation.el",
-      "test_file": "tests/uwumacs-navigation-tests.el"
+      "test_file": "tests/uwumacs-navigation-tests.el",
+      "decision_adr": "../ADRs/0025-wave-2e-navigation.md"
     },
     {
       "id": "I088",
@@ -3910,7 +3997,8 @@
         "I019"
       ],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-navigation.el",
-      "test_file": "tests/uwumacs-navigation-tests.el"
+      "test_file": "tests/uwumacs-navigation-tests.el",
+      "decision_adr": "../ADRs/0025-wave-2e-navigation.md"
     },
     {
       "id": "I089",
@@ -3955,7 +4043,8 @@
         "I071"
       ],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-navigation.el",
-      "test_file": "tests/uwumacs-navigation-tests.el"
+      "test_file": "tests/uwumacs-navigation-tests.el",
+      "decision_adr": "../ADRs/0025-wave-2e-navigation.md"
     },
     {
       "id": "I090",
@@ -3996,7 +4085,8 @@
         "I007"
       ],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-navigation.el",
-      "test_file": "tests/uwumacs-navigation-tests.el"
+      "test_file": "tests/uwumacs-navigation-tests.el",
+      "decision_adr": "../ADRs/0025-wave-2e-navigation.md"
     },
     {
       "id": "I091",
@@ -4037,7 +4127,8 @@
         "I090"
       ],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-navigation.el",
-      "test_file": "tests/uwumacs-navigation-tests.el"
+      "test_file": "tests/uwumacs-navigation-tests.el",
+      "decision_adr": "../ADRs/0025-wave-2e-navigation.md"
     },
     {
       "id": "I092",
@@ -4054,7 +4145,8 @@
       "package_dependencies": [],
       "dependency_tickets": [],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-navigation.el",
-      "test_file": "tests/uwumacs-navigation-tests.el"
+      "test_file": "tests/uwumacs-navigation-tests.el",
+      "decision_adr": "../ADRs/0025-wave-2e-navigation.md"
     },
     {
       "id": "I093",
@@ -4071,7 +4163,8 @@
       "package_dependencies": [],
       "dependency_tickets": [],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-navigation.el",
-      "test_file": "tests/uwumacs-navigation-tests.el"
+      "test_file": "tests/uwumacs-navigation-tests.el",
+      "decision_adr": "../ADRs/0025-wave-2e-navigation.md"
     },
     {
       "id": "I094",
@@ -4088,7 +4181,8 @@
       "package_dependencies": [],
       "dependency_tickets": [],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-navigation.el",
-      "test_file": "tests/uwumacs-navigation-tests.el"
+      "test_file": "tests/uwumacs-navigation-tests.el",
+      "decision_adr": "../ADRs/0025-wave-2e-navigation.md"
     },
     {
       "id": "I095",
@@ -4125,7 +4219,8 @@
       "package_dependencies": [],
       "dependency_tickets": [],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-org.el",
-      "test_file": "tests/uwumacs-org-tests.el"
+      "test_file": "tests/uwumacs-org-tests.el",
+      "decision_adr": "../ADRs/0026-wave-2f-org.md"
     },
     {
       "id": "I096",
@@ -4162,7 +4257,8 @@
       "package_dependencies": [],
       "dependency_tickets": [],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-org.el",
-      "test_file": "tests/uwumacs-org-tests.el"
+      "test_file": "tests/uwumacs-org-tests.el",
+      "decision_adr": "../ADRs/0026-wave-2f-org.md"
     },
     {
       "id": "I097",
@@ -4179,7 +4275,8 @@
       "package_dependencies": [],
       "dependency_tickets": [],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-org.el",
-      "test_file": "tests/uwumacs-org-tests.el"
+      "test_file": "tests/uwumacs-org-tests.el",
+      "decision_adr": "../ADRs/0026-wave-2f-org.md"
     },
     {
       "id": "I098",
@@ -4216,7 +4313,8 @@
       "package_dependencies": [],
       "dependency_tickets": [],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-org.el",
-      "test_file": "tests/uwumacs-org-tests.el"
+      "test_file": "tests/uwumacs-org-tests.el",
+      "decision_adr": "../ADRs/0026-wave-2f-org.md"
     },
     {
       "id": "I099",
@@ -4253,7 +4351,8 @@
       "package_dependencies": [],
       "dependency_tickets": [],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-org.el",
-      "test_file": "tests/uwumacs-org-tests.el"
+      "test_file": "tests/uwumacs-org-tests.el",
+      "decision_adr": "../ADRs/0026-wave-2f-org.md"
     },
     {
       "id": "I100",
@@ -4290,7 +4389,8 @@
       "package_dependencies": [],
       "dependency_tickets": [],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-org.el",
-      "test_file": "tests/uwumacs-org-tests.el"
+      "test_file": "tests/uwumacs-org-tests.el",
+      "decision_adr": "../ADRs/0026-wave-2f-org.md"
     },
     {
       "id": "I101",
@@ -4333,7 +4433,8 @@
         "I095"
       ],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-org.el",
-      "test_file": "tests/uwumacs-org-tests.el"
+      "test_file": "tests/uwumacs-org-tests.el",
+      "decision_adr": "../ADRs/0026-wave-2f-org.md"
     },
     {
       "id": "I102",
@@ -4370,7 +4471,8 @@
       "package_dependencies": [],
       "dependency_tickets": [],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-org.el",
-      "test_file": "tests/uwumacs-org-tests.el"
+      "test_file": "tests/uwumacs-org-tests.el",
+      "decision_adr": "../ADRs/0026-wave-2f-org.md"
     },
     {
       "id": "I103",
@@ -4407,7 +4509,8 @@
       "package_dependencies": [],
       "dependency_tickets": [],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-programming.el",
-      "test_file": "tests/uwumacs-programming-tests.el"
+      "test_file": "tests/uwumacs-programming-tests.el",
+      "decision_adr": "../ADRs/0027-wave-2g-programming.md"
     },
     {
       "id": "I104",
@@ -4448,7 +4551,8 @@
       "package_dependencies": [],
       "dependency_tickets": [],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-programming.el",
-      "test_file": "tests/uwumacs-programming-tests.el"
+      "test_file": "tests/uwumacs-programming-tests.el",
+      "decision_adr": "../ADRs/0027-wave-2g-programming.md"
     },
     {
       "id": "I105",
@@ -4485,7 +4589,8 @@
       "package_dependencies": [],
       "dependency_tickets": [],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-programming.el",
-      "test_file": "tests/uwumacs-programming-tests.el"
+      "test_file": "tests/uwumacs-programming-tests.el",
+      "decision_adr": "../ADRs/0027-wave-2g-programming.md"
     },
     {
       "id": "I106",
@@ -4522,7 +4627,8 @@
       "package_dependencies": [],
       "dependency_tickets": [],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-programming.el",
-      "test_file": "tests/uwumacs-programming-tests.el"
+      "test_file": "tests/uwumacs-programming-tests.el",
+      "decision_adr": "../ADRs/0027-wave-2g-programming.md"
     },
     {
       "id": "I107",
@@ -4567,7 +4673,8 @@
         "I105"
       ],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-programming.el",
-      "test_file": "tests/uwumacs-programming-tests.el"
+      "test_file": "tests/uwumacs-programming-tests.el",
+      "decision_adr": "../ADRs/0027-wave-2g-programming.md"
     },
     {
       "id": "I108",
@@ -4600,7 +4707,8 @@
       "package_dependencies": [],
       "dependency_tickets": [],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-programming.el",
-      "test_file": "tests/uwumacs-programming-tests.el"
+      "test_file": "tests/uwumacs-programming-tests.el",
+      "decision_adr": "../ADRs/0027-wave-2g-programming.md"
     },
     {
       "id": "I109",
@@ -4637,7 +4745,8 @@
       "package_dependencies": [],
       "dependency_tickets": [],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-programming.el",
-      "test_file": "tests/uwumacs-programming-tests.el"
+      "test_file": "tests/uwumacs-programming-tests.el",
+      "decision_adr": "../ADRs/0027-wave-2g-programming.md"
     },
     {
       "id": "I110",
@@ -4674,7 +4783,8 @@
       "package_dependencies": [],
       "dependency_tickets": [],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-programming.el",
-      "test_file": "tests/uwumacs-programming-tests.el"
+      "test_file": "tests/uwumacs-programming-tests.el",
+      "decision_adr": "../ADRs/0027-wave-2g-programming.md"
     },
     {
       "id": "I111",
@@ -4711,7 +4821,8 @@
       "package_dependencies": [],
       "dependency_tickets": [],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-programming.el",
-      "test_file": "tests/uwumacs-programming-tests.el"
+      "test_file": "tests/uwumacs-programming-tests.el",
+      "decision_adr": "../ADRs/0027-wave-2g-programming.md"
     },
     {
       "id": "I112",
@@ -4728,7 +4839,8 @@
       "package_dependencies": [],
       "dependency_tickets": [],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-programming.el",
-      "test_file": "tests/uwumacs-programming-tests.el"
+      "test_file": "tests/uwumacs-programming-tests.el",
+      "decision_adr": "../ADRs/0027-wave-2g-programming.md"
     },
     {
       "id": "I113",
@@ -4769,7 +4881,8 @@
         "I002"
       ],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-programming.el",
-      "test_file": "tests/uwumacs-programming-tests.el"
+      "test_file": "tests/uwumacs-programming-tests.el",
+      "decision_adr": "../ADRs/0027-wave-2g-programming.md"
     },
     {
       "id": "I114",
@@ -4808,7 +4921,8 @@
         "I116"
       ],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-programming.el",
-      "test_file": "tests/uwumacs-programming-tests.el"
+      "test_file": "tests/uwumacs-programming-tests.el",
+      "decision_adr": "../ADRs/0027-wave-2g-programming.md"
     },
     {
       "id": "I115",
@@ -4841,7 +4955,8 @@
       "package_dependencies": [],
       "dependency_tickets": [],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-programming.el",
-      "test_file": "tests/uwumacs-programming-tests.el"
+      "test_file": "tests/uwumacs-programming-tests.el",
+      "decision_adr": "../ADRs/0027-wave-2g-programming.md"
     },
     {
       "id": "I116",
@@ -4882,7 +4997,8 @@
         "I002"
       ],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-programming.el",
-      "test_file": "tests/uwumacs-programming-tests.el"
+      "test_file": "tests/uwumacs-programming-tests.el",
+      "decision_adr": "../ADRs/0027-wave-2g-programming.md"
     },
     {
       "id": "I117",
@@ -4919,7 +5035,8 @@
       "package_dependencies": [],
       "dependency_tickets": [],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-programming.el",
-      "test_file": "tests/uwumacs-programming-tests.el"
+      "test_file": "tests/uwumacs-programming-tests.el",
+      "decision_adr": "../ADRs/0027-wave-2g-programming.md"
     },
     {
       "id": "I118",
@@ -4956,7 +5073,8 @@
       "package_dependencies": [],
       "dependency_tickets": [],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-programming.el",
-      "test_file": "tests/uwumacs-programming-tests.el"
+      "test_file": "tests/uwumacs-programming-tests.el",
+      "decision_adr": "../ADRs/0027-wave-2g-programming.md"
     },
     {
       "id": "I119",
@@ -4997,7 +5115,8 @@
         "I002"
       ],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-programming.el",
-      "test_file": "tests/uwumacs-programming-tests.el"
+      "test_file": "tests/uwumacs-programming-tests.el",
+      "decision_adr": "../ADRs/0027-wave-2g-programming.md"
     },
     {
       "id": "I120",
@@ -5034,7 +5153,8 @@
       "package_dependencies": [],
       "dependency_tickets": [],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-programming.el",
-      "test_file": "tests/uwumacs-programming-tests.el"
+      "test_file": "tests/uwumacs-programming-tests.el",
+      "decision_adr": "../ADRs/0027-wave-2g-programming.md"
     },
     {
       "id": "I121",
@@ -5075,7 +5195,8 @@
         "I002"
       ],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-programming.el",
-      "test_file": "tests/uwumacs-programming-tests.el"
+      "test_file": "tests/uwumacs-programming-tests.el",
+      "decision_adr": "../ADRs/0027-wave-2g-programming.md"
     },
     {
       "id": "I122",
@@ -5116,7 +5237,8 @@
         "I002"
       ],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-programming.el",
-      "test_file": "tests/uwumacs-programming-tests.el"
+      "test_file": "tests/uwumacs-programming-tests.el",
+      "decision_adr": "../ADRs/0027-wave-2g-programming.md"
     },
     {
       "id": "I123",
@@ -5163,7 +5285,8 @@
         "I002"
       ],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-programming.el",
-      "test_file": "tests/uwumacs-programming-tests.el"
+      "test_file": "tests/uwumacs-programming-tests.el",
+      "decision_adr": "../ADRs/0027-wave-2g-programming.md"
     },
     {
       "id": "I124",
@@ -5206,7 +5329,8 @@
         "I017"
       ],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-programming.el",
-      "test_file": "tests/uwumacs-programming-tests.el"
+      "test_file": "tests/uwumacs-programming-tests.el",
+      "decision_adr": "../ADRs/0027-wave-2g-programming.md"
     },
     {
       "id": "I125",
@@ -5249,7 +5373,8 @@
         "I013"
       ],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-programming.el",
-      "test_file": "tests/uwumacs-programming-tests.el"
+      "test_file": "tests/uwumacs-programming-tests.el",
+      "decision_adr": "../ADRs/0027-wave-2g-programming.md"
     },
     {
       "id": "I126",
@@ -5286,7 +5411,8 @@
       "package_dependencies": [],
       "dependency_tickets": [],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-programming.el",
-      "test_file": "tests/uwumacs-programming-tests.el"
+      "test_file": "tests/uwumacs-programming-tests.el",
+      "decision_adr": "../ADRs/0027-wave-2g-programming.md"
     },
     {
       "id": "I127",
@@ -5303,7 +5429,8 @@
       "package_dependencies": [],
       "dependency_tickets": [],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-programming.el",
-      "test_file": "tests/uwumacs-programming-tests.el"
+      "test_file": "tests/uwumacs-programming-tests.el",
+      "decision_adr": "../ADRs/0027-wave-2g-programming.md"
     },
     {
       "id": "I128",
@@ -5320,7 +5447,8 @@
       "package_dependencies": [],
       "dependency_tickets": [],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-programming.el",
-      "test_file": "tests/uwumacs-programming-tests.el"
+      "test_file": "tests/uwumacs-programming-tests.el",
+      "decision_adr": "../ADRs/0027-wave-2g-programming.md"
     },
     {
       "id": "I129",
@@ -5359,7 +5487,8 @@
         "I010"
       ],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-terminal.el",
-      "test_file": "tests/uwumacs-terminal-tests.el"
+      "test_file": "tests/uwumacs-terminal-tests.el",
+      "decision_adr": "../ADRs/0028-wave-2h-terminal.md"
     },
     {
       "id": "I130",
@@ -5376,7 +5505,8 @@
       "package_dependencies": [],
       "dependency_tickets": [],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-terminal.el",
-      "test_file": "tests/uwumacs-terminal-tests.el"
+      "test_file": "tests/uwumacs-terminal-tests.el",
+      "decision_adr": "../ADRs/0028-wave-2h-terminal.md"
     },
     {
       "id": "I131",
@@ -5413,7 +5543,8 @@
       "package_dependencies": [],
       "dependency_tickets": [],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-terminal.el",
-      "test_file": "tests/uwumacs-terminal-tests.el"
+      "test_file": "tests/uwumacs-terminal-tests.el",
+      "decision_adr": "../ADRs/0028-wave-2h-terminal.md"
     },
     {
       "id": "I132",
@@ -5450,7 +5581,8 @@
       "package_dependencies": [],
       "dependency_tickets": [],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-terminal.el",
-      "test_file": "tests/uwumacs-terminal-tests.el"
+      "test_file": "tests/uwumacs-terminal-tests.el",
+      "decision_adr": "../ADRs/0028-wave-2h-terminal.md"
     },
     {
       "id": "I133",
@@ -5487,7 +5619,8 @@
       "package_dependencies": [],
       "dependency_tickets": [],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-terminal.el",
-      "test_file": "tests/uwumacs-terminal-tests.el"
+      "test_file": "tests/uwumacs-terminal-tests.el",
+      "decision_adr": "../ADRs/0028-wave-2h-terminal.md"
     },
     {
       "id": "I134",
@@ -5524,7 +5657,8 @@
       "package_dependencies": [],
       "dependency_tickets": [],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-terminal.el",
-      "test_file": "tests/uwumacs-terminal-tests.el"
+      "test_file": "tests/uwumacs-terminal-tests.el",
+      "decision_adr": "../ADRs/0028-wave-2h-terminal.md"
     },
     {
       "id": "I135",
@@ -5561,7 +5695,8 @@
       "package_dependencies": [],
       "dependency_tickets": [],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-terminal.el",
-      "test_file": "tests/uwumacs-terminal-tests.el"
+      "test_file": "tests/uwumacs-terminal-tests.el",
+      "decision_adr": "../ADRs/0028-wave-2h-terminal.md"
     },
     {
       "id": "I136",
@@ -5598,7 +5733,8 @@
       "package_dependencies": [],
       "dependency_tickets": [],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-terminal.el",
-      "test_file": "tests/uwumacs-terminal-tests.el"
+      "test_file": "tests/uwumacs-terminal-tests.el",
+      "decision_adr": "../ADRs/0028-wave-2h-terminal.md"
     },
     {
       "id": "I137",
@@ -5635,7 +5771,8 @@
       "package_dependencies": [],
       "dependency_tickets": [],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-terminal.el",
-      "test_file": "tests/uwumacs-terminal-tests.el"
+      "test_file": "tests/uwumacs-terminal-tests.el",
+      "decision_adr": "../ADRs/0028-wave-2h-terminal.md"
     },
     {
       "id": "I138",
@@ -5672,7 +5809,8 @@
       "package_dependencies": [],
       "dependency_tickets": [],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-terminal.el",
-      "test_file": "tests/uwumacs-terminal-tests.el"
+      "test_file": "tests/uwumacs-terminal-tests.el",
+      "decision_adr": "../ADRs/0028-wave-2h-terminal.md"
     },
     {
       "id": "I139",
@@ -5709,7 +5847,8 @@
       "package_dependencies": [],
       "dependency_tickets": [],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-terminal.el",
-      "test_file": "tests/uwumacs-terminal-tests.el"
+      "test_file": "tests/uwumacs-terminal-tests.el",
+      "decision_adr": "../ADRs/0028-wave-2h-terminal.md"
     },
     {
       "id": "I140",
@@ -5763,7 +5902,8 @@
       "package_dependencies": [],
       "dependency_tickets": [],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-terminal.el",
-      "test_file": "tests/uwumacs-terminal-tests.el"
+      "test_file": "tests/uwumacs-terminal-tests.el",
+      "decision_adr": "../ADRs/0028-wave-2h-terminal.md"
     },
     {
       "id": "I141",
@@ -5804,7 +5944,8 @@
         "I002"
       ],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-terminal.el",
-      "test_file": "tests/uwumacs-terminal-tests.el"
+      "test_file": "tests/uwumacs-terminal-tests.el",
+      "decision_adr": "../ADRs/0028-wave-2h-terminal.md"
     },
     {
       "id": "I142",
@@ -5841,7 +5982,8 @@
       "package_dependencies": [],
       "dependency_tickets": [],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-terminal.el",
-      "test_file": "tests/uwumacs-terminal-tests.el"
+      "test_file": "tests/uwumacs-terminal-tests.el",
+      "decision_adr": "../ADRs/0028-wave-2h-terminal.md"
     },
     {
       "id": "I143",
@@ -5884,7 +6026,8 @@
         "I007"
       ],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-terminal.el",
-      "test_file": "tests/uwumacs-terminal-tests.el"
+      "test_file": "tests/uwumacs-terminal-tests.el",
+      "decision_adr": "../ADRs/0028-wave-2h-terminal.md"
     },
     {
       "id": "I144",
@@ -5925,7 +6068,8 @@
         "I013"
       ],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-terminal.el",
-      "test_file": "tests/uwumacs-terminal-tests.el"
+      "test_file": "tests/uwumacs-terminal-tests.el",
+      "decision_adr": "../ADRs/0028-wave-2h-terminal.md"
     },
     {
       "id": "I145",
@@ -5966,7 +6110,8 @@
         "I002"
       ],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-terminal.el",
-      "test_file": "tests/uwumacs-terminal-tests.el"
+      "test_file": "tests/uwumacs-terminal-tests.el",
+      "decision_adr": "../ADRs/0028-wave-2h-terminal.md"
     },
     {
       "id": "I146",
@@ -6007,7 +6152,8 @@
         "I002"
       ],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-terminal.el",
-      "test_file": "tests/uwumacs-terminal-tests.el"
+      "test_file": "tests/uwumacs-terminal-tests.el",
+      "decision_adr": "../ADRs/0028-wave-2h-terminal.md"
     },
     {
       "id": "I147",
@@ -6024,7 +6170,8 @@
       "package_dependencies": [],
       "dependency_tickets": [],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-terminal.el",
-      "test_file": "tests/uwumacs-terminal-tests.el"
+      "test_file": "tests/uwumacs-terminal-tests.el",
+      "decision_adr": "../ADRs/0028-wave-2h-terminal.md"
     },
     {
       "id": "I148",
@@ -6041,7 +6188,8 @@
       "package_dependencies": [],
       "dependency_tickets": [],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-terminal.el",
-      "test_file": "tests/uwumacs-terminal-tests.el"
+      "test_file": "tests/uwumacs-terminal-tests.el",
+      "decision_adr": "../ADRs/0028-wave-2h-terminal.md"
     },
     {
       "id": "I149",
@@ -6058,7 +6206,8 @@
       "package_dependencies": [],
       "dependency_tickets": [],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-terminal.el",
-      "test_file": "tests/uwumacs-terminal-tests.el"
+      "test_file": "tests/uwumacs-terminal-tests.el",
+      "decision_adr": "../ADRs/0028-wave-2h-terminal.md"
     },
     {
       "id": "I150",
@@ -6095,7 +6244,8 @@
         "I002"
       ],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-terminal.el",
-      "test_file": "tests/uwumacs-terminal-tests.el"
+      "test_file": "tests/uwumacs-terminal-tests.el",
+      "decision_adr": "../ADRs/0028-wave-2h-terminal.md"
     },
     {
       "id": "I151",
@@ -6132,7 +6282,8 @@
       "package_dependencies": [],
       "dependency_tickets": [],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-terminal.el",
-      "test_file": "tests/uwumacs-terminal-tests.el"
+      "test_file": "tests/uwumacs-terminal-tests.el",
+      "decision_adr": "../ADRs/0028-wave-2h-terminal.md"
     },
     {
       "id": "I152",
@@ -6173,7 +6324,8 @@
       "package_dependencies": [],
       "dependency_tickets": [],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-terminal.el",
-      "test_file": "tests/uwumacs-terminal-tests.el"
+      "test_file": "tests/uwumacs-terminal-tests.el",
+      "decision_adr": "../ADRs/0028-wave-2h-terminal.md"
     },
     {
       "id": "I153",
@@ -6216,7 +6368,8 @@
         "I161"
       ],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-appearance.el",
-      "test_file": "tests/uwumacs-appearance-tests.el"
+      "test_file": "tests/uwumacs-appearance-tests.el",
+      "decision_adr": "../ADRs/0029-wave-2i-appearance.md"
     },
     {
       "id": "I154",
@@ -6255,7 +6408,8 @@
         "I007"
       ],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-appearance.el",
-      "test_file": "tests/uwumacs-appearance-tests.el"
+      "test_file": "tests/uwumacs-appearance-tests.el",
+      "decision_adr": "../ADRs/0029-wave-2i-appearance.md"
     },
     {
       "id": "I155",
@@ -6296,7 +6450,8 @@
         "I002"
       ],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-appearance.el",
-      "test_file": "tests/uwumacs-appearance-tests.el"
+      "test_file": "tests/uwumacs-appearance-tests.el",
+      "decision_adr": "../ADRs/0029-wave-2i-appearance.md"
     },
     {
       "id": "I156",
@@ -6355,7 +6510,8 @@
         "I002"
       ],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-appearance.el",
-      "test_file": "tests/uwumacs-appearance-tests.el"
+      "test_file": "tests/uwumacs-appearance-tests.el",
+      "decision_adr": "../ADRs/0029-wave-2i-appearance.md"
     },
     {
       "id": "I157",
@@ -6418,7 +6574,8 @@
         "I010"
       ],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-appearance.el",
-      "test_file": "tests/uwumacs-appearance-tests.el"
+      "test_file": "tests/uwumacs-appearance-tests.el",
+      "decision_adr": "../ADRs/0029-wave-2i-appearance.md"
     },
     {
       "id": "I158",
@@ -6455,7 +6612,8 @@
         "I002"
       ],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-appearance.el",
-      "test_file": "tests/uwumacs-appearance-tests.el"
+      "test_file": "tests/uwumacs-appearance-tests.el",
+      "decision_adr": "../ADRs/0029-wave-2i-appearance.md"
     },
     {
       "id": "I159",
@@ -6476,7 +6634,8 @@
         "I002"
       ],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-appearance.el",
-      "test_file": "tests/uwumacs-appearance-tests.el"
+      "test_file": "tests/uwumacs-appearance-tests.el",
+      "decision_adr": "../ADRs/0029-wave-2i-appearance.md"
     },
     {
       "id": "I160",
@@ -6519,7 +6678,8 @@
         "I159"
       ],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-appearance.el",
-      "test_file": "tests/uwumacs-appearance-tests.el"
+      "test_file": "tests/uwumacs-appearance-tests.el",
+      "decision_adr": "../ADRs/0029-wave-2i-appearance.md"
     },
     {
       "id": "I161",
@@ -6546,7 +6706,8 @@
         "I015"
       ],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-appearance.el",
-      "test_file": "tests/uwumacs-appearance-tests.el"
+      "test_file": "tests/uwumacs-appearance-tests.el",
+      "decision_adr": "../ADRs/0029-wave-2i-appearance.md"
     },
     {
       "id": "I162",
@@ -6587,7 +6748,8 @@
         "I002"
       ],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-appearance.el",
-      "test_file": "tests/uwumacs-appearance-tests.el"
+      "test_file": "tests/uwumacs-appearance-tests.el",
+      "decision_adr": "../ADRs/0029-wave-2i-appearance.md"
     },
     {
       "id": "I163",
@@ -6624,7 +6786,8 @@
       "package_dependencies": [],
       "dependency_tickets": [],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-appearance.el",
-      "test_file": "tests/uwumacs-appearance-tests.el"
+      "test_file": "tests/uwumacs-appearance-tests.el",
+      "decision_adr": "../ADRs/0029-wave-2i-appearance.md"
     },
     {
       "id": "I164",
@@ -6671,7 +6834,8 @@
         "I010"
       ],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-appearance.el",
-      "test_file": "tests/uwumacs-appearance-tests.el"
+      "test_file": "tests/uwumacs-appearance-tests.el",
+      "decision_adr": "../ADRs/0029-wave-2i-appearance.md"
     },
     {
       "id": "I165",
@@ -6718,7 +6882,8 @@
         "I018"
       ],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-appearance.el",
-      "test_file": "tests/uwumacs-appearance-tests.el"
+      "test_file": "tests/uwumacs-appearance-tests.el",
+      "decision_adr": "../ADRs/0029-wave-2i-appearance.md"
     },
     {
       "id": "I166",
@@ -6767,7 +6932,8 @@
         "I061"
       ],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-appearance.el",
-      "test_file": "tests/uwumacs-appearance-tests.el"
+      "test_file": "tests/uwumacs-appearance-tests.el",
+      "decision_adr": "../ADRs/0029-wave-2i-appearance.md"
     },
     {
       "id": "I167",
@@ -6810,7 +6976,8 @@
         "I010"
       ],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-appearance.el",
-      "test_file": "tests/uwumacs-appearance-tests.el"
+      "test_file": "tests/uwumacs-appearance-tests.el",
+      "decision_adr": "../ADRs/0029-wave-2i-appearance.md"
     },
     {
       "id": "I168",
@@ -6843,7 +7010,8 @@
       "package_dependencies": [],
       "dependency_tickets": [],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-appearance.el",
-      "test_file": "tests/uwumacs-appearance-tests.el"
+      "test_file": "tests/uwumacs-appearance-tests.el",
+      "decision_adr": "../ADRs/0029-wave-2i-appearance.md"
     },
     {
       "id": "I169",
@@ -6880,7 +7048,8 @@
       "package_dependencies": [],
       "dependency_tickets": [],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-appearance.el",
-      "test_file": "tests/uwumacs-appearance-tests.el"
+      "test_file": "tests/uwumacs-appearance-tests.el",
+      "decision_adr": "../ADRs/0029-wave-2i-appearance.md"
     },
     {
       "id": "I170",
@@ -6917,7 +7086,8 @@
       "package_dependencies": [],
       "dependency_tickets": [],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-appearance.el",
-      "test_file": "tests/uwumacs-appearance-tests.el"
+      "test_file": "tests/uwumacs-appearance-tests.el",
+      "decision_adr": "../ADRs/0029-wave-2i-appearance.md"
     },
     {
       "id": "I171",
@@ -6954,7 +7124,8 @@
       "package_dependencies": [],
       "dependency_tickets": [],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-appearance.el",
-      "test_file": "tests/uwumacs-appearance-tests.el"
+      "test_file": "tests/uwumacs-appearance-tests.el",
+      "decision_adr": "../ADRs/0029-wave-2i-appearance.md"
     },
     {
       "id": "I172",
@@ -6987,7 +7158,8 @@
       "package_dependencies": [],
       "dependency_tickets": [],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-appearance.el",
-      "test_file": "tests/uwumacs-appearance-tests.el"
+      "test_file": "tests/uwumacs-appearance-tests.el",
+      "decision_adr": "../ADRs/0029-wave-2i-appearance.md"
     },
     {
       "id": "I173",
@@ -7020,7 +7192,8 @@
       "package_dependencies": [],
       "dependency_tickets": [],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-appearance.el",
-      "test_file": "tests/uwumacs-appearance-tests.el"
+      "test_file": "tests/uwumacs-appearance-tests.el",
+      "decision_adr": "../ADRs/0029-wave-2i-appearance.md"
     },
     {
       "id": "I174",
@@ -7057,7 +7230,8 @@
       "package_dependencies": [],
       "dependency_tickets": [],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-runtime.el",
-      "test_file": "tests/uwumacs-runtime-tests.el"
+      "test_file": "tests/uwumacs-runtime-tests.el",
+      "decision_adr": "../ADRs/0030-wave-2j-runtime.md"
     },
     {
       "id": "I175",
@@ -7094,7 +7268,8 @@
       "package_dependencies": [],
       "dependency_tickets": [],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-runtime.el",
-      "test_file": "tests/uwumacs-runtime-tests.el"
+      "test_file": "tests/uwumacs-runtime-tests.el",
+      "decision_adr": "../ADRs/0030-wave-2j-runtime.md"
     },
     {
       "id": "I176",
@@ -7131,7 +7306,8 @@
       "package_dependencies": [],
       "dependency_tickets": [],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-runtime.el",
-      "test_file": "tests/uwumacs-runtime-tests.el"
+      "test_file": "tests/uwumacs-runtime-tests.el",
+      "decision_adr": "../ADRs/0030-wave-2j-runtime.md"
     },
     {
       "id": "I177",
@@ -7168,7 +7344,8 @@
       "package_dependencies": [],
       "dependency_tickets": [],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-runtime.el",
-      "test_file": "tests/uwumacs-runtime-tests.el"
+      "test_file": "tests/uwumacs-runtime-tests.el",
+      "decision_adr": "../ADRs/0030-wave-2j-runtime.md"
     },
     {
       "id": "I178",
@@ -7205,7 +7382,8 @@
       "package_dependencies": [],
       "dependency_tickets": [],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-runtime.el",
-      "test_file": "tests/uwumacs-runtime-tests.el"
+      "test_file": "tests/uwumacs-runtime-tests.el",
+      "decision_adr": "../ADRs/0030-wave-2j-runtime.md"
     },
     {
       "id": "I179",
@@ -7242,7 +7420,8 @@
       "package_dependencies": [],
       "dependency_tickets": [],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-runtime.el",
-      "test_file": "tests/uwumacs-runtime-tests.el"
+      "test_file": "tests/uwumacs-runtime-tests.el",
+      "decision_adr": "../ADRs/0030-wave-2j-runtime.md"
     },
     {
       "id": "I180",
@@ -7279,7 +7458,8 @@
       "package_dependencies": [],
       "dependency_tickets": [],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-runtime.el",
-      "test_file": "tests/uwumacs-runtime-tests.el"
+      "test_file": "tests/uwumacs-runtime-tests.el",
+      "decision_adr": "../ADRs/0030-wave-2j-runtime.md"
     },
     {
       "id": "I181",
@@ -7320,7 +7500,8 @@
         "I002"
       ],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-runtime.el",
-      "test_file": "tests/uwumacs-runtime-tests.el"
+      "test_file": "tests/uwumacs-runtime-tests.el",
+      "decision_adr": "../ADRs/0030-wave-2j-runtime.md"
     },
     {
       "id": "I182",
@@ -7357,7 +7538,8 @@
       "package_dependencies": [],
       "dependency_tickets": [],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-runtime.el",
-      "test_file": "tests/uwumacs-runtime-tests.el"
+      "test_file": "tests/uwumacs-runtime-tests.el",
+      "decision_adr": "../ADRs/0030-wave-2j-runtime.md"
     },
     {
       "id": "I183",
@@ -7390,7 +7572,8 @@
       "package_dependencies": [],
       "dependency_tickets": [],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-runtime.el",
-      "test_file": "tests/uwumacs-runtime-tests.el"
+      "test_file": "tests/uwumacs-runtime-tests.el",
+      "decision_adr": "../ADRs/0030-wave-2j-runtime.md"
     },
     {
       "id": "I184",
@@ -7427,7 +7610,8 @@
       "package_dependencies": [],
       "dependency_tickets": [],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-runtime.el",
-      "test_file": "tests/uwumacs-runtime-tests.el"
+      "test_file": "tests/uwumacs-runtime-tests.el",
+      "decision_adr": "../ADRs/0030-wave-2j-runtime.md"
     },
     {
       "id": "I185",
@@ -7464,7 +7648,8 @@
       "package_dependencies": [],
       "dependency_tickets": [],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-runtime.el",
-      "test_file": "tests/uwumacs-runtime-tests.el"
+      "test_file": "tests/uwumacs-runtime-tests.el",
+      "decision_adr": "../ADRs/0030-wave-2j-runtime.md"
     },
     {
       "id": "I186",
@@ -7497,7 +7682,8 @@
       "package_dependencies": [],
       "dependency_tickets": [],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-runtime.el",
-      "test_file": "tests/uwumacs-runtime-tests.el"
+      "test_file": "tests/uwumacs-runtime-tests.el",
+      "decision_adr": "../ADRs/0030-wave-2j-runtime.md"
     },
     {
       "id": "I187",
@@ -7530,7 +7716,8 @@
       "package_dependencies": [],
       "dependency_tickets": [],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-runtime.el",
-      "test_file": "tests/uwumacs-runtime-tests.el"
+      "test_file": "tests/uwumacs-runtime-tests.el",
+      "decision_adr": "../ADRs/0030-wave-2j-runtime.md"
     },
     {
       "id": "I188",
@@ -7567,7 +7754,8 @@
       "package_dependencies": [],
       "dependency_tickets": [],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-runtime.el",
-      "test_file": "tests/uwumacs-runtime-tests.el"
+      "test_file": "tests/uwumacs-runtime-tests.el",
+      "decision_adr": "../ADRs/0030-wave-2j-runtime.md"
     },
     {
       "id": "I189",
@@ -7604,7 +7792,8 @@
       "package_dependencies": [],
       "dependency_tickets": [],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-runtime.el",
-      "test_file": "tests/uwumacs-runtime-tests.el"
+      "test_file": "tests/uwumacs-runtime-tests.el",
+      "decision_adr": "../ADRs/0030-wave-2j-runtime.md"
     },
     {
       "id": "I190",
@@ -7641,7 +7830,8 @@
       "package_dependencies": [],
       "dependency_tickets": [],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-runtime.el",
-      "test_file": "tests/uwumacs-runtime-tests.el"
+      "test_file": "tests/uwumacs-runtime-tests.el",
+      "decision_adr": "../ADRs/0030-wave-2j-runtime.md"
     },
     {
       "id": "I191",
@@ -7678,7 +7868,8 @@
       "package_dependencies": [],
       "dependency_tickets": [],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-runtime.el",
-      "test_file": "tests/uwumacs-runtime-tests.el"
+      "test_file": "tests/uwumacs-runtime-tests.el",
+      "decision_adr": "../ADRs/0030-wave-2j-runtime.md"
     },
     {
       "id": "I192",
@@ -7715,7 +7906,8 @@
       "package_dependencies": [],
       "dependency_tickets": [],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-runtime.el",
-      "test_file": "tests/uwumacs-runtime-tests.el"
+      "test_file": "tests/uwumacs-runtime-tests.el",
+      "decision_adr": "../ADRs/0030-wave-2j-runtime.md"
     },
     {
       "id": "I193",
@@ -7752,7 +7944,8 @@
       "package_dependencies": [],
       "dependency_tickets": [],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-runtime.el",
-      "test_file": "tests/uwumacs-runtime-tests.el"
+      "test_file": "tests/uwumacs-runtime-tests.el",
+      "decision_adr": "../ADRs/0030-wave-2j-runtime.md"
     },
     {
       "id": "I194",
@@ -7793,7 +7986,8 @@
         "I002"
       ],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-runtime.el",
-      "test_file": "tests/uwumacs-runtime-tests.el"
+      "test_file": "tests/uwumacs-runtime-tests.el",
+      "decision_adr": "../ADRs/0030-wave-2j-runtime.md"
     }
   ]
 }
