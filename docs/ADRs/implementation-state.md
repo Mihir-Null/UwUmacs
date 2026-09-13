@@ -6,15 +6,15 @@ Updated 2026-09-13 after the user resumed development and authorized GitHub sync
 
 | Field | Recorded state |
 |---|---|
-| Phase | Phase 1 and P00–P02 complete; P03 next |
+| Phase | Phase 1 and P00–P03 complete; stopped before P04 by user instruction |
 | Repository / branch | `C:/Users/walnu/.config/emacs-dots/var/worktrees/uwumacs`, `uwumacs` |
 | Reviewed P00 code | `21dbebc..ad49657`; all eight scoped fix findings addressed, no new Critical/Important breakage per the recorded re-review |
-| Runtime baseline | P01–P02 native maps/state runtime at `e915905`; host migration remains P05; inherited frames/hints remain active in the host |
+| Runtime baseline | P01–P03 native maps/state/registry runtime at `04d3c97`; host migration remains P05; inherited frames/hints remain active in the host |
 | Working checkout | Isolated linked worktree; deployed main checkout remains separate |
-| Active roadmap task | P03 registry, readiness and lifecycle |
-| Integration acceptance | All 194 tickets remain pending; P01/P02 foundation completion is not individual integration acceptance; ADR-0038 assigns each acceptance task |
-| Review evidence | Phase 1 in [alignment-review.md](alignment-review.md); P01 review clean; P02 original review plus three scoped fix reviews, summarized below |
-| Next action | Implement P03 with the reviewed native-map/state interfaces, eight assigned support checks and exact Windows Emacs 30.1; continue through P17 with review and GitHub sync |
+| Active roadmap task | None; P03 complete and execution paused before P04 |
+| Integration acceptance | 8 P03 support tickets verified (I005/I007/I008/I009/I010/I011/I018/I019); 186 pending; ADR-0038 assigns acceptance ownership |
+| Review evidence | Phase 1 in [alignment-review.md](alignment-review.md); P01/P02 review clean; P03 initial review found one lifecycle defect; tested fix applied and re-review waived by the user, summarized below |
+| Next action | Stop. Await explicit resumption before P04 discovery; later host migration and integration/release tasks remain planned |
 
 ### P00 evidence inspected
 
@@ -47,7 +47,7 @@ The reviewed P00 workflow selected an isolated GUI root with a wrapper early-ini
 | P00 | Baseline verification and fixtures | complete — `21dbebc..ad49657`, review clean |
 | P01 | Native maps and customization | complete — `e703f7e..075fb53`, review clean |
 | P02 | State activation and localleaders | complete — `19129aa..e915905`, review clean |
-| P03 | Registry and lifecycle | pending |
+| P03 | Registry and lifecycle | complete — `7c149b9..04d3c97`; fix tested, re-review waived by user |
 | P04 | Discovery and annotations | pending |
 | P05 | Host migration | pending |
 | P06 | Branding and frame/GUI acceptance | pending |
@@ -66,6 +66,14 @@ The reviewed P00 workflow selected an isolated GUI root with a wrapper early-ini
 Keep this table synchronized with plan checkboxes and the per-ticket progress file when created. A capability limitation or parked review finding is not completed acceptance.
 
 ## Execution log
+
+- 2026-09-13 — P03 complete at `04d3c97491a8d5ec86ba1f68d77c3e4b03b8ef48`; initial independent review found reentrant callback mutation could restore a disabled integration selection and repeat setup/cleanup. The fix rejects nested lifecycle mutations before publication, preserves framework mode state, and coalesces supported callback refreshes. Six focused regressions pass (five reproduced failures before the fix). The user explicitly instructed skipping re-review and recording/pushing the verified support tickets; no clean re-review verdict is claimed. Registry exact-schema/dependency validation, delayed readiness, owned setup/cleanup and doctor diagnostics are implemented. Current core remains inert until enabled; global callable leader entrypoints are stable, while modes gate setup/local/state policy. Eight assigned support tickets now carry individual named checks, tested versions, code revision and limitations in progress.json; the other 186 remain pending.
+
+  Fresh verification: Windows31.1 combined core/state/runner/registry ERT 71/71; source-only Windows30.1 registry 26/26 and eight individual support checks 8/8; five modules strictly compile on Emacs30.1 after the fix (31.1 strict compilation passed before the fix and is historical); 22 generated outputs match; unchanged Python evidence-validator regressions previously passed 10/10, and the current all194-ticket/38-ADR validator passes. Registry GUI27/27 (`registry-1-20260913-190854`) and covering state GUI24/24 (`state-1-20260913-190915`) have zero failures/skips/invariant violations. These tested the dirty fix tree subsequently committed, with controller-only scope documents also dirty; no clean-commit GUI rerun or embedded commit provenance is claimed. GUI artifacts record runtime/count/environment data; commit attribution comes from the recorded execution and report. Owned instances/roots were cleaned; one PowerShell cache file stayed inside the disposable state-test HOME. Existing Meow cursor-control output is inherited. No Linux/daemon/final standalone acceptance is claimed; I009's mandatory P17 revalidation remains.
+
+  P03 rulings: setup runs once per enabled lifetime after feature and matching-context readiness, with per-buffer effects owned through named hooks; the alternative per-buffer lifecycle would duplicate global effects. Global leader entries retain priority zero independent of major mode; mode specificity applies local/state contributions, preserving stable package entrypoints. A setup that signals before returning cleanup must unwind its own partial effects; returned cleanup closures are retired on failed uncommitted lifetimes. ADR-0005/0006/0009/0019 and the architecture record these boundaries. The runner gained a bounded registry suite through the existing isolation checks. Lifecycle callbacks may edit user maps and request refresh but cannot recursively register/enable/disable integrations or toggle the framework; rejecting early avoids a deferred-operation queue and ambiguous callback ordering. A callback error fails and cleans its lifetime rather than silently restarting it. Prevalidation conflicts preserve the prior valid map state; failure diagnostics do not imply successful activation.
+
+  User scope supersession: initially full P01-P17, then stop-after-P06, finally **stop after P03**. The final instruction controls: finish review and GitHub synchronization, then stop before P04. The future roadmap and preparatory research remain deferred, not completed. Normal deployed main and installed packages remain unchanged.
 
 - 2026-09-13 — P02 complete at `e9159050074538fdad5f0be658e085403cc9ba4c` (initial `a4eadf8`, fixes `f389685`, `71e6fb1` and `e915905`). Independent initial review found equal-priority defaults bypass and first EAT input interception; scoped round 1 addressed both but found public base-map edits lost on refresh; scoped round 2 addressed public edits but found a false conflict between overlapping native composed layers; round 3 addressed that traversal defect with no new Critical/Important breakage. Fresh focused core/state/runner ERT 45/45, graphical state 24/24 with zero failures/skips/invariant violations, 21 generated outputs matching and strict compilation 4/4 passed. The unchanged tangle-tool regression last passed 8/8 at the preceding fix and was not rerun as if it were new evidence. Final graphical artifact `state-1-20260913-181552` matches the runtime commit; only controller-owned documentation was dirty, and the generic JSON records counts rather than embedding the commit. All owned GUI processes/frames/roots were cleaned. A PowerShell cache write stayed inside the disposable home and was removed. P02 does not enable the host or complete the 194 integration tickets.
 

@@ -28,11 +28,15 @@
     "limitations": []
   },
   "I005": {
-    "status": "pending",
-    "commit": null,
-    "target_version": null,
-    "tests": [],
-    "limitations": []
+    "status": "verified",
+    "commit": "04d3c97491a8d5ec86ba1f68d77c3e4b03b8ef48",
+    "target_version": "GNU Emacs 30.1 built-in use-package/package boundary",
+    "tests": [
+      "tests/uwumacs-compatibility-tests.el::uwumacs-acceptance-i005-core-load-does-not-acquire-packages (PASS; source-only Windows Emacs 30.1)"
+    ],
+    "limitations": [
+      "Current core and first adapter only; downstream adapters retain separate acceptance."
+    ]
   },
   "I006": {
     "status": "pending",
@@ -42,39 +46,59 @@
     "limitations": []
   },
   "I007": {
-    "status": "pending",
-    "commit": null,
-    "target_version": null,
-    "tests": [],
-    "limitations": []
+    "status": "verified",
+    "commit": "04d3c97491a8d5ec86ba1f68d77c3e4b03b8ef48",
+    "target_version": "cl-lib 1.0; GNU Emacs Windows 30.1 (31.1 strict compile was pre-fix evidence)",
+    "tests": [
+      "tests/uwumacs-compatibility-tests.el::uwumacs-acceptance-i007-core-byte-compiles-with-explicit-cl-lib (PASS; source-only Windows Emacs 30.1)"
+    ],
+    "limitations": [
+      "Five current modules compile with warnings fatal; P17 must revalidate the final artifact."
+    ]
   },
   "I008": {
-    "status": "pending",
-    "commit": null,
-    "target_version": null,
-    "tests": [],
-    "limitations": []
+    "status": "verified",
+    "commit": "04d3c97491a8d5ec86ba1f68d77c3e4b03b8ef48",
+    "target_version": "UwUmacs five-module core at P03; GNU Emacs 30.1",
+    "tests": [
+      "tests/uwumacs-compatibility-tests.el::uwumacs-acceptance-i008-no-obsolete-cl-imports (PASS; source-only Windows Emacs 30.1)"
+    ],
+    "limitations": [
+      "Current source policy scan; repeat when later modules are added. Vendor legacy dependency unchanged."
+    ]
   },
   "I009": {
-    "status": "pending",
-    "commit": null,
-    "target_version": null,
-    "tests": [],
-    "limitations": []
+    "status": "verified",
+    "commit": "04d3c97491a8d5ec86ba1f68d77c3e4b03b8ef48",
+    "target_version": "GNU Emacs 30.1 native Windows; Meow 20260714.1200 source",
+    "tests": [
+      "tests/uwumacs-compatibility-tests.el::uwumacs-acceptance-i009-windows-30.1-core-source-load (PASS; source-only Windows Emacs 30.1)"
+    ],
+    "limitations": [
+      "Exact P03 floor passed; mandatory P17 standalone revalidation remains. No 30.1 GUI or daemon acceptance claimed."
+    ]
   },
   "I010": {
-    "status": "pending",
-    "commit": null,
-    "target_version": null,
-    "tests": [],
-    "limitations": []
+    "status": "verified",
+    "commit": "04d3c97491a8d5ec86ba1f68d77c3e4b03b8ef48",
+    "target_version": "GNU Emacs 30.1 built-in compat 30.1.9999",
+    "tests": [
+      "tests/uwumacs-compatibility-tests.el::uwumacs-acceptance-i010-core-adapter-loads-with-compat (PASS; source-only Windows Emacs 30.1)"
+    ],
+    "limitations": [
+      "Current core plus uwumacs-integration-core adapter; no external Compat installation."
+    ]
   },
   "I011": {
-    "status": "pending",
-    "commit": null,
-    "target_version": null,
-    "tests": [],
-    "limitations": []
+    "status": "verified",
+    "commit": "04d3c97491a8d5ec86ba1f68d77c3e4b03b8ef48",
+    "target_version": "GNU Emacs 30.1 built-in seq 2.24",
+    "tests": [
+      "tests/uwumacs-compatibility-tests.el::uwumacs-acceptance-i011-builtin-seq-needs-no-install (PASS; source-only Windows Emacs 30.1)"
+    ],
+    "limitations": [
+      "Current core dependency compatibility; not a synthetic integration dependency."
+    ]
   },
   "I012": {
     "status": "pending",
@@ -119,17 +143,21 @@
     "limitations": []
   },
   "I018": {
-    "status": "pending",
-    "commit": null,
-    "target_version": null,
-    "tests": [],
+    "status": "verified",
+    "commit": "04d3c97491a8d5ec86ba1f68d77c3e4b03b8ef48",
+    "target_version": "parent-mode 20240210.1906; revision 9fe5363b2a190619641c79b3a40d874d8c8f9f40; GNU Emacs 30.1",
+    "tests": [
+      "tests/uwumacs-compatibility-tests.el::uwumacs-acceptance-i018-derived-mode-prefers-nearest-adapter-once (PASS; source-only Windows Emacs 30.1)"
+    ],
     "limitations": []
   },
   "I019": {
-    "status": "pending",
-    "commit": null,
-    "target_version": null,
-    "tests": [],
+    "status": "verified",
+    "commit": "04d3c97491a8d5ec86ba1f68d77c3e4b03b8ef48",
+    "target_version": "spinner 1.7.4.0.20220915.94959; revision d4647ae87fb0cd24bc9081a3d287c860ff061c21; GNU Emacs 30.1",
+    "tests": [
+      "tests/uwumacs-compatibility-tests.el::uwumacs-acceptance-i019-spinner-preserves-input-and-cancels-timer (PASS; source-only Windows Emacs 30.1)"
+    ],
     "limitations": []
   },
   "I020": {
