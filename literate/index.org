@@ -14,6 +14,12 @@ The structure takes inspiration from [[https://panadestein.github.io/emacsd/][Pa
 We reproduce the documented, nested reading experience while retaining this
 repository's Lambda, Meow, Vertico/Consult and Corfu choices.
 
+** UwUmacs development
+
+[[file:../docs/uwumacs/README.md][:3 UwUmacs architecture and roadmap]] describes the planned literal leader,
+menus, and ordered integrations for the enabled configuration. It includes the
+package inventory, acceptance checks, and the boundary around unscheduled packages.
+
 ** Choose a reading path
 
 | Chapter | What it explains | Primary ownership |
