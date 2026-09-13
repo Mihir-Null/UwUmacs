@@ -80,6 +80,10 @@ that actual combined candidate. Native submaps, parents, composed maps and raw
 menu definitions are traversed without converting key events through text. A
 live public base fallback sits below the validated candidate to retain native
 prefix structure, including empty prefixes; the user leader map sits above both.
+Traversal deduplicates complete native event paths across all composed/inherited
+entries in native precedence order. A winning command hides lower prefix
+subtrees, so unreachable lower bindings cannot create false collisions or
+ownership entries.
 The reserved localleader check includes this fallback, so even an empty public
 prefix cannot consume the localleader suffix.
 

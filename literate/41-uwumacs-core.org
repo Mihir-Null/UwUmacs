@@ -287,23 +287,24 @@ does not mutate active UwUmacs state."
   "Return effective (EVENTS . DEFINITION) entries from native MAP.
 Keep event vectors and raw menu items; skip inherited shadowed entries.
 Plain prefixes are traversed natively, including parents and composed maps."
-  (let (bindings opaque-prefixes)
+  (let ((seen (make-hash-table :test 'equal))
+        bindings opaque-prefixes)
     (dolist (entry (accessible-keymaps map))
-      (let ((prefix (car entry))
-            (seen (make-hash-table :test 'equal)))
+      (let ((prefix (car entry)))
         (unless (cl-some (lambda (opaque)
                            (uwumacs--events-prefix-p opaque prefix))
                          opaque-prefixes)
           (map-keymap
            (lambda (event definition)
-             (when (and definition (not (gethash event seen)))
-               (puthash event t seen)
-               (let ((events (vconcat prefix (vector event))))
+             (let ((events (vconcat prefix (vector event))))
+               ;; Composed layers can expose the same complete path through
+               ;; multiple accessible entries.  Keep native precedence once.
+               (when (and definition (not (gethash events seen)))
+                 (puthash events t seen)
                  (unless (keymapp definition)
-                   ;; Preserve menu filters as native definitions.  If such an
-                   ;; item denotes a prefix, do not duplicate its descendants.
-                   (when (eq (car-safe definition) 'menu-item)
-                     (push events opaque-prefixes))
+                   ;; Commands hide lower prefixes; raw menu items remain
+                   ;; opaque so their native filters/prefixes are preserved.
+                   (push events opaque-prefixes)
                    (push (cons events definition) bindings)))))
            (cdr entry)))))
     (nreverse bindings)))

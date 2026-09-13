@@ -325,3 +325,57 @@
         (should (eq (key-binding (kbd "C-c C-SPC z")) 'backward-char))
         (should (equal (uwumacs--binding-metadata "z" (plist-get uwumacs--buffer-metadata :leader))
                        '(:owner context :label "Context")))))))
+
+(ert-deftest uwumacs-state-public-base-overlapping-compositions-keep-winning-owner ()
+  (let ((uwumacs-leader-map nil)
+        (uwumacs--leader-sources nil)
+        (uwumacs--leader-metadata nil))
+    (uwumacs--replace-leader-definitions
+     '((:owner high :priority 20 :bindings (("z x" forward-char "High")))
+       (:owner low :priority 0 :bindings (("z x" backward-char "Low")))))
+    ;; These are two genuinely overlapping native priority layers.
+    (should (eq (keymap-lookup uwumacs-leader-map "z x") 'forward-char))
+    (with-temp-buffer
+      (uwumacs-state-test-with-mode
+        (uwumacs-refresh (current-buffer))
+        (should (eq (key-binding (kbd "C-c C-SPC z x")) 'forward-char))
+        (should (= 1 (cl-count [122 120] (uwumacs--native-map-bindings uwumacs-leader-map)
+                               :key #'car :test #'equal)))
+        (should (equal (uwumacs--binding-metadata "z x" (plist-get uwumacs--buffer-metadata :leader))
+                       '(:owner high :label "High")))))))
+
+(ert-deftest uwumacs-state-public-base-overlapping-parents-keep-native-precedence ()
+  (let* ((parent (make-sparse-keymap))
+         (child (make-sparse-keymap))
+         (lower (make-sparse-keymap))
+         (uwumacs-leader-map (make-composed-keymap (list child lower))))
+    (keymap-set parent "z x" #'backward-char)
+    (keymap-set child "z x" #'forward-char)
+    (keymap-set lower "z x" #'ignore)
+    (keymap-set lower "z y" #'backward-char)
+    (set-keymap-parent child parent)
+    (with-temp-buffer
+      (uwumacs-state-test-with-mode
+        (should (eq (key-binding (kbd "C-c C-SPC z x")) 'forward-char))
+        (should (eq (key-binding (kbd "C-c C-SPC z y")) 'backward-char))
+        (should (equal (uwumacs--binding-metadata "z x" (plist-get uwumacs--buffer-metadata :leader))
+                       '(:owner public-base :label "z x")))))))
+
+(ert-deftest uwumacs-state-public-base-command-prefix-shadowing-is-native ()
+  (let ((command-map (make-sparse-keymap))
+        (prefix-map (make-sparse-keymap)))
+    (keymap-set command-map "z" #'ignore)
+    (keymap-set prefix-map "z x" #'forward-char)
+    (dolist (command-first '(t nil))
+      (let ((uwumacs-leader-map
+             (make-composed-keymap (if command-first (list command-map prefix-map)
+                                    (list prefix-map command-map)))))
+        (with-temp-buffer
+          (uwumacs-state-test-with-mode
+            (if command-first
+                (progn
+                  (should (eq (key-binding (kbd "C-c C-SPC z")) 'ignore))
+                  (should-not (assoc [122 120] (uwumacs--native-map-bindings uwumacs-leader-map))))
+              (should (keymapp (key-binding (kbd "C-c C-SPC z"))))
+              (should (eq (key-binding (kbd "C-c C-SPC z x")) 'forward-char))
+              (should-not (assoc [122] (uwumacs--native-map-bindings uwumacs-leader-map))))))))))
