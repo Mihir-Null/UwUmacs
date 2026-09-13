@@ -98,15 +98,7 @@ A nil binding falls through to lower maps; `undefined' explicitly blocks one.")
   "Alist from the state symbols `normal' and `motion' to user keymaps.")
 
 (defvar uwumacs--leader-metadata nil
-  "Alist from leader key strings to owner/label plists for the active map.")
-
-(defun uwumacs--binding-metadata (key &optional metadata)
-  "Return owner/label metadata for KEY from METADATA or the active table."
-  (cdr (assoc-string key (or metadata uwumacs--leader-metadata))))
-
-(defun uwumacs--effective-leader-map ()
-  "Return a native map with user bindings above the validated base map."
-  (make-composed-keymap (list uwumacs-user-leader-map uwumacs-leader-map)))
+  "Alist from native key-event vectors to owner/label plists for the active map.")
 
 (defun uwumacs--binding-key-events (key owner)
   "Return parsed KEY events, naming OWNER when validation fails."
@@ -117,6 +109,19 @@ A nil binding falls through to lower maps; `undefined' explicitly blocks one.")
           (error "invalid"))
         (vconcat (key-parse key)))
     (error (error "UwUmacs owner %S has an invalid key: %S" owner key))))
+
+(defun uwumacs--binding-metadata (key &rest metadata-argument)
+  "Return owner/label metadata for KEY.
+Use the active table when METADATA-ARGUMENT is omitted; an explicit nil means
+an empty candidate table.  KEY is compared by native event identity."
+  (let ((metadata (if metadata-argument
+                      (car metadata-argument)
+                    uwumacs--leader-metadata)))
+    (cdr (assoc (uwumacs--binding-key-events key 'metadata-query) metadata))))
+
+(defun uwumacs--effective-leader-map ()
+  "Return a native map with user bindings above the validated base map."
+  (make-composed-keymap (list uwumacs-user-leader-map uwumacs-leader-map)))
 
 (defun uwumacs--binding-conflict (events seen)
   "Return the entry in SEEN whose events overlap EVENTS, if any."
@@ -180,7 +185,7 @@ Return a cons whose car is the map and whose cdr is its metadata alist."
                 (push (list :events events :key key :owner owner) seen)
                 (uwumacs--ensure-prefixes map events)
                 (keymap-set map key definition)
-                (push (cons key (list :owner owner :label label)) metadata)))))))
+                (push (cons events (list :owner owner :label label)) metadata)))))))
     (cons map (nreverse metadata))))
 
 (defun uwumacs--build-map-candidate (sources)
@@ -204,7 +209,7 @@ does not mutate active UwUmacs state."
                    (uwumacs--build-priority-layer priority sources)))
         (push map maps)
         (dolist (entry layer-metadata)
-          (unless (assoc-string (car entry) metadata)
+          (unless (assoc (car entry) metadata)
             (push entry metadata)))))
     (setq maps (nreverse maps))
     (list :map (if maps

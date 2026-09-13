@@ -77,6 +77,29 @@
     (should (equal (uwumacs--binding-metadata "x" metadata)
                    '(:owner specific :label "Specific action")))))
 
+(ert-deftest uwumacs-core-equivalent-key-spellings-share-owner-metadata ()
+  "Textual metadata keys must not disagree with native event-identity lookup."
+  (should uwumacs-core-tests-library-loaded)
+  (let* ((candidate
+          (uwumacs--build-map-candidate
+           '((:owner low :priority 0
+              :bindings (("C-i" forward-char "Low")))
+             (:owner high :priority 20
+              :bindings (("TAB" backward-char "High"))))))
+         (map (plist-get candidate :map))
+         (metadata (plist-get candidate :metadata))
+         (expected '(:owner high :label "High")))
+    (should (equal (key-parse "C-i") (key-parse "TAB")))
+    (should (eq (keymap-lookup map "C-i") #'backward-char))
+    (should (equal (uwumacs--binding-metadata "C-i" metadata) expected))
+    (should (equal (uwumacs--binding-metadata "TAB" metadata) expected))))
+
+(ert-deftest uwumacs-core-explicit-empty-metadata-does-not-read-active-table ()
+  "An empty candidate table must remain distinguishable from an omitted table."
+  (should uwumacs-core-tests-library-loaded)
+  (should (uwumacs--binding-metadata "f f"))
+  (should-not (uwumacs--binding-metadata "f f" nil)))
+
 
 ;;;; Transactional validation
 
