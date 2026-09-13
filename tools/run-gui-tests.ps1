@@ -64,7 +64,7 @@ $Suites = @{
     frames = @{ Tests = 'tests/frames-tests.el'; Selector = '^dots-frames-'; Expect = 5 }
     hints  = @{ Tests = 'tests/key-hints-gui-tests.el'; Selector = '^dots-hints-gui-'; Expect = 3 }
     state  = @{ Tests = 'tests/uwumacs-state-gui-tests.el'; Selector = '^uwumacs-state-'; Expect = 24 }
-    registry = @{ Tests = 'tests/uwumacs-registry-gui-tests.el'; Selector = '^uwumacs-registry-'; Expect = 21 }
+    registry = @{ Tests = 'tests/uwumacs-registry-gui-tests.el'; Selector = '^uwumacs-registry-'; Expect = 27 }
     audit  = @{ Tests = ''; Selector = ''; Expect = 0; Audit = 'observed-keys.json' }
 }
 $order = if ($Suite -eq 'all') { @('frames', 'hints', 'audit', 'state', 'registry') } else { @($Suite) }

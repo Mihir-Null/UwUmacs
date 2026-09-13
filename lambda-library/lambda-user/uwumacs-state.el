@@ -9,6 +9,8 @@
 (declare-function uwumacs--registry-start "uwumacs-registry" ())
 (declare-function uwumacs--registry-stop "uwumacs-registry" ())
 (declare-function uwumacs--registry-context-entry "uwumacs-registry" ())
+(declare-function uwumacs--registry-assert-idle "uwumacs-registry" (operation))
+(defvar uwumacs--registry-mode)
 (defvar uwumacs-mode nil)
 
 (defvar uwumacs-map-context-function nil
@@ -197,6 +199,11 @@ leaves every selected buffer's previous maps intact."
 (define-minor-mode uwumacs-mode
   "Use literal native leader maps with Meow and a modified editing fallback."
   :global t :group 'uwumacs
+  ;; `define-minor-mode' assigns the mode variable before entering this body.
+  ;; Restore the callback boundary's value before rejecting a nested change.
+  (when (bound-and-true-p uwumacs--registry-busy)
+    (setq uwumacs-mode uwumacs--registry-mode)
+    (uwumacs--registry-assert-idle 'change-global-mode))
   (if (not uwumacs-mode)
       (uwumacs--disable)
     (condition-case error-data

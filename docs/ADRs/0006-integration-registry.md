@@ -61,6 +61,27 @@ The registry installs only its provider and an after-load observer while global
 mode is on; P02's existing mode/state observers coordinate entry and synchronous
 input eligibility. Core load alone remains inert and does not require Meow.
 
+### P03 review clarification: callback transaction boundary
+
+Setup, cleanup, capability checks and after-integration callbacks run inside a
+registry transaction. They may adjust their owned effects and public user maps,
+and may call `uwumacs-refresh`; that refresh is coalesced into the outer final
+map build. They must not recursively call register/enable/disable integration or
+change `uwumacs-mode`. The public mutators reject such calls before changing
+registry data. Global mode restores the transaction's mode value before raising
+an error because `define-minor-mode` assigns its variable before the mode body.
+Uncaught setup/override callback errors fail that lifetime and run any returned
+cleanup once. Ordinary refresh does not retry the failed lifetime; explicit
+disable/re-enable or descriptor replacement remains the retry boundary.
+
+The controller confirmed this boundary during P03 review. Deferring nested
+mutations would require a separate queue and ordering/failure policy, so the
+smaller explicit rejection was selected. This prevents an outer transaction
+from overwriting a nested selection or leaving activation partially disabled.
+It does not promise rollback of arbitrary direct variable assignments by user
+code. Named callback mutation, refresh, retry and global lifecycle regressions
+cover the supported boundary.
+
 This clarifies zero-argument lifetime and the existing P02 seam under the user's
 approved roadmap authority; it adds no descriptor field or public API.
 

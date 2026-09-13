@@ -148,7 +148,12 @@ setups follow selection order, with dependencies first and cleanup in reverse.
 After-integration user hooks run before the final map commit. Setup failures
 retain an explanation and run any cleanup already returned; setup must unwind
 its own partial effects if it signals before returning cleanup. See ADR-0006
-for precise pre-validation versus post-hook failure behavior.
+for precise pre-validation versus post-hook failure behavior. Registry callbacks
+may edit owned effects/user maps and request refresh (coalesced into the final
+build), but recursive register/enable/disable or global `uwumacs-mode` changes
+are rejected before committing any nested lifecycle change. Uncaught callback
+errors fail/clean that lifetime; ordinary refresh never retries failed setup.
+Explicit disable/re-enable or descriptor replacement remains the retry boundary.
 
 ## 6. Lookup and lifecycle algorithm
 

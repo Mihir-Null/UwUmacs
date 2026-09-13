@@ -10,12 +10,21 @@
 (declare-function meow--switch-state "meow-core" (state))
 (defvar uwumacs--registry nil "Alist of IDs to descriptor and lifetime records.")
 (defvar uwumacs--registry-busy nil)
+(defvar uwumacs--registry-mode nil
+  "Global mode value preserved while a registry callback is running.")
 (defvar uwumacs--registry-buffers nil)
 (defvar uwumacs--registry-diagnostic nil)
 (defvar-local uwumacs--initial-context nil)
 (defvar uwumacs-after-integration-hook nil
   "Functions called with an ID after setup, before committing refreshed maps.
-Use the public user maps for overrides.  A signalling hook fails that lifetime.")
+Use the public user maps for overrides.  A signalling hook fails that lifetime.
+Registry mutations and global activation changes are rejected inside callbacks;
+`uwumacs-refresh' is coalesced into the outer transaction's final map build.")
+
+(defun uwumacs--registry-assert-idle (operation)
+  "Reject OPERATION before it can recursively mutate a registry callback."
+  (when uwumacs--registry-busy
+    (error "Cannot %S during a UwUmacs registry callback" operation)))
 
 (defun uwumacs--descriptor (id)
   "Return ID's descriptor from the currently staged registry."
@@ -196,7 +205,8 @@ excludes the failed contribution.  Arbitrary user/setup mutations are owned
 by their author; no complete old vendor or user map is restored."
   (let ((old uwumacs--registry) (uwumacs--registry-buffers (buffer-list)) result candidates started)
     (let ((uwumacs--registry next) (uwumacs-integrations selected)
-          (uwumacs--registry-busy t) (uwumacs--refreshing t))
+          (uwumacs--registry-busy t) (uwumacs--registry-mode uwumacs-mode)
+          (uwumacs--refreshing t))
       (let ((order (uwumacs--registry-order)))
         (dolist (id order)
           (let ((readiness (uwumacs--readiness id)) (entry (alist-get id uwumacs--registry)))
@@ -274,6 +284,7 @@ by their author; no complete old vendor or user map is restored."
 (defun uwumacs-register-integration (id &rest spec)
   "Validate and register ID with exact descriptor SPEC; return ID.
 An equal descriptor is inert.  No package is loaded or installed."
+  (uwumacs--registry-assert-idle 'register-integration)
   (uwumacs--validate-descriptor id spec)
   (unless (and (assq id uwumacs--registry) (equal spec (uwumacs--descriptor id)))
     (let ((next (copy-tree uwumacs--registry)))
@@ -285,6 +296,7 @@ An equal descriptor is inert.  No package is loaded or installed."
 (defun uwumacs-enable-integration (id)
   "Select registered ID without silently selecting unselected requirements.
 Return its readiness status.  Call while `uwumacs-mode' is enabled to activate."
+  (uwumacs--registry-assert-idle 'enable-integration)
   (unless (assq id uwumacs--registry) (error "Unregistered integration %S" id))
   (uwumacs--registry-transaction
    (copy-tree uwumacs--registry)
@@ -294,6 +306,7 @@ Return its readiness status.  Call while `uwumacs-mode' is enabled to activate."
 
 (defun uwumacs-disable-integration (id)
   "Deselect ID and remove its effects, refusing selected dependants."
+  (uwumacs--registry-assert-idle 'disable-integration)
   (let ((dependants (seq-filter (lambda (other) (memq id (plist-get (uwumacs--descriptor other) :requires))) uwumacs-integrations)))
     (when dependants (error "Cannot disable %S; selected dependants: %S" id dependants)))
   (uwumacs--registry-transaction (copy-tree uwumacs--registry) (remq id uwumacs-integrations))
@@ -326,7 +339,7 @@ Return its readiness status.  Call while `uwumacs-mode' is enabled to activate."
       (unless (equal winner uwumacs--initial-context)
         (setq uwumacs--initial-context winner)
         (when winner
-          (let ((uwumacs--registry-busy t))
+          (let ((uwumacs--registry-busy t) (uwumacs--registry-mode uwumacs-mode))
             (meow--switch-state (plist-get (cdr winner) :initial-state))))))))
 
 (defun uwumacs--registry-after-load (&rest _)
@@ -346,7 +359,7 @@ Return its readiness status.  Call while `uwumacs-mode' is enabled to activate."
   (remove-hook 'after-load-functions #'uwumacs--registry-after-load)
   (when (eq uwumacs-map-context-function #'uwumacs--registry-sources)
     (setq uwumacs-map-context-function nil))
-  (let ((uwumacs--registry-busy t))
+  (let ((uwumacs--registry-busy t) (uwumacs--registry-mode uwumacs-mode))
     (dolist (id (reverse (uwumacs--registry-order)))
       (let* ((entry (alist-get id uwumacs--registry))
              (failure (uwumacs--retire-integration entry)))
