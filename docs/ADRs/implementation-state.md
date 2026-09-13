@@ -1,20 +1,20 @@
 # UwUmacs implementation state
 
-Updated 2026-09-13 after inspecting P00's changes, task review, scoped re-review and on-disk audit. This tracked resumption record supersedes the stale pre-P00 checkpoint; earlier execution-log entries remain historical.
+Updated 2026-09-13 after the user resumed development and authorized GitHub synchronization. This tracked resumption record supersedes the stale pre-P00 checkpoint; earlier execution-log entries remain historical.
 
 ## Current checkpoint
 
 | Field | Recorded state |
 |---|---|
-| Phase | Phase 1 and P00 complete; P01 onward paused by the user's current instruction |
-| Repository / branch | `C:/Users/walnu/.config/emacs-dots`, `uwumacs` |
+| Phase | Phase 1 and P00 complete; P01 resumed |
+| Repository / branch | `C:/Users/walnu/.config/emacs-dots/var/worktrees/uwumacs`, `uwumacs` |
 | Reviewed P00 code | `21dbebc..ad49657`; all eight scoped fix findings addressed, no new Critical/Important breakage per the recorded re-review |
 | Runtime baseline | Frames in `1f70a93`; physical hints in `51c19c1`; no UwUmacs literal runtime exists |
-| Working checkout | Original checkout by prior user decision; sibling branches/worktrees remain separate |
-| Active roadmap task | None; do not begin P01 without a new user instruction |
+| Working checkout | Isolated linked worktree; deployed main checkout remains separate |
+| Active roadmap task | P01 native maps and customization |
 | Integration acceptance | All 194 tickets remain pending; P00 fixture completion is not adapter acceptance |
 | Review evidence | Phase 1 in [alignment-review.md](alignment-review.md); P00 review and findings summarized below |
-| Next action | Await a new user instruction before P01; the lightweight hints guide is committed and published separately |
+| Next action | Implement and independently review P01, then continue the ordered roadmap and sync reviewed commits to GitHub |
 
 ### P00 evidence inspected
 
@@ -66,6 +66,8 @@ The reviewed P00 workflow selected an isolated GUI root with a wrapper early-ini
 Keep this table synchronized with plan checkboxes and the per-ticket progress file when created. A capability limitation or parked review finding is not completed acceptance.
 
 ## Execution log
+
+- 2026-09-13 — User resumed development and explicitly authorized GitHub sync for all commits. Reconciled branch `uwumacs` at `9913dbc` with `origin/uwumacs` (equal), created the isolated linked worktree, and verified the documentation census gate, tangle (17 matching outputs), and helper tests (10/10). Read-only architecture review found no need to restructure P01–P06; native-map composition, transactional validation, genuine Meow-state fixtures and effective lookup remain the gates. The named architecture-first pair-programming skill was unavailable after bounded local search; architecture review uses the tracked spec/ADRs and GNU/Meow primary sources. Next: P01. Earlier pause entries below are historical.
 
 - 2026-09-13 — Published `feat/meow-physical-key-hints` at `77db4db`: original hints adapter cherry-picked as `fbb3ca2`, followed by guide/ADR-0038 corrections from P00. Fresh checks on that branch: 35 callable guide rows and Meow dispatch paths, documented project/native exceptions, five hint tests, isolated startup and tangle (17 outputs) all passed. The guide and its branch-local ADR are on that branch; no P00 tooling or UwUmacs roadmap was merged into it. The current `uwumacs` guide remains the historical baseline for future migration. Returned to `uwumacs`; P01–P17 remain paused.
 

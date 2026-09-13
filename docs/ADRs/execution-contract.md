@@ -19,9 +19,9 @@ It does not carry the current position. Read the [current-state log](implementat
 
 Explicit user requirements outrank agent design choices. The [architecture](../superpowers/specs/2026-09-13-uwumacs-design.md) is the technical contract once reconciled with those requirements; the [plan](../superpowers/plans/2026-09-13-uwumacs.md) derives from it. The user explicitly authorizes the agent to revise the plan and to make significant structural or other refactors when review establishes a need. This includes changing architecture, module boundaries, interfaces, task decomposition or ordering, and replacing earlier agent-selected mechanisms. The existing plan and ADRs are reviewable baselines, not immutable implementation constraints. Preserve the user's goals and enabled-configuration scope; record the problem, rationale, alternatives, migration and rollback implications, and verification before dependent work proceeds. Update or supersede affected ADRs and reconcile the architecture, plan, [catalogue](../uwumacs/integrations.md), inventory and [validator](../uwumacs/validate-plan.py) together. The size of an otherwise authorized refactor alone is not a reason to request permission again. Resolve ordinary reversible implementation choices autonomously. Ask only when missing information or authorization is actually required.
 
-## Current execution hold
+## Current execution authority
 
-The latest user instruction on 2026-09-13 is to retire the handoff, review P00 and carry the verified keybinding-guide findings to `feat/meow-physical-key-hints`, then commit and push. **Do not begin P01 or any later roadmap work until the user resumes it.** This instruction overrides earlier directions to continue automatically.
+On 2026-09-13 the user explicitly resumed UwUmacs development using subagent-driven development and relevant architecture-first practices, and requested that all commits be synced to remote GitHub. This lifts the earlier P01 hold. Continue the ordered roadmap from P01 with independent task reviews, durable evidence and coherent commits on `uwumacs`; push reviewed development commits to `origin/uwumacs` and verify synchronization.
 
 ## Execution method
 
@@ -67,4 +67,4 @@ Keep `package-inventory.json`'s census evidence historical unless it is delibera
 
 ## Publication boundary
 
-Commit coherent reviewed changes on the development line, with source, generated outputs, tests and decision records kept in sync. Preserve existing publication authorization and verify its scope before any remote action. The current user request authorizes publishing the handoff retirement on `uwumacs` and the lightweight hints/guide changes on `feat/meow-physical-key-hints`; it does not grant blanket authorization for later publication. This contract does not authorize merging main, deleting branches, tagging or publishing a package. Routine reversible development does not need repeated approval.
+Commit coherent reviewed changes on `uwumacs`, with source, generated outputs, tests and decision records kept in sync. The user's 2026-09-13 resumption request explicitly authorizes syncing all development commits to GitHub. Verify local and remote branch equality after publishing. This does not authorize merging main, deleting branches, tagging or publishing a package. Routine reversible development does not need repeated approval.
