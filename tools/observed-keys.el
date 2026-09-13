@@ -62,7 +62,9 @@
                          (string-match-p "map\\'" (symbol-name symbol))
                          (eq (symbol-value symbol) keymap)
                          (push symbol found))))
-        (car found))))
+        ;; `mapatoms' order is not stable, and several aliases can name the same
+        ;; keymap.  Pick the first by name so consecutive audits diff cleanly.
+        (car (sort found (lambda (a b) (string< (symbol-name a) (symbol-name b))))))))
 
 (defun uwumacs-observed-keys--describe (binding)
   "Describe BINDING as a stable string."
@@ -391,7 +393,14 @@ this records the stricter fact of what typing the advertised sequence does."
                            "non-graphical session")
                  :emacs_version emacs-version
                  :source_root (or (bound-and-true-p lem-emacs-dir) "unknown")
+                 ;; The commit the capture came from, and whether that commit
+                 ;; actually describes the code that ran.  A report generated
+                 ;; from a dirty worktree names a commit that cannot reproduce
+                 ;; it, so say so rather than implying provenance.
                  :source_commit (or (getenv "EMACS_DOTS_SOURCE_COMMIT") "unknown")
+                 :source_worktree_dirty
+                 (pcase (getenv "EMACS_DOTS_SOURCE_DIRTY")
+                   ("true" t) ("false" :false) (_ :null))
                  :package_dir (or (getenv "EMACS_DOTS_TEST_PACKAGES") package-user-dir)
                  :packages_activated (length package-activated-list)
                  :display (if (display-graphic-p) "graphic" "non-graphic"))

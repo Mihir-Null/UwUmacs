@@ -91,6 +91,31 @@
             (should (= (length (dots-gui--discover)) 3))))
       (dolist (name names) (ert-delete-test name)))))
 
+(ert-deftest uwumacs-runner-a-run-that-executed-nothing-is-never-a-pass ()
+  "`EMACS_DOTS_GUI_EXPECT' is otherwise consulted only inside the suite runner,
+so a suite whose test file is empty, misspelled or absent would skip that gate
+entirely and publish a green run in which no test existed."
+  (cl-letf (((symbol-function 'dots-gui--preflight) (lambda () nil))
+            ((symbol-function 'dots-gui--append) (lambda (&rest _) nil))
+            ((symbol-function 'dots-gui--run-suite) (lambda () "PASS"))
+            ((symbol-function 'dots-gui--run-audit) (lambda () "PASS")))
+    ;; Tests were expected and none could be loaded.
+    (let ((dots-gui-tests "") (dots-gui-expect 5) (dots-gui-audit nil))
+      (should (equal (dots-gui--run) "ERROR")))
+    ;; Nothing was asked for at all, so nothing was proved.
+    (dolist (expect '(0 nil))
+      (let ((dots-gui-tests "") (dots-gui-expect expect) (dots-gui-audit nil))
+        (should (equal (dots-gui--run) "NO-TESTS"))))
+    ;; The two shapes that really do execute something stay green.
+    (let ((dots-gui-tests "suite.el") (dots-gui-expect 5) (dots-gui-audit nil))
+      (should (equal (dots-gui--run) "PASS")))
+    (let ((dots-gui-tests "") (dots-gui-expect 0) (dots-gui-audit "observed-keys.json"))
+      (should (equal (dots-gui--run) "PASS")))
+    ;; A preflight failure still wins over everything else.
+    (cl-letf (((symbol-function 'dots-gui--preflight) (lambda () '("no display"))))
+      (let ((dots-gui-tests "suite.el") (dots-gui-expect 5) (dots-gui-audit nil))
+        (should (equal (dots-gui--run) "ERROR"))))))
+
 (ert-deftest uwumacs-runner-invariant-drift-is-reported ()
   "Cross-test pollution between graphical tests must be named, not absorbed."
   (let ((before (list :frames 1 :meow t :frames-only t)))

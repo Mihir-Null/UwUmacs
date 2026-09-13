@@ -129,6 +129,23 @@ In a genuinely live Normal state, before any UwUmacs layer exists, `SPC' is
       (should (eq (key-binding (kbd "SPC")) 'self-insert-command))
       (should-not (where-is-internal 'meow-keypad (current-active-maps))))))
 
+(ert-deftest uwumacs-helper-state-fixture-restores-the-global-mode-both-ways ()
+  "The macro must put `meow-global-mode' back whichever way the body moved it.
+Restoring it only when the macro turned it on would let one test disable the
+editor for every later test in the same process."
+  (uwumacs-helper-tests-with-buffer buffer
+    (should-not (bound-and-true-p meow-global-mode))
+    (uwumacs-test-with-meow-state 'normal
+      (should (bound-and-true-p meow-global-mode))
+      ;; An inner fixture whose body switches the global mode off.
+      (uwumacs-test-with-meow-state 'normal
+        (meow-global-mode -1)
+        (should-not (bound-and-true-p meow-global-mode)))
+      (should (bound-and-true-p meow-global-mode))
+      (should (meow-normal-mode-p))
+      (should (eq (key-binding (kbd "SPC")) 'meow-keypad)))
+    (should-not (bound-and-true-p meow-global-mode))))
+
 (ert-deftest uwumacs-helper-state-fixture-repairs-a-double-activation ()
   "`uwumacs-test-enter-meow-state' recovers from the documented Meow trap.
 Re-enabling an already-active state minor mode deactivates its keymap while

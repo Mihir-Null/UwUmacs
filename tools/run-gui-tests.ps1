@@ -71,7 +71,13 @@ function Get-EmacsPids {
 
 function Remove-Root([string]$root) {
     # Git marks its object files read-only on Windows; -Force is what removes them.
-    if (Test-Path $root) { Remove-Item -LiteralPath $root -Recurse -Force -ErrorAction SilentlyContinue }
+    # A cleanup that silently failed would leave "no leftover roots" asserted by
+    # hand instead of by the runner, so report the failure to the caller.
+    if (-not (Test-Path $root)) { return $null }
+    try { Remove-Item -LiteralPath $root -Recurse -Force -ErrorAction Stop }
+    catch { return "could not remove the test root ${root}: $($_.Exception.Message)" }
+    if (Test-Path $root) { return "test root still present after removal: $root" }
+    return $null
 }
 
 function Invoke-Suite([string]$name, [int]$attempt) {
@@ -82,10 +88,24 @@ function Invoke-Suite([string]$name, [int]$attempt) {
     $resultFile = "$reports/$label-$stamp.log"
     $statusFile = "$reports/$label-$stamp.json"
 
-    $env:EMACS_DOTS_TEST_PACKAGES = $packages
-    $env:EMACS_DOTS_SOURCE = "$repository/"
-    $env:EMACS_DOTS_GUI_SERVER = $server
-    $build = & $Emacs -Q --batch -l "$repository/tests/gui-setup.el" 2>&1
+    # The root builder is an ordinary child that inherits this shell's
+    # environment, so these three have to be set here -- and put back, or they
+    # outlive the script in the caller's session.
+    $names = 'EMACS_DOTS_TEST_PACKAGES', 'EMACS_DOTS_SOURCE', 'EMACS_DOTS_GUI_SERVER'
+    $saved = @{}
+    foreach ($name in $names) { $saved[$name] = [Environment]::GetEnvironmentVariable($name) }
+    try {
+        $env:EMACS_DOTS_TEST_PACKAGES = $packages
+        $env:EMACS_DOTS_SOURCE = "$repository/"
+        $env:EMACS_DOTS_GUI_SERVER = $server
+        $build = & $Emacs -Q --batch -l "$repository/tests/gui-setup.el" 2>&1
+    }
+    finally {
+        foreach ($name in $names) {
+            if ($null -eq $saved[$name]) { Remove-Item "env:$name" -ErrorAction SilentlyContinue }
+            else { Set-Item "env:$name" $saved[$name] }
+        }
+    }
     $root = ($build | Select-Object -Last 1).ToString().Trim()
     if (-not (Test-Path $root)) { throw "gui-setup.el did not produce a root: $build" }
 
@@ -107,7 +127,12 @@ function Invoke-Suite([string]$name, [int]$attempt) {
     $psi.Environment['XDG_CONFIG_HOME'] = $root + '/home'
     $psi.Environment['XDG_CACHE_HOME'] = $root + '/home/cache'
     $psi.Environment['EMACS_DOTS_TEST_PACKAGES'] = $packages
-    $psi.Environment['EMACS_DOTS_SOURCE_COMMIT'] = (git -C $repository rev-parse --short HEAD)
+    # Full commit plus an explicit dirty flag: a capture taken from a modified
+    # worktree names a commit that cannot reproduce it, and the artifact has to
+    # say so rather than imply provenance it does not have.
+    $psi.Environment['EMACS_DOTS_SOURCE_COMMIT'] = (git -C $repository rev-parse HEAD)
+    $psi.Environment['EMACS_DOTS_SOURCE_DIRTY'] =
+        if (git -C $repository status --porcelain) { 'true' } else { 'false' }
     $psi.Environment['EMACS_DOTS_GUI_RESULT'] = $resultFile
     $psi.Environment['EMACS_DOTS_GUI_STATUS'] = $statusFile
     $psi.Environment['EMACS_DOTS_GUI_SERVER'] = $server
@@ -123,7 +148,9 @@ function Invoke-Suite([string]$name, [int]$attempt) {
 
     $before = Get-EmacsPids
     # var/uwumacs-audit is the only part of var/ this runner may add to.
-    $varBefore = @(Get-ChildItem "$repository/var" -Recurse -File |
+    # -Force, or the roughly seventy hidden files under var/ sit outside the
+    # assertion that the user's var/ is untouched.
+    $varBefore = @(Get-ChildItem "$repository/var" -Recurse -File -Force |
         Where-Object { $_.FullName -notlike "*\uwumacs-audit\*" }).Count
     $elpaBefore = (Get-ChildItem $packages -Directory).Count
     $process = [System.Diagnostics.Process]::Start($psi)
@@ -161,11 +188,20 @@ function Invoke-Suite([string]$name, [int]$attempt) {
     if ($rootElpa.Count -ne 0) { $safety += "downloaded $($rootElpa.Count) entries into the test root" }
     if ((Get-ChildItem $packages -Directory).Count -ne $elpaBefore) { $safety += 'var/elpa entry count changed' }
     if (Test-Path "$packages/gnupg") { $safety += 'var/elpa/gnupg was created' }
-    $varAfter = @(Get-ChildItem "$repository/var" -Recurse -File |
+    $varAfter = @(Get-ChildItem "$repository/var" -Recurse -File -Force |
         Where-Object { $_.FullName -notlike "*\uwumacs-audit\*" }).Count
     if ($varAfter -ne $varBefore) { $safety += "var/ file count $varBefore -> $varAfter outside uwumacs-audit" }
     $stray = @(Get-EmacsPids | Where-Object { $_ -ne $owned -and $before -notcontains $_ })
     if ($stray.Count -gt 0) { $safety += "left emacs pids $($stray -join ',')" }
+
+    # Clean up before reporting, so a cleanup failure appears in the safety line
+    # rather than only in a leftover directory nobody looks at.
+    $ok = ($verdict -eq 'PASS') -and ($safety.Count -eq 0)
+    $kept = $root
+    if ($ok -and -not $KeepRoot) {
+        $removal = Remove-Root $root
+        if ($removal) { $safety += $removal; $ok = $false } else { $kept = $null }
+    }
 
     Write-Host ''
     Write-Host "=== $label ($verdict) pid=$owned root=$root"
@@ -176,10 +212,7 @@ function Invoke-Suite([string]$name, [int]$attempt) {
             Write-Host "    home: $($_.FullName.Substring($root.Length + 6))"
         }
     }
-
-    $ok = ($verdict -eq 'PASS') -and ($safety.Count -eq 0)
-    if ($ok -and -not $KeepRoot) { Remove-Root $root }
-    elseif (-not $ok) { Write-Host "    root kept for inspection: $root" }
+    if ($kept) { Write-Host "    root kept for inspection: $kept" }
     [pscustomobject]@{ Suite = $label; Status = $verdict; Safety = $safety; Ok = $ok; Result = $resultFile }
 }
 

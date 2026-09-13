@@ -57,8 +57,11 @@ The parent polls for this file, so it must never be readable half-written."
     (rename-file temporary dots-gui-status t)))
 
 (defun dots-gui--finish (status)
-  "Record STATUS, publish it and exit only this process."
-  (dots-gui--append "EMACS-DOTS-GUI %s\n" status)
+  "Record STATUS, publish it and exit only this process.
+Neither write may stop the parent learning the result.  A logging failure that
+escaped here would leave this process alive with no status until the parent
+deadline, which is the recovery path with the least evidence behind it."
+  (ignore-errors (dots-gui--append "EMACS-DOTS-GUI %s\n" status))
   (ignore-errors (dots-gui--publish status))
   (let ((confirm-kill-emacs nil) (kill-emacs-hook nil))
     (kill-emacs (if (equal status "PASS") 0 1))))
@@ -168,23 +171,44 @@ The parent polls for this file, so it must never be readable half-written."
     (dolist (message errors) (dots-gui--append "  AUDIT-ERROR %s\n" message))
     (if errors "FAIL" "PASS")))
 
+(defun dots-gui--run ()
+  "Run the preflight and whatever work this invocation was configured to do.
+Return the status string; the caller publishes it and exits.
+
+A run that executed nothing is never a pass.  `EMACS_DOTS_GUI_EXPECT' is
+otherwise consulted only inside `dots-gui--run-suite', so a suite whose test
+file is empty, misspelled or absent would skip that gate completely and leave
+the status at its initial value -- a green run in which no test existed."
+  (let ((failures (dots-gui--preflight))
+        (executed nil)
+        (status "PASS"))
+    (dolist (failure failures) (dots-gui--append "  PREFLIGHT %s\n" failure))
+    (when failures (setq status "ERROR"))
+    (when (and (equal status "PASS")
+               dots-gui-expect (> dots-gui-expect 0)
+               (string-empty-p dots-gui-tests))
+      (dots-gui--append "  ERROR %d tests expected but EMACS_DOTS_GUI_TESTS is empty\n"
+                        dots-gui-expect)
+      (setq dots-gui-counts (list :total 0 :expected dots-gui-expect))
+      (setq status "ERROR"))
+    (when (and (equal status "PASS") (not (string-empty-p dots-gui-tests)))
+      (setq executed t status (dots-gui--run-suite)))
+    (when (and (equal status "PASS") dots-gui-audit)
+      (setq executed t status (dots-gui--run-audit)))
+    (if (and (equal status "PASS") (not executed)) "NO-TESTS" status)))
+
 (defun dots-gui-execute ()
-  "Run the preflight, the requested suite and the requested audit, then exit."
-  (dots-gui--append "emacs=%s graphic=%S frames=%d pkgs=%d home=%S\n"
-                    emacs-version (display-graphic-p) (length (frame-list))
-                    (length package-activated-list) (getenv "HOME"))
-  (condition-case err
-      (let ((failures (dots-gui--preflight))
-            (status "PASS"))
-        (dolist (failure failures) (dots-gui--append "  PREFLIGHT %s\n" failure))
-        (when failures (setq status "ERROR"))
-        (when (and (equal status "PASS") (not (string-empty-p dots-gui-tests)))
-          (setq status (dots-gui--run-suite)))
-        (when (and (equal status "PASS") dots-gui-audit)
-          (setq status (dots-gui--run-audit)))
-        (dots-gui--finish status))
-    (error (dots-gui--append "ERROR %s\n" (error-message-string err))
-           (dots-gui--finish "ERROR"))))
+  "Run this invocation's work, publish the result and exit only this process."
+  (ignore-errors
+    (dots-gui--append "emacs=%s graphic=%S frames=%d pkgs=%d home=%S\n"
+                      emacs-version (display-graphic-p) (length (frame-list))
+                      (length package-activated-list) (getenv "HOME")))
+  (dots-gui--finish
+   (condition-case err
+       (dots-gui--run)
+     (error (ignore-errors
+              (dots-gui--append "ERROR %s\n" (error-message-string err)))
+            "ERROR"))))
 
 (defun dots-gui--watchdog ()
   "Give up on a blocked run.  Only rescues cases where timers still run."

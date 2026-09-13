@@ -210,7 +210,11 @@ Switching through a different state first makes the transition unconditional."
 
 Enables `meow-global-mode' when it is off, enters STATE through
 `uwumacs-test-enter-meow-state' (which asserts the state minor mode is live),
-and restores the previous global mode and buffer state on every exit path."
+and restores the previous global mode and buffer state on every exit path.
+
+The global mode is restored in BOTH directions.  Restoring it only when the
+macro turned it on would let a body that disables it leave the editor dead for
+every later test in the same process."
   (declare (indent 1) (debug (sexp body)))
   `(let ((uwumacs-test--global (bound-and-true-p meow-global-mode))
          (uwumacs-test--state (bound-and-true-p meow--current-state))
@@ -221,9 +225,11 @@ and restores the previous global mode and buffer state on every exit path."
            (uwumacs-test-enter-meow-state ,state)
            ,@body)
        (if uwumacs-test--global
-           (when (and uwumacs-test--state (buffer-live-p uwumacs-test--buffer))
-             (with-current-buffer uwumacs-test--buffer
-               (uwumacs-test-enter-meow-state uwumacs-test--state)))
-         (meow-global-mode -1)))))
+           (progn
+             (unless (bound-and-true-p meow-global-mode) (meow-global-mode 1))
+             (when (and uwumacs-test--state (buffer-live-p uwumacs-test--buffer))
+               (with-current-buffer uwumacs-test--buffer
+                 (uwumacs-test-enter-meow-state uwumacs-test--state))))
+         (when (bound-and-true-p meow-global-mode) (meow-global-mode -1))))))
 
 (provide 'uwumacs-test-helper)
