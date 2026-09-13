@@ -59,7 +59,7 @@
       (dots-test-check (string-suffix-p "var/etc/custom.el" custom-file)
                        "Customize file is not in persistent state")
       (dolist (feature '(config starter-setup-literate starter-setup-dashboard starter-setup-meow
-                        starter-setup-treesit starter-setup-languages
+                        starter-setup-key-hints starter-setup-treesit starter-setup-languages
                         starter-setup-terminal starter-setup-org starter-setup-ui starter-setup-frames))
         (dots-test-check (featurep feature) (format "Missing feature %s" feature)))
       (dots-test-check (equal custom-enabled-themes '(doom-sonokai)) "Theme changed")

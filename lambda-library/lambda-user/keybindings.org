@@ -12,6 +12,14 @@ In Meow normal or motion state, press =SPC= and pause for the which-key menu.
 In insert state, use =C-c C-SPC= for the same leader map, or Escape first.
 Use =M-x= to run any command below by name. =C-g= cancels a prompt.
 
+The SPC menu title shows the physical keys already entered; its rows show the
+next key to press. For example, after =SPC f=, press =f= for =find-file=.
+M-x command annotations also prefer complete physical leader sequences, such as
+=SPC s s= for =consult-line=, when opened from Normal or Motion state. In Insert
+state, or when a command has no reachable SPC binding, they retain native Emacs
+shortcuts. These annotations describe shortcuts from the editing buffer; type
+the command name or select a candidate while the M-x prompt itself is open.
+
 | Key       | Action                       | Command                          |
 |-----------+------------------------------+----------------------------------|
 | SPC SPC   | Run a command                | execute-extended-command         |

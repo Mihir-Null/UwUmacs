@@ -238,7 +238,8 @@ Treat @ as part of symbols/words during Meow movement in Org.
     (modify-syntax-entry ?@ "_" org-mode-syntax-table))
 
   (starter-meow-setup)
-  (meow-global-mode 1))
+  (meow-global-mode 1)
+  (require 'starter-setup-key-hints))
 #+end_src
 
 ** Publish the module
@@ -251,3 +252,166 @@ The core require/provide protocol records that this file loaded. Later requires 
 ;;; starter-setup-meow.el ends here
 #+end_src
 
+
+* Physical key hints
+:PROPERTIES:
+:header-args:emacs-lisp: :tangle ../lambda-library/lambda-user/starter-setup-key-hints.el :eval never :comments no :padline no :mkdirp yes
+:END:
+
+The SPC menu and M-x annotations should teach the keys to press. A label such
+as =SPC f f= is more useful here than the underlying =C-c C-SPC f f= binding.
+This is a display adapter for our semantic leader configuration; it does not
+change Meow's input handling or invent the upstream =SPC x= shortcut that this
+configuration intentionally disables.
+
+** Recognize the supported leader policy
+
+Keep the adapter conditional on the configured modifier policy. If that policy
+changes, retain upstream labels until an adapter for the new policy exists.
+
+#+begin_src emacs-lisp
+;;; starter-setup-key-hints.el --- Physical keys in Meow hints -*- lexical-binding: t; -*-
+;; Generated from literate/40-editing.org; edit the Org source, then tangle.
+
+;;; Code:
+(require 'cl-lib)
+(require 'seq)
+(require 'meow)
+(require 'which-key)
+
+(defun starter-meow-physical-leader-p ()
+  "Whether the starter's semantic, unmodified SPC leader policy is in use."
+  (not (or meow-keypad-leader-dispatch meow-keypad-start-keys
+           meow-keypad-meta-prefix meow-keypad-ctrl-meta-prefix
+           meow-keypad-literal-prefix)))
+
+#+end_src
+
+** Validate a physical sequence without executing it
+
+Even with explicit modifier prefixes disabled, Meow tries Control first after
+the initial leader key and falls back to the literal key only if unbound. For
+example, if both =f f= and =f C-f= exist, typing =SPC f f= reaches the latter.
+Never advertise the shadowed binding. Only printable keys are converted;
+special events keep their native annotation rather than guessing a translation.
+
+#+begin_src emacs-lisp
+(defun starter-meow--leader-binding (leader physical)
+  "Resolve printable PHYSICAL keys through LEADER using Meow's lookup rules."
+  (let ((prefix []) binding)
+    (catch 'unreachable
+      (seq-doseq (event physical)
+        (when (and (> (length prefix) 0) (not (keymapp binding)))
+          (throw 'unreachable nil))
+        (let* ((literal (vconcat prefix (vector event)))
+               (control (and (> (length prefix) 0)
+                             (vconcat prefix
+                                      (kbd (meow--keypad-format-key-1
+                                            (cons 'control (single-key-description event)))))))
+               (controlled (and control (lookup-key leader control))))
+          (setq prefix (if (or (keymapp controlled) (commandp controlled t))
+                           control literal)
+                binding (lookup-key leader prefix))))
+      binding)))
+
+(defun starter-meow-command-key (command)
+  "Return a reachable physical SPC shortcut for COMMAND in the current state."
+  (when (and (starter-meow-physical-leader-p)
+             (or (bound-and-true-p meow-normal-mode)
+                 (bound-and-true-p meow-motion-mode)))
+    (let* ((leader (alist-get 'leader meow-keymap-alist))
+           (bindings (and (keymapp leader)
+                          (where-is-internal command (list leader) nil nil t))))
+      (cl-loop for keys in (sort bindings (lambda (a b) (< (length a) (length b))))
+               for physical = (vconcat (mapcar #'meow--get-event-key keys))
+               when (and (seq-every-p
+                          (lambda (event)
+                            (and (integerp event) (<= 32 event 126)
+                                 (cl-subsetp (event-modifiers event) '(shift))))
+                          physical)
+                         (seq-every-p
+                          (lambda (event)
+                            (cl-subsetp (event-modifiers event) '(control shift)))
+                          keys)
+                         (eq (starter-meow--leader-binding leader physical) command))
+               return (concat "SPC " (key-description physical))))))
+
+#+end_src
+
+** Show physical prefixes in the SPC menu
+
+Meow already supplies a keymap of physical next keys. Keep that map, replacing
+only the translated prefix title and echo-area message. Do not change its key
+formatter globally: the input engine also uses that formatter for lookup.
+The Which-key display entry point is the same one Meow's own integration uses.
+
+#+begin_src emacs-lisp
+(defun starter-meow-keypad-prompt ()
+  "Describe the physical leader keys entered so far."
+  (if (starter-meow-physical-leader-p)
+      (concat (when meow--keypad-help "Describe key: ")
+              (when meow--prefix-arg (format "(argument %s) " meow--prefix-arg))
+              "SPC"
+              (when meow--keypad-keys
+                (concat " " (mapconcat #'cdr (reverse meow--keypad-keys) " "))))
+    (concat meow-keypad-message-prefix (meow--keypad-format-keys))))
+
+(defun starter-meow-keypad-show-message (original)
+  "Show physical input when supported, otherwise call ORIGINAL."
+  (if (starter-meow-physical-leader-p)
+      (let ((message-log-max nil))
+        (message "%s" (starter-meow-keypad-prompt)))
+    (funcall original)))
+
+(defun starter-meow-keypad-describe (keymap)
+  "Display Meow's physical next-key KEYMAP with the physical prefix title."
+  (let ((which-key-show-prefix 'top))
+    (which-key--create-buffer-and-show
+     nil keymap nil (concat (starter-meow-keypad-prompt) "  [next key]"))))
+
+(defun starter-meow-install-keypad-hints ()
+  "Use physical prefix titles while Which-key is enabled."
+  (when (bound-and-true-p which-key-mode)
+    (setq meow-keypad-describe-keymap-function #'starter-meow-keypad-describe
+          meow-keypad-clear-describe-keymap-function #'which-key--hide-popup)))
+
+(advice-add 'meow--keypad-show-message :around #'starter-meow-keypad-show-message)
+;; Run after Meow's own hook when Which-key is toggled on again.
+(add-hook 'which-key-mode-hook #'starter-meow-install-keypad-hints t)
+(starter-meow-install-keypad-hints)
+
+#+end_src
+
+** Prefer physical leader shortcuts in completion
+
+Marginalia calls its annotators in the original editing buffer, so use that
+buffer's Meow state and current leader map. In Normal and Motion states, show
+=SPC f f=, =SPC b b= or another verified leader sequence. Insert mode and
+commands without a reachable leader binding retain Marginalia's native keys.
+The command documentation and completion matching are unaffected.
+
+#+begin_src emacs-lisp
+(defun starter-meow-annotate-binding (original candidate)
+  "Prefer physical Meow keys for CANDIDATE; otherwise use ORIGINAL."
+  (if-let* ((command (intern-soft candidate))
+            (keys (starter-meow-command-key command)))
+      (propertize (format " (%s)" keys) 'face 'marginalia-key)
+    (funcall original candidate)))
+
+(with-eval-after-load 'marginalia
+  (advice-add 'marginalia-annotate-binding :around #'starter-meow-annotate-binding))
+
+(provide 'starter-setup-key-hints)
+;;; starter-setup-key-hints.el ends here
+#+end_src
+
+** Verify the displayed shortcuts
+
+=tests/key-hints-tests.el= checks physical annotations, Control/literal
+collisions, Insert-state fallback, changed modifier policies, and the separation
+between displayed keys and Meow's lookup formatter. Run it with =-Q --batch=,
+=EMACS_DOTS_TEST_PACKAGES= pointing at the installed package directory, and ERT.
+
+After ordinary graphical startup, load =tests/key-hints-gui-tests.el= and run
+ERT selector =^dots-hints-gui-=. These checks inspect the actual Which-key buffer
+and Vertico candidate display, then execute an advertised dashboard shortcut.
