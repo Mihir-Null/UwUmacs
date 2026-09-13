@@ -14,7 +14,7 @@ Updated 2026-09-13 after inspecting P00's changes, task review, scoped re-review
 | Active roadmap task | None; do not begin P01 without a new user instruction |
 | Integration acceptance | All 194 tickets remain pending; P00 fixture completion is not adapter acceptance |
 | Review evidence | Phase 1 in [alignment-review.md](alignment-review.md); P00 review and findings summarized below |
-| Next action | Finish publishing the retired handoff and the lightweight hints branch's corrected guide; leave roadmap execution paused |
+| Next action | Await a new user instruction before P01; the lightweight hints guide is committed and published separately |
 
 ### P00 evidence inspected
 
@@ -66,6 +66,8 @@ The reviewed P00 workflow selected an isolated GUI root with a wrapper early-ini
 Keep this table synchronized with plan checkboxes and the per-ticket progress file when created. A capability limitation or parked review finding is not completed acceptance.
 
 ## Execution log
+
+- 2026-09-13 — Published `feat/meow-physical-key-hints` at `77db4db`: original hints adapter cherry-picked as `fbb3ca2`, followed by guide/ADR-0038 corrections from P00. Fresh checks on that branch: 35 callable guide rows and Meow dispatch paths, documented project/native exceptions, five hint tests, isolated startup and tangle (17 outputs) all passed. The guide and its branch-local ADR are on that branch; no P00 tooling or UwUmacs roadmap was merged into it. The current `uwumacs` guide remains the historical baseline for future migration. Returned to `uwumacs`; P01–P17 remain paused.
 
 - 2026-09-13 — Inspected P00 code, Phase 1 findings, task critique and scoped fix review, and verified audit provenance on disk. Completed the partially drafted handoff retirement under [ADR-0037](0037-execution-contract-replaces-handoff.md), preserving standing intent in [execution-contract.md](execution-contract.md). The user explicitly paused P01 onward and requested guide corrections on the lightweight hints branch. No new roadmap implementation was started.
 
