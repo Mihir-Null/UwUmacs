@@ -74,10 +74,10 @@ Terminal adapters may refine this conservative whole-buffer exclusion later."
                     (funcall uwumacs-map-context-function)))
          (non-user-candidate
           (uwumacs--build-map-candidate
-           (append uwumacs--leader-sources (plist-get context :leader-sources))))
+           (append (uwumacs--public-base-sources) (plist-get context :leader-sources))))
          (non-user-map (plist-get non-user-candidate :map))
          (base (make-composed-keymap
-                (list uwumacs-user-leader-map non-user-map)))
+                (list uwumacs-user-leader-map non-user-map uwumacs-leader-map)))
          (local-user (or uwumacs-localleader-map (make-sparse-keymap)))
          (local-candidate (uwumacs--build-map-candidate
                            (plist-get context :localleader-sources)))
@@ -87,7 +87,7 @@ Terminal adapters may refine this conservative whole-buffer exclusion later."
          (literal (make-sparse-keymap))
          (modified (make-sparse-keymap))
          state-maps state-metadata)
-    (dolist (map (list uwumacs-user-leader-map non-user-map))
+    (dolist (map (list uwumacs-user-leader-map non-user-map uwumacs-leader-map))
       (uwumacs--reserve-localleader map localleader))
     (uwumacs--ensure-prefixes child (key-parse localleader))
     (keymap-set child localleader local)
@@ -133,7 +133,8 @@ Terminal adapters may refine this conservative whole-buffer exclusion later."
 
 (defun uwumacs-refresh (&optional buffer)
   "Refresh BUFFER, or all live buffers when nil, transactionally when enabled.
-Call after changing user maps or the registry context.  A failed candidate
+Call after changing the public base map or the registry context.  Native user
+map edits take effect directly.  A failed candidate
 leaves every selected buffer's previous maps intact."
   (interactive)
   (when (and uwumacs-mode (not uwumacs--refreshing))

@@ -228,3 +228,100 @@
       (let ((old uwumacs--buffer-metadata))
         (should-error (uwumacs-refresh (current-buffer)))
         (should (eq old uwumacs--buffer-metadata))))))
+
+(ert-deftest uwumacs-state-public-base-edits-survive-refresh ()
+  (let ((uwumacs-leader-map (copy-keymap uwumacs-leader-map)))
+    (with-temp-buffer
+      (uwumacs-state-test-with-mode
+        (keymap-set uwumacs-leader-map "C-M-z" #'ignore)
+        (uwumacs-refresh (current-buffer))
+        (should (eq (key-binding (kbd "C-c C-SPC C-M-z")) 'ignore))
+        (keymap-set uwumacs-leader-map "C-M-z" #'forward-char)
+        (uwumacs-refresh (current-buffer))
+        (should (eq (key-binding (kbd "C-c C-SPC C-M-z")) 'forward-char))
+        (keymap-unset uwumacs-leader-map "C-M-z" t)
+        (uwumacs-refresh (current-buffer))
+        (should-not (key-binding (kbd "C-c C-SPC C-M-z")))))))
+
+(ert-deftest uwumacs-state-public-base-rebinding-conflicts-and-priorities ()
+  (let ((uwumacs-leader-map (make-sparse-keymap)))
+    (keymap-set uwumacs-leader-map "f f" #'ignore)
+    (with-temp-buffer
+      (uwumacs-state-test-with-mode
+        (should (eq (key-binding (kbd "C-c C-SPC f f")) 'ignore))
+        (let ((old uwumacs--buffer-leader-map))
+          (setq uwumacs-map-context-function
+                (lambda () '(:leader-sources ((:owner context :priority 0
+                                              :bindings (("f f" forward-char "Context")))))))
+          (let ((failure (should-error (uwumacs-refresh (current-buffer)))))
+            (should (string-match-p "public-base" (error-message-string failure)))
+            (should (string-match-p "context" (error-message-string failure))))
+          (should (eq old uwumacs--buffer-leader-map)))
+        (setq uwumacs-map-context-function
+              (lambda () '(:leader-sources ((:owner context :priority 10
+                                            :bindings (("f f" forward-char "Context")))))))
+        (uwumacs-refresh (current-buffer))
+        (should (eq (key-binding (kbd "C-c C-SPC f f")) 'forward-char))
+        (keymap-unset uwumacs-leader-map "f f" t)
+        (setq uwumacs-map-context-function
+              (lambda () '(:leader-sources ((:owner context :priority 0
+                                            :bindings (("f f" backward-char "Context")))))))
+        (uwumacs-refresh (current-buffer))
+        (should (eq (key-binding (kbd "C-c C-SPC f f")) 'backward-char))))))
+
+(ert-deftest uwumacs-state-public-base-submaps-parents-and-native-events ()
+  (let* ((parent (make-sparse-keymap))
+         (child (make-sparse-keymap "Child"))
+         (outer (make-sparse-keymap))
+         (uwumacs-leader-map (make-composed-keymap (list outer))))
+    (define-key parent [9] #'forward-char)
+    (set-keymap-parent child parent)
+    (keymap-set child "x" #'ignore)
+    (keymap-set outer "z" child)
+    (with-temp-buffer
+      (uwumacs-state-test-with-mode
+        (should (eq (key-binding (kbd "C-c C-SPC z TAB")) 'forward-char))
+        (should (eq (key-binding (kbd "C-c C-SPC z x")) 'ignore))
+        (should (equal (uwumacs--binding-metadata "z C-i" (plist-get uwumacs--buffer-metadata :leader))
+                       '(:owner public-base :label "z TAB")))
+        (keymap-set parent "TAB" #'backward-char)
+        (uwumacs-refresh (current-buffer))
+        (should (eq (key-binding (kbd "C-c C-SPC z TAB")) 'backward-char))
+        (keymap-set outer "m" (make-sparse-keymap))
+        (should-error (uwumacs-refresh (current-buffer)))))))
+
+(ert-deftest uwumacs-state-public-base-keeps-native-menu-and-live-user-overrides ()
+  (let* ((uwumacs-leader-map (make-sparse-keymap))
+         (submenu (make-sparse-keymap "Native submenu"))
+         (item `(menu-item "Native" ,submenu)))
+    (keymap-set submenu "x" #'ignore)
+    (define-key uwumacs-leader-map [z] item)
+    (with-temp-buffer
+      (uwumacs-state-test-with-mode
+        (should (eq (key-binding (kbd "C-c C-SPC <z> x")) 'ignore))
+        (should (equal (cdr (assoc [z] (uwumacs--native-map-bindings uwumacs-leader-map))) item))
+        ;; User maps retain ordinary live native behavior without refresh.
+        (keymap-set uwumacs-user-leader-map "<z> x" #'forward-char)
+        (should (eq (key-binding (kbd "C-c C-SPC <z> x")) 'forward-char))
+        (keymap-unset uwumacs-user-leader-map "<z> x" t)
+        (should (eq (key-binding (kbd "C-c C-SPC <z> x")) 'ignore))))))
+(ert-deftest uwumacs-state-public-base-retains-only-matching-declaration-priority ()
+  (let ((uwumacs-leader-map (make-sparse-keymap))
+        (uwumacs--leader-sources nil)
+        (uwumacs--leader-metadata nil))
+    (uwumacs--replace-leader-definitions
+     '((:owner declared :priority 20 :bindings (("z" forward-char "Declared")))))
+    (with-temp-buffer
+      (uwumacs-state-test-with-mode
+        (setq uwumacs-map-context-function
+              (lambda () '(:leader-sources ((:owner context :priority 10
+                                            :bindings (("z" backward-char "Context")))))))
+        (uwumacs-refresh (current-buffer))
+        (should (eq (key-binding (kbd "C-c C-SPC z")) 'forward-char))
+        (should (equal (uwumacs--binding-metadata "z" (plist-get uwumacs--buffer-metadata :leader))
+                       '(:owner declared :label "Declared")))
+        (keymap-set uwumacs-leader-map "z" #'ignore)
+        (uwumacs-refresh (current-buffer))
+        (should (eq (key-binding (kbd "C-c C-SPC z")) 'backward-char))
+        (should (equal (uwumacs--binding-metadata "z" (plist-get uwumacs--buffer-metadata :leader))
+                       '(:owner context :label "Context")))))))

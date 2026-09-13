@@ -98,7 +98,8 @@ Core does not select or install packages by default."
   :group 'uwumacs)
 
 (defvar uwumacs-leader-map (make-sparse-keymap)
-  "Public base leader map built from validated non-user definitions.")
+  "Public base leader map, initially built from validated definitions.
+Call `uwumacs-refresh' after native edits to reconcile ownership and priorities.")
 
 (defvar uwumacs-user-leader-map (make-sparse-keymap)
   "Public user override map composed above `uwumacs-leader-map'.
@@ -117,10 +118,13 @@ A nil binding falls through to lower maps; `undefined' explicitly blocks one.")
   "Return parsed KEY events, naming OWNER when validation fails."
   (condition-case nil
       (progn
-        (unless (and (stringp key) (not (string-empty-p key))
-                     (key-valid-p key))
-          (error "invalid"))
-        (vconcat (key-parse key)))
+        (cond
+         ;; Native vectors are internal map-reconciliation input, not a new
+         ;; public integration descriptor syntax.
+         ((and (vectorp key) (> (length key) 0)) (copy-sequence key))
+         ((and (stringp key) (not (string-empty-p key)) (key-valid-p key))
+          (vconcat (key-parse key)))
+         (t (error "invalid"))))
     (error (error "UwUmacs owner %S has an invalid key: %S" owner key))))
 
 (defun uwumacs--binding-metadata (key &rest metadata-argument)
@@ -150,10 +154,10 @@ an empty candidate table.  KEY is compared by native event identity."
   (cl-loop for depth from 1 below (length events)
            for prefix = (seq-take events depth)
            for key = (key-description prefix)
-           for definition = (keymap-lookup map key)
+           for definition = (lookup-key map prefix)
            do (cond
                ((null definition)
-                (keymap-set map key (make-sparse-keymap)))
+                (define-key map prefix (make-sparse-keymap)))
                ((not (keymapp definition))
                 (error "Cannot build native prefix %s over %S" key definition)))))
 
@@ -197,7 +201,7 @@ Return a cons whose car is the map and whose cdr is its metadata alist."
                    (plist-get conflict :key)))
                 (push (list :events events :key key :owner owner) seen)
                 (uwumacs--ensure-prefixes map events)
-                (keymap-set map key definition)
+                (define-key map events definition)
                 (push (cons events (list :owner owner :label label)) metadata)))))))
     (cons map (nreverse metadata))))
 
@@ -229,6 +233,66 @@ does not mutate active UwUmacs state."
                    (make-composed-keymap maps)
                  (make-sparse-keymap))
           :metadata (nreverse metadata))))
+
+(defun uwumacs--native-map-bindings (map)
+  "Return effective (EVENTS . DEFINITION) entries from native MAP.
+Keep event vectors and raw menu items; skip inherited shadowed entries.
+Plain prefixes are traversed natively, including parents and composed maps."
+  (let (bindings opaque-prefixes)
+    (dolist (entry (accessible-keymaps map))
+      (let ((prefix (car entry))
+            (seen (make-hash-table :test 'equal)))
+        (unless (cl-some (lambda (opaque)
+                           (uwumacs--events-prefix-p opaque prefix))
+                         opaque-prefixes)
+          (map-keymap
+           (lambda (event definition)
+             (when (and definition (not (gethash event seen)))
+               (puthash event t seen)
+               (let ((events (vconcat prefix (vector event))))
+                 (unless (keymapp definition)
+                   ;; Preserve menu filters as native definitions.  If such an
+                   ;; item denotes a prefix, do not duplicate its descendants.
+                   (when (eq (car-safe definition) 'menu-item)
+                     (push events opaque-prefixes))
+                   (push (cons events definition) bindings)))))
+           (cdr entry)))))
+    (nreverse bindings)))
+
+(defun uwumacs--public-base-sources ()
+  "Reconcile live public base bindings with their retained declarations.
+An unchanged binding keeps its declaration's owner, priority and label.
+Changed/new bindings belong to `public-base' at priority zero; removals
+contribute nothing.  Native event vectors never round-trip through text."
+  (let (declarations sources)
+    (dolist (source uwumacs--leader-sources)
+      (dolist (binding (plist-get source :bindings))
+        (pcase-let ((`(,key ,definition ,label) binding))
+          (let* ((events (uwumacs--binding-key-events key (plist-get source :owner)))
+                 (entries (if (keymapp definition)
+                              (uwumacs--native-map-bindings definition)
+                            (list (cons [] definition)))))
+            (dolist (entry entries)
+              (push (list :events (vconcat events (car entry))
+                          :definition (cdr entry) :owner (plist-get source :owner)
+                          :priority (or (plist-get source :priority) 0) :label label)
+                    declarations))))))
+    (dolist (entry (uwumacs--native-map-bindings uwumacs-leader-map))
+      (let ((events (car entry)) (definition (cdr entry)) match)
+        (dolist (declaration declarations)
+          (when (and (equal events (plist-get declaration :events))
+                     (equal definition (plist-get declaration :definition))
+                     (or (not match)
+                         (> (plist-get declaration :priority)
+                            (plist-get match :priority))))
+            (setq match declaration)))
+        (push (list :owner (if match (plist-get match :owner) 'public-base)
+                    :priority (if match (plist-get match :priority) 0)
+                    :bindings (list (list events definition
+                                          (if match (plist-get match :label)
+                                            (key-description events)))))
+              sources)))
+    (nreverse sources)))
 
 (defun uwumacs--replace-leader-definitions (sources)
   "Validate SOURCES, then atomically replace the active base map and metadata."

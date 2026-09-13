@@ -61,3 +61,31 @@ contributions and must be reconciled with actual user-overridden native lookup
 for discovery. Never re-evaluate a provider to reconstruct metadata for an older
 committed map. Failed refresh preserves both maps and metadata; disable clears
 the committed buffer metadata.
+
+## Native public base reconciliation
+
+Direct native edits to `uwumacs-leader-map` remain supported base defaults.
+Call `uwumacs-refresh` after adding, rebinding, removing or changing its submaps
+to reconcile those edits with contextual sources. Reconciliation compares native
+event vectors and raw definitions with retained declarations: a matching live
+binding keeps its declared owner, priority and label; a new or changed binding
+uses owner `public-base`, priority zero and the native key description as its
+label. Removed bindings contribute nothing. Priority remains an internal source
+attribute, not a public integration descriptor field.
+
+The candidate validates these reconciled base contributions and contextual
+sources together. Equal-priority overlap still rejects the candidate with both
+owners, and higher-priority context still wins. Its committed metadata describes
+that actual combined candidate. Native submaps, parents, composed maps and raw
+menu definitions are traversed without converting key events through text. A
+live public base fallback sits below the validated candidate to retain native
+prefix structure, including empty prefixes; the user leader map sits above both.
+The reserved localleader check includes this fallback, so even an empty public
+prefix cannot consume the localleader suffix.
+
+Existing user leader/localleader map objects retain ordinary immediate native
+override behavior. Base ownership and collision checking require refresh; map
+transactions do not undo a caller's prior direct mutation of a public map object.
+The registry supplies context through the existing provider and commits maps and
+metadata together; it does not reconstruct the public base from declarations or
+re-evaluate a provider for discovery.
