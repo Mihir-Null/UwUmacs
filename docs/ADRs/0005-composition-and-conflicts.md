@@ -31,9 +31,11 @@ Two-buffer, derived-mode and collision tests are mandatory. Adapters need explic
 `uwumacs-map-context-function` is an optional no-argument provider evaluated in
 the target buffer. It returns `:leader-sources`, `:localleader-sources` and
 `:state-sources` (an alist from `normal`/`motion` to P01 builder sources). This
-is a map-input seam, not registry readiness or package loading. Context leader
-sources compose above the foundational base, while public user leader maps
-remain highest. Context localleader sources sit below that buffer's public
+is a map-input seam, not registry readiness or package loading. Foundational and
+contextual non-user sources are validated together: numeric priority determines
+precedence, and equal-priority overlap names both owners and rejects the candidate.
+Public user leader maps remain highest. `uwumacs--leader-sources` retains the
+validated foundation contributions for that combined build. Context localleader sources sit below that buffer's public
 `uwumacs-localleader-map` variable. The same symbol's function returns the
 effective composed map for an optional buffer.
 
@@ -50,3 +52,12 @@ The reservation prevents one buffer's prefix from silently replacing another
 command. User state maps intentionally compose above owned literal/state maps.
 Major-mode changes reset buffer-local maps; ordinary refresh and disable/re-enable
 preserve the buffer's user localleader definitions.
+
+P02 review correction: committed candidates also carry `:metadata`, copied into
+buffer-local `uwumacs--buffer-metadata` at the same commit as the maps. Its
+`:leader` and `:localleader` values are P01 event-vector ownership tables;
+`:state` is an alist from Normal/Motion to those tables. These describe non-user
+contributions and must be reconciled with actual user-overridden native lookup
+for discovery. Never re-evaluate a provider to reconstruct metadata for an older
+committed map. Failed refresh preserves both maps and metadata; disable clears
+the committed buffer metadata.

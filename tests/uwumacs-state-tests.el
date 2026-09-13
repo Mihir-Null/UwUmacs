@@ -180,3 +180,51 @@
           (uwumacs-state-test-with-mode (uwumacs-mode -1))
           (should-not (get 'emulation-mode-map-alists 'list-order)))
       (put 'emulation-mode-map-alists 'list-order saved))))
+
+(ert-deftest uwumacs-state-foundation-context-conflicts-are-transactional ()
+  (with-temp-buffer
+    (uwumacs-state-test-with-mode
+      (let ((old-root uwumacs--buffer-leader-map))
+        (setq uwumacs-map-context-function
+              (lambda () '(:leader-sources
+                           ((:owner contextual :priority 0
+                             :bindings (("f f" ignore "Context file")))))))
+        (let ((failure (should-error (uwumacs-refresh (current-buffer)))))
+          (should (string-match-p "files" (error-message-string failure)))
+          (should (string-match-p "contextual" (error-message-string failure))))
+        (should (eq old-root uwumacs--buffer-leader-map))
+        (should (eq (key-binding (kbd "C-c C-SPC f f")) 'find-file))))))
+
+(ert-deftest uwumacs-state-foundation-context-honors-declared-priority ()
+  (with-temp-buffer
+    (uwumacs-state-test-with-mode
+      (dolist (pair '((-10 . find-file) (10 . ignore)))
+        (setq uwumacs-map-context-function
+              (lambda () `(:leader-sources
+                           ((:owner contextual :priority ,(car pair)
+                             :bindings (("f f" ignore "Context file")))))))
+        (uwumacs-refresh (current-buffer))
+        (should (eq (key-binding (kbd "C-c C-SPC f f")) (cdr pair)))))))
+
+(ert-deftest uwumacs-state-committed-metadata-comes-from-the-map-candidate ()
+  (with-temp-buffer
+    (uwumacs-state-test-with-mode
+      (setq uwumacs-map-context-function
+            (lambda () '(:leader-sources
+                         ((:owner context :priority 10 :bindings (("f f" ignore "Context"))))
+                         :localleader-sources
+                         ((:owner local :bindings (("r" forward-char "Local"))))
+                         :state-sources
+                         ((normal . ((:owner state :bindings (("z" backward-char "State")))))))))
+      (uwumacs-refresh (current-buffer))
+      (setq uwumacs-map-context-function (lambda () (error "Must not reevaluate provider")))
+      (should (boundp 'uwumacs--buffer-metadata))
+      (should (equal (uwumacs--binding-metadata "f f" (plist-get uwumacs--buffer-metadata :leader))
+                     '(:owner context :label "Context")))
+      (should (equal (uwumacs--binding-metadata "r" (plist-get uwumacs--buffer-metadata :localleader))
+                     '(:owner local :label "Local")))
+      (should (equal (uwumacs--binding-metadata "z" (alist-get 'normal (plist-get uwumacs--buffer-metadata :state)))
+                     '(:owner state :label "State")))
+      (let ((old uwumacs--buffer-metadata))
+        (should-error (uwumacs-refresh (current-buffer)))
+        (should (eq old uwumacs--buffer-metadata))))))

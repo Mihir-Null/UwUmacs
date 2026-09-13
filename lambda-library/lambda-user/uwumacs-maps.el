@@ -107,6 +107,9 @@ A nil binding falls through to lower maps; `undefined' explicitly blocks one.")
 (defvar uwumacs-user-state-maps nil
   "Alist from the state symbols `normal' and `motion' to user keymaps.")
 
+(defvar uwumacs--leader-sources nil
+  "Validated foundational sources, retained for contextual collision checks.")
+
 (defvar uwumacs--leader-metadata nil
   "Alist from native key-event vectors to owner/label plists for the active map.")
 
@@ -231,7 +234,8 @@ does not mutate active UwUmacs state."
   "Validate SOURCES, then atomically replace the active base map and metadata."
   (let ((candidate (uwumacs--build-map-candidate sources)))
     (setq uwumacs-leader-map (plist-get candidate :map)
-          uwumacs--leader-metadata (plist-get candidate :metadata)))
+          uwumacs--leader-metadata (plist-get candidate :metadata)
+          uwumacs--leader-sources (copy-tree sources)))
   uwumacs-leader-map)
 
 (provide 'uwumacs-maps)

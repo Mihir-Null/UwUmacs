@@ -32,8 +32,10 @@ The literate core installs `uwumacs--emulation-alist` with numeric order `-100`.
 Meow's installed snapshot uses unordered entries, so native lookup reaches the
 owned Normal/Motion map first. Meow mode/state hooks update buffer eligibility;
 major-mode and newly visited buffers receive fresh roots. A lightweight
-pre-command observer also covers input-mode flags that change without a Meow
-state transition. Disabling removes these exact hooks and the owned alist, clears
+post-command observer updates changes before the next key lookup. EAT execution
+and exit hooks synchronously observe terminal creation/removal, including changes
+from process callbacks. A pre-command hook runs after lookup and is insufficient
+for the first input after a transition. Disabling removes these exact hooks and the owned alist, clears
 buffer flags, restores the owned `list-order` hash entry, and removes an initially
 absent empty ordering table. Other owners' metadata is retained. No advice or
 vendor keymap changes are installed.
@@ -46,7 +48,7 @@ is global, so it is explicitly not an exclusion predicate. Dedicated terminal
 adapters may later narrow the conservative policy. Beacon, Keypad and minibuffers
 have neither literal nor modified leader activation.
 
-Verification: 11 batch state cases and a bounded graphical suite with a native
+Verification: 14 batch state cases and a bounded graphical suite with a native
 command-loop case; see `tests/uwumacs-state-tests.el`,
 `tests/uwumacs-state-gui-tests.el` and the P02 execution report. Terminal process
 integration and package-specific temporary-interface fixtures remain with their

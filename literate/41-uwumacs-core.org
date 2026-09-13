@@ -156,6 +156,9 @@ A nil binding falls through to lower maps; `undefined' explicitly blocks one.")
 (defvar uwumacs-user-state-maps nil
   "Alist from the state symbols `normal' and `motion' to user keymaps.")
 
+(defvar uwumacs--leader-sources nil
+  "Validated foundational sources, retained for contextual collision checks.")
+
 (defvar uwumacs--leader-metadata nil
   "Alist from native key-event vectors to owner/label plists for the active map.")
 
@@ -280,7 +283,8 @@ does not mutate active UwUmacs state."
   "Validate SOURCES, then atomically replace the active base map and metadata."
   (let ((candidate (uwumacs--build-map-candidate sources)))
     (setq uwumacs-leader-map (plist-get candidate :map)
-          uwumacs--leader-metadata (plist-get candidate :metadata)))
+          uwumacs--leader-metadata (plist-get candidate :metadata)
+          uwumacs--leader-sources (copy-tree sources)))
   uwumacs-leader-map)
 
 (provide 'uwumacs-maps)
@@ -350,6 +354,11 @@ When inactive, return its user map or an empty native map."
              (keymap-lookup uwumacs--buffer-leader-map uwumacs-localleader-key))
         uwumacs-localleader-map (make-sparse-keymap))))
 
+(defvar-local uwumacs--buffer-metadata nil
+  "Non-user ownership metadata from the committed buffer candidate.
+Plist keys :leader and :localleader contain P01 event-vector tables; :state
+is an alist from normal/motion to those tables.  Native user maps remain
+above these contributions and are the authority for effective dispatch.")
 (defvar-local uwumacs--emulation-alist nil)
 (defvar-local uwumacs--literal-active nil)
 (defvar-local uwumacs--alternate-active nil)
@@ -391,19 +400,22 @@ Terminal adapters may refine this conservative whole-buffer exclusion later."
   "Build this buffer's native maps using the three supplied prefix strings."
   (let* ((context (when uwumacs-map-context-function
                     (funcall uwumacs-map-context-function)))
-         (context-map (plist-get (uwumacs--build-map-candidate
-                                 (plist-get context :leader-sources)) :map))
+         (non-user-candidate
+          (uwumacs--build-map-candidate
+           (append uwumacs--leader-sources (plist-get context :leader-sources))))
+         (non-user-map (plist-get non-user-candidate :map))
          (base (make-composed-keymap
-                (list uwumacs-user-leader-map context-map uwumacs-leader-map)))
+                (list uwumacs-user-leader-map non-user-map)))
          (local-user (or uwumacs-localleader-map (make-sparse-keymap)))
-         (local-base (plist-get (uwumacs--build-map-candidate
-                                (plist-get context :localleader-sources)) :map))
+         (local-candidate (uwumacs--build-map-candidate
+                           (plist-get context :localleader-sources)))
+         (local-base (plist-get local-candidate :map))
          (local (make-composed-keymap (list local-user local-base)))
          (child (make-sparse-keymap))
          (literal (make-sparse-keymap))
          (modified (make-sparse-keymap))
-         state-maps)
-    (dolist (map (list uwumacs-user-leader-map context-map uwumacs-leader-map))
+         state-maps state-metadata)
+    (dolist (map (list uwumacs-user-leader-map non-user-map))
       (uwumacs--reserve-localleader map localleader))
     (uwumacs--ensure-prefixes child (key-parse localleader))
     (keymap-set child localleader local)
@@ -411,14 +423,18 @@ Terminal adapters may refine this conservative whole-buffer exclusion later."
       (keymap-set literal leader root)
       (keymap-set modified alternate root)
       (dolist (state '(normal motion))
-        (let ((state-map (plist-get
-                          (uwumacs--build-map-candidate
-                           (alist-get state (plist-get context :state-sources))) :map))
+        (let* ((candidate (uwumacs--build-map-candidate
+                           (alist-get state (plist-get context :state-sources))))
+               (state-map (plist-get candidate :map))
               (user (alist-get state uwumacs-user-state-maps)))
           (push (cons state (make-composed-keymap
                              (delq nil (list user literal state-map))))
-                state-maps)))
+                state-maps)
+          (push (cons state (plist-get candidate :metadata)) state-metadata)))
       (list :root root :local-user local-user
+            :metadata (list :leader (plist-get non-user-candidate :metadata)
+                            :localleader (plist-get local-candidate :metadata)
+                            :state state-metadata)
             :alist `((uwumacs--normal-active . ,(alist-get 'normal state-maps))
                      (uwumacs--motion-active . ,(alist-get 'motion state-maps))
                      (uwumacs--alternate-active . ,modified))))))
@@ -439,7 +455,8 @@ Terminal adapters may refine this conservative whole-buffer exclusion later."
         (with-current-buffer (car entry)
           (setq uwumacs-localleader-map (plist-get (cdr entry) :local-user)
                 uwumacs--buffer-leader-map (plist-get (cdr entry) :root)
-                uwumacs--emulation-alist (plist-get (cdr entry) :alist))
+                uwumacs--emulation-alist (plist-get (cdr entry) :alist)
+                uwumacs--buffer-metadata (plist-get (cdr entry) :metadata))
           (uwumacs--update-eligibility))))))
 
 (defun uwumacs-refresh (&optional buffer)
@@ -465,7 +482,8 @@ leaves every selected buffer's previous maps intact."
 (defconst uwumacs--observation-hooks
   '(meow-switch-state-hook meow-mode-hook meow-normal-mode-hook
     meow-motion-mode-hook meow-insert-mode-hook meow-beacon-mode-hook
-    meow-keypad-mode-hook buffer-list-update-hook pre-command-hook)
+    meow-keypad-mode-hook buffer-list-update-hook post-command-hook
+    eat-eshell-exec-hook eat-eshell-exit-hook)
   "Hooks owned only while `uwumacs-mode' is active.")
 
 (defun uwumacs--disable ()
@@ -489,7 +507,8 @@ leaves every selected buffer's previous maps intact."
     (with-current-buffer buffer
       (setq uwumacs--literal-active nil uwumacs--alternate-active nil
             uwumacs--normal-active nil uwumacs--motion-active nil
-            uwumacs--emulation-alist nil uwumacs--buffer-leader-map nil))))
+            uwumacs--emulation-alist nil uwumacs--buffer-leader-map nil
+            uwumacs--buffer-metadata nil))))
 
 ;;;###autoload
 (define-minor-mode uwumacs-mode
