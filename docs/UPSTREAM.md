@@ -23,3 +23,13 @@ Personal package policy is authored in `literate/20-user-policy.org` and generat
 5. Regenerate with `tools/tangle.el -- --write`, check with `--check`, then run `tests/tangle-tests.el`. Run `tests/verify-config.el` using an existing package directory, then check ordinary graphical startup before deploying.
 
 Package archives retain the existing policy (ELPA development and MELPA priority). The framework is pinned; individual ELPA package versions are not locked. A fresh install can therefore receive newer package versions than this machine. The migration preserves the existing installed package directory without updating it.
+
+## Sonokai theme provenance
+
+The personal UI uses a tracked `doom-sonokai` port in
+`lambda-library/lambda-user/themes/`. It is separate from the Lambda snapshot
+and the package-managed `doom-themes` installation. Its README records the
+Sonokai source revision and update procedure; the theme retains the original
+MIT notice. The default style is ported, with shared package faces supplied by
+Doom Themes. Portable theme selection and path registration belong in
+`literate/50-appearance.org`, followed by tangling and startup verification.

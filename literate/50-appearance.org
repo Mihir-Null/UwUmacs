@@ -241,7 +241,7 @@ Load this dependency before evaluating the forms that use its functions or varia
 ;;
 ;; Design goals:
 ;; - retain ordinary OS-managed Emacs frames;
-;; - use Doom Dark+ as a familiar dark default without requiring Doom Emacs;
+;; - use Sonokai as a vivid dark default without requiring Doom Emacs;
 ;; - use Google Sans Code Nerd Font when installed, while retaining a safe
 ;;   platform fallback when it is absent;
 ;; - keep Lambda's built-in tab-bar/tabspaces architecture rather than adding a
@@ -273,7 +273,7 @@ This is a user presentation choice layered over Lambda's theme-loading mechanism
 
 #+name: starter-setup-ui-03-1
 #+begin_src emacs-lisp
-(defcustom starter-ui-theme 'doom-dark+
+(defcustom starter-ui-theme 'doom-sonokai
   "Dark/default theme loaded by the starter UI layer."
   :type 'symbol)
 #+end_src
@@ -333,7 +333,7 @@ The command reads current enabled themes and chooses the other configured presen
 
 ** Load the selected theme after startup
 
-The external theme package supplies colors. It is independent of Doom Emacs; this remains a Lambda configuration.
+The standalone =doom-themes= package supplies shared faces. Our tracked Sonokai port lives in =lambda-library/lambda-user/themes/= so package updates cannot erase it. It is independent of Doom Emacs; this remains a Lambda configuration.
 
 #+name: starter-setup-ui-08-1
 #+begin_src emacs-lisp
@@ -343,6 +343,8 @@ The external theme package supplies colors. It is independent of Doom Emacs; thi
   (doom-themes-enable-bold t)
   (doom-themes-enable-italic t)
   :config
+  ;; Prefer our tracked theme port over package-managed copies.
+  (add-to-list 'custom-theme-load-path (expand-file-name "themes/" lem-user-dir))
   ;; Lambda loads a fallback theme early so startup is never unthemed. Replace it
   ;; here once the user-facing UI layer is ready.
   (starter-ui-load-theme starter-ui-theme))

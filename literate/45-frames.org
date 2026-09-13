@@ -1,0 +1,106 @@
+#+TITLE: Frames: let the desktop window manager arrange Emacs
+#+OPTIONS: toc:3 num:nil
+#+STARTUP: overview
+#+PROPERTY: header-args:emacs-lisp :tangle ../lambda-library/lambda-user/starter-setup-frames.el :eval never :comments no :padline no :mkdirp yes
+
+[[file:index.org][Reading guide]] · [[file:20-user-policy.org][Startup policy]]
+
+Ownership: *user configuration*. [[https://github.com/davidshepherd7/frames-only-mode][frames-only-mode]] supplies the frame lifecycle;
+this module integrates it with Lambda's deferred Magit setup and leader keys.
+An Emacs frame is an OS window; an Emacs window is a pane inside that frame.
+Load this module after Help and Org so their defaults cannot undo the policy.
+
+* Keep ordinary editor frames native
+
+Native decorations, positioning and sizing remain under the desktop window
+manager's control. This module does not load Lambda's undecorated, recentering
+frame module. Ordinary file and buffer switching still uses the current frame;
+commands that would pop up an auxiliary buffer can create a separate frame.
+
+#+begin_src emacs-lisp
+;;; starter-setup-frames.el --- Desktop-managed Emacs frames -*- lexical-binding: t; -*-
+;; Generated from literate/45-frames.org; edit the Org source, then tangle.
+
+;;; Code:
+
+#+end_src
+
+* Adapt Lambda's explicit Magit split
+
+Lambda selects its own display function when Magit is first loaded. Advise that
+function, rather than racing the deferred assignment. Reuse a frame already
+showing the buffer; otherwise create a frame. Disabling frames-only-mode, or
+using a terminal frame, restores Lambda's original display behavior. Modern
+Magit already closes newly created frames through =quit-window=. Exclude the
+package's legacy Magit overrides: they can delete terminal frames and unbind
+Magit variables when disabling the mode after Magit was loaded lazily.
+
+#+begin_src emacs-lisp
+(defun starter-frames-display-magit (original buffer)
+  "Display Magit BUFFER in an OS frame, or use ORIGINAL outside frame mode."
+  (if (and (bound-and-true-p frames-only-mode) (display-graphic-p))
+      (display-buffer buffer
+                      '((display-buffer-reuse-window display-buffer-pop-up-frame)
+                        (reusable-frames . t)))
+    (funcall original buffer)))
+
+#+end_src
+
+* Enable frames and preserve completion panels
+
+The package uses =pop-up-frames= only on graphical displays. Its defaults put
+Org agenda and source editing in frames and clean up temporary frames when
+quitting their buffers. Vertico's top side window, Transient menus and Corfu's
+child-frame suggestions remain attached to their editor. These are temporary
+controls, so they should not become separate desktop editing windows.
+
+Lambda's Popper normally forces Help and compilation into top side windows.
+Turn off only its display control while frame mode is active; popup tracking
+and cycling remain available, and disabling frame mode restores its placement.
+
+The standard split remaps also cover Lambda's plain split bindings. Its two
+split-and-focus wrappers need explicit remaps. All remaps belong to the minor
+mode map, so =M-x frames-only-mode= restores the original keys when disabled.
+
+#+begin_src emacs-lisp
+(use-package frames-only-mode
+  :when (and lem-load-extras (locate-library "frames-only-mode"))
+  :demand t
+  :custom
+  (frames-only-mode-use-windows-for-completion t)
+  :config
+  (setq frames-only-mode-configuration-variables
+        (seq-remove (lambda (setting)
+                      (memq (car setting)
+                            '(magit-commit-show-diff magit-bury-buffer-function)))
+                    frames-only-mode-configuration-variables))
+  (add-to-list 'frames-only-mode-configuration-variables
+               '(popper-display-control nil))
+  (frames-only-mode-remap-common-window-split-keybindings)
+  (define-key frames-only-mode-mode-map
+              [remap lem-split-window-below-and-focus] #'make-frame-command)
+  (define-key frames-only-mode-mode-map
+              [remap lem-split-window-right-and-focus] #'make-frame-command)
+  (advice-add 'lem-display-magit-in-other-window
+              :around #'starter-frames-display-magit)
+  ;; Re-evaluating this file must not overwrite the mode's saved defaults.
+  (unless frames-only-mode
+    (frames-only-mode 1)))
+
+(provide 'starter-setup-frames)
+;;; starter-setup-frames.el ends here
+#+end_src
+
+* Everyday commands and recovery
+
+- =C-x 2= / =C-x 3= and =SPC w h= / =SPC w v= create native frames.
+- =C-x 4= uses the other-frame commands normally under =C-x 5=.
+- =C-x 5 f= visits a file in another frame; =C-x 5 b= selects a buffer there.
+- =C-x 5 0= closes a frame. Desktop window-manager shortcuts can arrange it.
+- =M-x frames-only-mode= toggles this policy for the session. Internal panes
+  already on screen are not deleted when enabling the mode.
+
+The graphical integration checks are in [[file:../tests/frames-tests.el][frames-tests.el]]. Load them after
+ordinary GUI startup and run =M-x ert RET ^dots-frames- RET=. They exercise
+auxiliary-frame creation and cleanup, the completion side window, and Magit's
+lazy load and return to internal splits when the mode is disabled.

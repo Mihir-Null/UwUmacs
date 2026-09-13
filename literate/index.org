@@ -21,6 +21,7 @@ repository's Lambda, Meow, Vertico/Consult and Corfu choices.
 | [[file:20-user-policy.org][User policy]] | Package topics, module selection, load order | User configuration |
 | [[file:30-platform.org][Platform and terminals]] | Paths, PowerShell, explicit MSYS2/EAT sessions | User policy + later portability work |
 | [[file:40-editing.org][Selection-first editing]] | Meow grammar and Lambda's leader maps | User adaptation |
+| [[file:45-frames.org][Desktop-managed frames]] | Frame policy, completion exceptions, Magit and split keys | User integration |
 | [[file:50-appearance.org][Fonts and appearance]] | Font selection, icons, themes, modeline, tabs | User policy + later font fixes |
 | [[file:55-dashboard.org][Dashboard]] | Navigation, offline help, pixel-based centering | Subsequent development |
 | [[file:60-programming.org][Programming]] | Pinned parsers, safe remaps, opt-in Eglot | Subsequent development |

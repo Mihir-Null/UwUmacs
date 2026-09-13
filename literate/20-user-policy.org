@@ -69,6 +69,16 @@ Keep only the selected topics from Lambda's catalogue before the installer runs.
                   lem-packages-alist))
 #+end_src
 
+** Add the personal frame package
+
+Install the frame policy with the existing windows topic before user modules
+load. Keep this addition in user policy rather than modifying Lambda's catalogue.
+
+#+begin_src emacs-lisp
+(setf (alist-get 'windows lem-packages-alist)
+      (append (alist-get 'windows lem-packages-alist) '(frames-only-mode)))
+#+end_src
+
 ** Keep warnings visible
 
 The user layer keeps useful startup warnings instead of adopting a personal upstream preference to suppress them.
@@ -135,13 +145,13 @@ Set the prefix before Lambda creates its keymaps. C-c C-SPC remains a recovery r
 
 ** Provide an early theme fallback
 
-Lambda's base stage needs a theme before the full user UI loads. Doom Dark+ replaces this fallback after startup.
+Lambda's base stage needs a theme before the full user UI loads. Sonokai replaces this fallback after startup.
 
 #+name: config-03-1
 #+begin_src emacs-lisp
 ;;;; UI fallback
 ;; Lambda's theme module loads during the base stage. Keep its dark theme as a
-;; no-surprises fallback; `starter-setup-ui' replaces it with Doom Dark+ after the
+;; no-surprises fallback; `starter-setup-ui' replaces it with Sonokai after the
 ;; rest of the editor surface is available.
 (setq lem-ui-theme 'lambda-dark)
 #+end_src
@@ -322,14 +332,17 @@ The following blocks are consecutive fragments of this source section. Some shar
 
 *** Add editing subsystems after initialization: continued 2
 
-UI is intentionally a user module rather than Lambda's `lem-setup-modeline'. It supplies Doom Dark+, doom-modeline, workspace-tab presentation, optional Nerd Icons, and modest spacing while retaining ordinary OS-managed frames.
+UI is intentionally a user module rather than Lambda's `lem-setup-modeline'. It supplies Sonokai, doom-modeline, workspace-tab presentation, optional Nerd Icons, and modest spacing while retaining ordinary OS-managed frames.
 
 #+name: config-14-2
 #+begin_src emacs-lisp
   ;; UI is intentionally a user module rather than Lambda's `lem-setup-modeline'.
-  ;; It supplies Doom Dark+, doom-modeline, workspace-tab presentation, optional
+  ;; It supplies Sonokai, doom-modeline, workspace-tab presentation, optional
   ;; Nerd Icons, and modest spacing while retaining ordinary OS-managed frames.
   (require 'starter-setup-ui)
+
+  ;; Apply frame policy after Lambda's Help, Org and UI defaults.
+  (require 'starter-setup-frames)
 
   )
 #+end_src

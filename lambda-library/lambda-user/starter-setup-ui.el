@@ -6,7 +6,7 @@
 ;;
 ;; Design goals:
 ;; - retain ordinary OS-managed Emacs frames;
-;; - use Doom Dark+ as a familiar dark default without requiring Doom Emacs;
+;; - use Sonokai as a vivid dark default without requiring Doom Emacs;
 ;; - use Google Sans Code Nerd Font when installed, while retaining a safe
 ;;   platform fallback when it is absent;
 ;; - keep Lambda's built-in tab-bar/tabspaces architecture rather than adding a
@@ -22,7 +22,7 @@
 (defgroup starter-ui nil
   "Presentation defaults for the Lambda learning configuration."
   :group 'lambda-emacs)
-(defcustom starter-ui-theme 'doom-dark+
+(defcustom starter-ui-theme 'doom-sonokai
   "Dark/default theme loaded by the starter UI layer."
   :type 'symbol)
 (defcustom starter-ui-light-theme 'doom-one-light
@@ -52,6 +52,8 @@
   (doom-themes-enable-bold t)
   (doom-themes-enable-italic t)
   :config
+  ;; Prefer our tracked theme port over package-managed copies.
+  (add-to-list 'custom-theme-load-path (expand-file-name "themes/" lem-user-dir))
   ;; Lambda loads a fallback theme early so startup is never unthemed. Replace it
   ;; here once the user-facing UI layer is ready.
   (starter-ui-load-theme starter-ui-theme))

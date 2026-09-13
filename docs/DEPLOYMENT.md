@@ -9,6 +9,7 @@
 - Editable portable preferences and startup documentation: `literate/`.
 - Generated startup: root `early-init.el` and `init.el`.
 - Generated user modules: `lambda-library/lambda-user/*.el` except the local `private.el`.
+- Tracked theme source: `lambda-library/lambda-user/themes/doom-sonokai-theme.el` (not tangled or package-managed).
 - Private machine overrides: `lambda-library/lambda-user/private.el` (ignored).
 - Installed packages: `var/elpa/` (ignored).
 - Persistent saved preferences: `var/etc/custom.el` (ignored, back up).
@@ -52,7 +53,7 @@ $env:EMACS_DOTS_TEST_PACKAGES = 'C:/Users/walnu/.config/emacs-dots/var/elpa/'
 emacs -Q --batch -l tests/verify-config.el
 ```
 
-The check copies configuration to temporary storage, blocks package installation and archive refresh, and verifies private override ordering, package-topic selection, persistent Customize loading, key startup features, both dashboard documentation links, final cheat-sheet bindings, and personal Elisp syntax. It requires the configured packages to be present; a missing package is a failing check, not an instruction to install it automatically. Graphical appearance and Windows startup resolution require a separate GUI check.
+The check copies configuration to temporary storage, blocks package installation and archive refresh, and verifies private override ordering, package-topic selection, persistent Customize loading, key startup features, both dashboard documentation links, final cheat-sheet bindings, Sonokai startup and dark/light theme toggling, and personal Elisp syntax. It requires the configured packages to be present; a missing package is a failing check, not an instruction to install it automatically. Graphical appearance and Windows startup resolution require a separate GUI check.
 
 Inside normally started Emacs inspect `user-init-file`, `user-emacs-directory`, `lem-config-file`, and `custom-file`. Windows may retain the junction spelling even after `file-truename`; use `file-equal-p` to verify file identity and inspect junction targets from an unpackaged Windows process. `-Q` and `-q` intentionally bypass normal user configuration.
 

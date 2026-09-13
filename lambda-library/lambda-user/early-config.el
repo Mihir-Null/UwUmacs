@@ -21,6 +21,8 @@
 (setq lem-packages-alist
       (seq-filter (lambda (entry) (memq (car entry) starter-package-topics))
                   lem-packages-alist))
+(setf (alist-get 'windows lem-packages-alist)
+      (append (alist-get 'windows lem-packages-alist) '(frames-only-mode)))
 ;; Warnings are useful while learning. Do not inherit Colin's personal choice to
 ;; suppress nearly all startup warnings.
 (setopt warning-minimum-level :warning)
