@@ -3,7 +3,7 @@
 - Status: **selected**
 - Origin: **agent-selected**
 - Recorded: 2026-09-13 (backfilled from the cited evidence; not an invented original decision date)
-- Implementation: **P01-P02 transactional maps and localleaders implemented; registry lifecycle pending**
+- Implementation: **P01-P03 transactional maps, localleaders and registry composition implemented**
 - Decision maker: user for explicitly stated product requirements; Codex for the agent-selected design details described below. Inherited choices retain unknown historical authorship.
 
 ## Context
@@ -93,3 +93,13 @@ transactions do not undo a caller's prior direct mutation of a public map object
 The registry supplies context through the existing provider and commits maps and
 metadata together; it does not reconstruct the public base from declarations or
 re-evaluate a provider for discovery.
+## P03 descriptor scope
+
+Registry `:leader-bindings` are global stable entry points at priority zero,
+including callable pending autoloads. `:modes` gates setup context, local/state
+maps and initial state; it never raises a global leader's priority. Derived
+specificity applies local/state maps, so independent global commands still
+conflict even when their descriptors mention distinct modes. This is the
+project-selected global/local contract clarified in ADR-0006. The lower-level
+P02 provider continues accepting explicit internal priorities for non-registry
+sources. No priority field is added to public descriptors.

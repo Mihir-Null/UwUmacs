@@ -41,7 +41,7 @@
 #>
 [CmdletBinding()]
 param(
-    [ValidateSet('frames', 'hints', 'audit', 'state', 'all')]
+    [ValidateSet('frames', 'hints', 'audit', 'state', 'registry', 'all')]
     [string]$Suite = 'all',
     [int]$Repeat = 1,
     [int]$TimeoutSeconds = 240,
@@ -64,9 +64,10 @@ $Suites = @{
     frames = @{ Tests = 'tests/frames-tests.el'; Selector = '^dots-frames-'; Expect = 5 }
     hints  = @{ Tests = 'tests/key-hints-gui-tests.el'; Selector = '^dots-hints-gui-'; Expect = 3 }
     state  = @{ Tests = 'tests/uwumacs-state-gui-tests.el'; Selector = '^uwumacs-state-'; Expect = 24 }
+    registry = @{ Tests = 'tests/uwumacs-registry-gui-tests.el'; Selector = '^uwumacs-registry-'; Expect = 21 }
     audit  = @{ Tests = ''; Selector = ''; Expect = 0; Audit = 'observed-keys.json' }
 }
-$order = if ($Suite -eq 'all') { @('frames', 'hints', 'audit', 'state') } else { @($Suite) }
+$order = if ($Suite -eq 'all') { @('frames', 'hints', 'audit', 'state', 'registry') } else { @($Suite) }
 
 function Get-EmacsPids {
     @(Get-Process emacs*, runemacs* -ErrorAction SilentlyContinue | ForEach-Object { $_.Id })

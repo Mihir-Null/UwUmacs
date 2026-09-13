@@ -1020,7 +1020,7 @@
       "package_dependencies": [],
       "dependency_tickets": [],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-core.el",
-      "test_file": "tests/uwumacs-core-tests.el",
+      "test_file": "tests/uwumacs-compatibility-tests.el",
       "decision_adr": "../ADRs/0019-wave-1a-core.md",
       "acceptance_task": "P03"
     },
@@ -1094,7 +1094,7 @@
       "package_dependencies": [],
       "dependency_tickets": [],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-core.el",
-      "test_file": "tests/uwumacs-core-tests.el",
+      "test_file": "tests/uwumacs-compatibility-tests.el",
       "decision_adr": "../ADRs/0019-wave-1a-core.md",
       "acceptance_task": "P03"
     },
@@ -1133,7 +1133,7 @@
       "package_dependencies": [],
       "dependency_tickets": [],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-core.el",
-      "test_file": "tests/uwumacs-core-tests.el",
+      "test_file": "tests/uwumacs-compatibility-tests.el",
       "decision_adr": "../ADRs/0019-wave-1a-core.md",
       "acceptance_task": "P03"
     },
@@ -1172,7 +1172,7 @@
       "package_dependencies": [],
       "dependency_tickets": [],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-core.el",
-      "test_file": "tests/uwumacs-core-tests.el",
+      "test_file": "tests/uwumacs-compatibility-tests.el",
       "decision_adr": "../ADRs/0019-wave-1a-core.md",
       "acceptance_task": "P03"
     },
@@ -1207,7 +1207,7 @@
       "package_dependencies": [],
       "dependency_tickets": [],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-core.el",
-      "test_file": "tests/uwumacs-core-tests.el",
+      "test_file": "tests/uwumacs-compatibility-tests.el",
       "decision_adr": "../ADRs/0019-wave-1a-core.md",
       "acceptance_task": "P03"
     },
@@ -1226,7 +1226,7 @@
       "package_dependencies": [],
       "dependency_tickets": [],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-core.el",
-      "test_file": "tests/uwumacs-core-tests.el",
+      "test_file": "tests/uwumacs-compatibility-tests.el",
       "decision_adr": "../ADRs/0019-wave-1a-core.md",
       "acceptance_task": "P03"
     },
@@ -1475,7 +1475,7 @@
       "package_dependencies": [],
       "dependency_tickets": [],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-core.el",
-      "test_file": "tests/uwumacs-core-tests.el",
+      "test_file": "tests/uwumacs-compatibility-tests.el",
       "decision_adr": "../ADRs/0019-wave-1a-core.md",
       "acceptance_task": "P03"
     },
@@ -1498,7 +1498,7 @@
         "I002"
       ],
       "adapter_file": "lambda-library/lambda-user/uwumacs-integration-core.el",
-      "test_file": "tests/uwumacs-core-tests.el",
+      "test_file": "tests/uwumacs-compatibility-tests.el",
       "decision_adr": "../ADRs/0019-wave-1a-core.md",
       "acceptance_task": "P03"
     },

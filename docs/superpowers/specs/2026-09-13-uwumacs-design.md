@@ -85,7 +85,7 @@ Existing composition changes belong in `20-user-policy.org`; Meow grammar stays 
 
 Decision records: [ADR-0005](../../ADRs/0005-composition-and-conflicts.md), [ADR-0006](../../ADRs/0006-integration-registry.md).
 
-The following signatures are implementation contracts. P01 customization/maps and P02 state/localleader APIs are present; registry and discovery APIs remain pending their tasks.
+The following signatures are implementation contracts. P01 customization/maps, P02 state/localleader and P03 registry APIs are present; discovery APIs remain pending their task.
 
 | Interface | Contract |
 |---|---|
@@ -113,9 +113,9 @@ The following signatures are implementation contracts. P01 customization/maps an
 A descriptor has these exact keys:
 
 - `:features`: list of actual feature symbols used for readiness. This is not necessarily the package name.
-- `:modes`: list of major-mode symbols; derived modes inherit the descriptor unless a more-specific descriptor overrides it.
+- `:modes`: list of major-mode symbols; gates setup context, local/state maps and initial state. Derived modes inherit local/state bindings unless a more-specific descriptor overrides them. Global leader entries remain independent of mode.
 - `:requires`: list of integration IDs, validated for cycles.
-- `:leader-bindings`: list of `(KEY COMMAND LABEL)`.
+- `:leader-bindings`: list of `(KEY COMMAND LABEL)`, global entry points at priority zero; only genuinely callable commands (including valid interactive autoloads) are offered while pending.
 - `:local-bindings`: list of `(KEY COMMAND LABEL)`.
 - `:state-bindings`: list of `(STATE KEY COMMAND)`, where STATE is `normal` or `motion`.
 - `:initial-state`: nil (preserve Meow policy), `normal`, `motion` or `insert`.
@@ -139,6 +139,16 @@ Example descriptor shape:
 ```
 
 Lazy readiness states are `disabled`, `pending`, `ready`, `unavailable` and `failed`. Package autoload commands may appear in the global leader before their target feature loads. Package-state maps and setup functions become active only when their features and mode context are ready. Disabling an integration prevents pending callbacks from activating it later.
+Mode-scoped setup waits for a matching live buffer and runs once there per
+enabled readiness lifetime. It owns global effects until disable/replacement;
+per-buffer behavior belongs to setup-owned mode hooks with cleanup. Global mode
+disable retires effects while retaining explicit selection. Dependencies must
+already be selected; the registry does not silently broaden scope. Independent
+setups follow selection order, with dependencies first and cleanup in reverse.
+After-integration user hooks run before the final map commit. Setup failures
+retain an explanation and run any cleanup already returned; setup must unwind
+its own partial effects if it signals before returning cleanup. See ADR-0006
+for precise pre-validation versus post-hook failure behavior.
 
 ## 6. Lookup and lifecycle algorithm
 
@@ -148,7 +158,7 @@ Decision records: [ADR-0003](../../ADRs/0003-native-literal-dispatch.md), [ADR-0
 2. Keep that symbol's value and active-state flags buffer-local. Maps for Normal, Motion and the modified fallback are built from UwUmacs-owned data.
 3. Observe Meow state/mode hooks, major-mode changes and EAT Eshell execution/exit hooks. Post-command observation runs before the next lookup; pre-command observation would be too late for that key. Refresh eligibility after state changes; do not replace Meow state commands or call a state minor-mode function repeatedly to force its existing state.
 4. Disable literal leader maps in Insert, minibuffers, terminal character input and unsupported Meow states. Beacon is excluded initially; its keypad/macro workflow remains available explicitly.
-5. Compose user overrides above the most-specific mode adapter, inherited adapter maps, and common UwUmacs maps. Undefined keys fall through to Meow and native package maps.
+5. Compose user local/state overrides above the most-specific mode adapter, inherited adapter maps, and common UwUmacs maps. Global registry leader commands have stable priority zero regardless of mode; user leader overrides win. Undefined keys fall through to Meow and native package maps.
 6. Compose a buffer-local leader root, with its localleader child computed for that buffer. Bind the literal and modified leader to that same effective map. Do not implement localleader using a function that reads another key loop.
 7. On disable, remove only the owned alist entry, hooks, named advice and cleanup effects. Do not restore an entire old package map over subsequent user changes.
 

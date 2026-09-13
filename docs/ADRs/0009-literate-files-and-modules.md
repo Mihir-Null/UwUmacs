@@ -3,7 +3,7 @@
 - Status: **selected**
 - Origin: **agent-selected**
 - Recorded: 2026-09-13 (backfilled from the cited evidence; not an invented original decision date)
-- Implementation: **P01-P02 literate core and four flat outputs implemented; remaining modules pending**
+- Implementation: **P01-P03 literate core and five flat outputs implemented; remaining modules pending**
 - Decision maker: user for explicitly stated product requirements; Codex for the agent-selected design details described below. Inherited choices retain unknown historical authorship.
 
 ## Context

@@ -3,7 +3,12 @@
 
 ;;; Code:
 
+(require 'cl-lib)
 (require 'uwumacs-maps)
+(declare-function uwumacs--registry-refresh "uwumacs-registry" (&optional buffer))
+(declare-function uwumacs--registry-start "uwumacs-registry" ())
+(declare-function uwumacs--registry-stop "uwumacs-registry" ())
+(declare-function uwumacs--registry-context-entry "uwumacs-registry" ())
 (defvar uwumacs-mode nil)
 
 (defvar uwumacs-map-context-function nil
@@ -140,17 +145,21 @@ leaves every selected buffer's previous maps intact."
   (when (and uwumacs-mode (not uwumacs--refreshing))
     (uwumacs--validate-prefix-values uwumacs-leader-key uwumacs-localleader-key
                                      uwumacs-leader-alt-key)
-    (uwumacs--commit-buffers
-     (uwumacs--prepare-buffers (if buffer (list buffer) (buffer-list))
-                              uwumacs-leader-key uwumacs-localleader-key
-                              uwumacs-leader-alt-key))))
+    (if (fboundp 'uwumacs--registry-refresh)
+        (uwumacs--registry-refresh buffer)
+      (uwumacs--commit-buffers
+       (uwumacs--prepare-buffers (if buffer (list buffer) (buffer-list))
+                                uwumacs-leader-key uwumacs-localleader-key
+                                uwumacs-leader-alt-key)))))
 
 (defun uwumacs--observe-buffer (&rest _)
   "Initialize newly visited buffers and keep input eligibility current."
   (when (and uwumacs-mode (not uwumacs--refreshing))
     (if uwumacs--emulation-alist
         (uwumacs--update-eligibility)
-      (uwumacs-refresh (current-buffer)))))
+      (uwumacs-refresh (current-buffer)))
+    (when (fboundp 'uwumacs--registry-context-entry)
+      (uwumacs--registry-context-entry))))
 
 (defconst uwumacs--observation-hooks
   '(meow-switch-state-hook meow-mode-hook meow-normal-mode-hook
@@ -161,6 +170,7 @@ leaves every selected buffer's previous maps intact."
 
 (defun uwumacs--disable ()
   "Remove only UwUmacs-owned activation and restore its ordering metadata."
+  (when (fboundp 'uwumacs--registry-stop) (uwumacs--registry-stop))
   (dolist (hook uwumacs--observation-hooks)
     (remove-hook hook #'uwumacs--observe-buffer))
   (remove-hook 'after-change-major-mode-hook #'uwumacs--observe-buffer)
@@ -191,6 +201,7 @@ leaves every selected buffer's previous maps intact."
       (uwumacs--disable)
     (condition-case error-data
         (progn
+          (when (fboundp 'uwumacs--registry-start) (uwumacs--registry-start))
           (uwumacs-refresh)
           (unless uwumacs--installed
             (setq uwumacs--had-order-table (get 'emulation-mode-map-alists 'list-order)

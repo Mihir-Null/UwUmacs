@@ -65,7 +65,7 @@
       "status": "selected",
       "origin": "agent-selected",
       "recorded": "2026-09-13",
-      "implementation": "P01-P02 transactional maps and localleaders implemented; registry lifecycle pending",
+      "implementation": "P01-P03 transactional maps, localleaders and registry composition implemented",
       "tasks": [
         "P01",
         "P02",
@@ -80,7 +80,7 @@
       "status": "selected",
       "origin": "agent-selected",
       "recorded": "2026-09-13",
-      "implementation": "planned",
+      "implementation": "P03 registry, readiness, cleanup and user overrides implemented",
       "tasks": [
         "P03",
         "P17"
@@ -124,7 +124,7 @@
       "status": "selected",
       "origin": "agent-selected",
       "recorded": "2026-09-13",
-      "implementation": "P01-P02 literate core and four flat outputs implemented; remaining modules pending",
+      "implementation": "P01-P03 literate core and five flat outputs implemented; remaining modules pending",
       "tasks": [
         "P01",
         "P04",
@@ -286,7 +286,7 @@
       "status": "selected",
       "origin": "agent-selected",
       "recorded": "2026-09-13",
-      "implementation": "P01 files-map foundation implemented; individual Wave 1A acceptance pending",
+      "implementation": "P03 implements eight foundational acceptance checks; remaining Wave 1A acceptance pending",
       "tasks": [
         "P01",
         "P03",

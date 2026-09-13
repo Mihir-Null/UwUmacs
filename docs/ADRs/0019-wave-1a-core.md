@@ -3,7 +3,7 @@
 - Status: **selected**
 - Origin: **agent-selected**
 - Recorded: 2026-09-13 (backfilled from the cited evidence; not an invented original decision date)
-- Implementation: **P01 files-map foundation implemented; individual Wave 1A acceptance pending**
+- Implementation: **P03 implements eight foundational acceptance checks; remaining Wave 1A acceptance pending**
 - Decision maker: user for explicitly stated product requirements; Codex for the agent-selected design details described below. Inherited choices retain unknown historical authorship.
 
 ## Context
@@ -49,3 +49,13 @@ Each ticket is independently reviewable. Existing native package actions remain 
 [Integration catalogue](../uwumacs/integrations.md), wave 1A; [Implementation plan](../superpowers/plans/2026-09-13-uwumacs.md), P01; architecture sections 4/9/10. Input evidence is the 2026-09-13 configured-package census, not the installed directory alone.
 
 Acceptance execution owners are clarified in [ADR-0038](0038-foundational-acceptance-ownership.md) and the inventory; task references do not imply blanket ticket completion.
+
+P03 adds individual named tests for I005, I007, I008, I009, I010, I011, I018 and
+I019 in `tests/uwumacs-compatibility-tests.el`. They exercise native Windows
+30.1 from source, built-in cl-lib/seq/compat/subr-x, installed parent-mode source
+20240210.1906 and spinner source 1.7.4.0.20220915.94959. These are eight distinct
+acceptance cases, not blanket acceptance of all Wave 1A libraries. I009 requires
+final standalone-artifact revalidation at P17. Core needs no redundant support
+library installation; parent-mode and spinner remain test/host dependencies,
+not compulsory portable-core imports. Controller records reviewed ticket status
+and code-commit evidence separately in the progress ledger.
