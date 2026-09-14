@@ -50,23 +50,7 @@ until the language server for a mode is deliberately installed on each machine."
   (interactive)
   (require 'eglot)
   (call-interactively #'eglot))
-(defvar-keymap starter+lsp-keys
-  :doc "Language-server and code-intelligence commands."
-  "e" #'starter-eglot
-  "q" #'eglot-shutdown
-  "=" #'eglot-reconnect
-  "a" #'eglot-code-actions
-  "R" #'eglot-rename
-  "f" #'eglot-format-buffer
-  "F" #'eglot-format
-  "d" #'xref-find-definitions
-  "r" #'xref-find-references
-  "D" #'eglot-find-declaration
-  "i" #'eglot-find-implementation
-  "t" #'eglot-find-typeDefinition
-  "h" #'eldoc-doc-buffer)
-(with-eval-after-load 'meow
-  (meow-leader-define-key `("l" . ,starter+lsp-keys)))
+
 (starter-eglot-apply-auto-start-modes)
 ;; Keep non-built-in language modes deliberate.  Set
 ;; `starter-language-packages' in private.el before startup to enable these.

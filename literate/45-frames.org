@@ -46,9 +46,9 @@ Lambda's Popper normally forces Help and compilation into top side windows.
 Turn off only its display control while frame mode is active; popup tracking
 and cycling remain available, and disabling frame mode restores its placement.
 
-The standard split remaps also cover Lambda's plain split bindings. Its two
-split-and-focus wrappers need explicit remaps. All remaps belong to the minor
-mode map, so =M-x frames-only-mode= restores the original keys when disabled.
+The standard split keys (=C-x 2=, =C-x 3=) are remapped to frame creation
+inside the minor mode map, so =M-x frames-only-mode= restores them when
+disabled. The leader's =SPC w h= and =SPC w v= remain real in-frame splits.
 
 #+begin_src emacs-lisp
 (use-package frames-only-mode
@@ -65,10 +65,6 @@ mode map, so =M-x frames-only-mode= restores the original keys when disabled.
   (add-to-list 'frames-only-mode-configuration-variables
                '(popper-display-control nil))
   (frames-only-mode-remap-common-window-split-keybindings)
-  (define-key frames-only-mode-mode-map
-              [remap lem-split-window-below-and-focus] #'make-frame-command)
-  (define-key frames-only-mode-mode-map
-              [remap lem-split-window-right-and-focus] #'make-frame-command)
   ;; Re-evaluating this file must not overwrite the mode's saved defaults.
   (unless frames-only-mode
     (frames-only-mode 1)))
@@ -79,7 +75,7 @@ mode map, so =M-x frames-only-mode= restores the original keys when disabled.
 
 * Everyday commands and recovery
 
-- =C-x 2= / =C-x 3= and =SPC w h= / =SPC w v= create native frames.
+- =C-x 2= / =C-x 3= and =SPC w n= create native frames; =SPC w h= / =SPC w v= split inside one.
 - =C-x 4= uses the other-frame commands normally under =C-x 5=.
 - =C-x 5 f= visits a file in another frame; =C-x 5 b= selects a buffer there.
 - =C-x 5 0= closes a frame. Desktop window-manager shortcuts can arrange it.

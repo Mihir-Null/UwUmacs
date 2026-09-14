@@ -15,19 +15,12 @@
 (setq user-full-name ""
       user-mail-address "")
 ;;;; Non-modal recovery / learning prefix
-;; Define this before Lambda loads its keybinding module. `defcustom' preserves an
-;; already-bound value, so the module will build its prefix maps with this choice.
-(setq lem-prefix "C-c C-SPC")
 ;;;; UI fallback
 ;; Lambda's theme module loads during the base stage. Keep its dark theme as a
 ;; no-surprises fallback; `starter-setup-ui' replaces it with Sonokai after the
 ;; rest of the editor surface is available.
 (setq lem-ui-theme 'lambda-dark)
 ;;;; Base framework
-(message "Loading Lambda base modules...")
-(measure-time
- (cl-dolist (mod '(lem-setup-functions))
-   (require mod nil t)))
 ;; Sane defaults, state directories and small helpers (literate/25-defaults.org).
 (require 'uwumacs-defaults)
 ;; Deliberately do not load `lem-setup-frames' in the starter configuration.
@@ -57,22 +50,15 @@
 ;;;; After init — interactive editor shell
 (defun starter-after-init ()
   "Load completion, navigation, projects, keymaps, and modal editing."
-  (message "Loading Lambda interactive modules...")
-  (measure-time
-   ;; Lambda's keybinding module defines transients at load time; it goes
-   ;; away with the keys chapter.
-   (require 'transient)
-   (cl-dolist (mod '(lem-setup-keybindings))
-     (require mod nil t)))
-
   ;; Completion and help are ours (literate/60-completion.org, 62-help.org).
   (require 'uwumacs-completion)
   (require 'uwumacs-help)
   (require 'uwumacs-dired)
   (require 'uwumacs-vc)
   (require 'uwumacs-navigation)
-  ;; Lambda keymaps must exist before Meow exposes `lem+leader-map' through SPC.
-  (require 'starter-setup-meow))
+  (require 'starter-setup-meow)
+  ;; The leader tree (literate/42-keys.org) after Meow is up.
+  (require 'uwumacs-keys))
 (add-hook 'after-init-hook #'starter-after-init)
 ;;;; After startup — useful editing subsystems
 (defun starter-after-startup ()
@@ -105,10 +91,7 @@
   )
 (add-hook 'emacs-startup-hook #'starter-after-startup)
 ;;;; Discoverability
-;; which-key is built into Emacs 30+ and enabled by Lambda's keybinding module.
-(with-eval-after-load 'which-key
-  (setopt which-key-idle-delay 0.45
-          which-key-idle-secondary-delay 0.05))
+;; which-key is configured in the keys chapter (literate/42-keys.org).
 ;;;; First commands to learn
 ;; M-x meow-tutor
 ;; M-x dashboard-open -> return to the home page

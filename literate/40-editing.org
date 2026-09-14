@@ -163,59 +163,14 @@ set, Meow is enabled globally and the leader is attached.
 
 #+end_src
 
-* The first leader entries
-
-=SPC= now opens a real keymap. These are the entries that do not belong to a
-group: =SPC SPC= runs a command by name, =SPC /= describes every leader key
-that works in the current buffer, and the rest are quick single-key actions.
-The letters not listed here are groups, explained next.
+* Publish the module
 
 #+begin_src emacs-lisp
-(keymap-set uwumacs-leader-map "SPC" #'execute-extended-command)
-(keymap-set uwumacs-leader-map "/" #'uwumacs-describe-leader)
-(keymap-set uwumacs-leader-map "?" #'consult-apropos)
-(keymap-set uwumacs-leader-map ";" #'comment-line)
-(keymap-set uwumacs-leader-map "d" #'dired-jump)
-(keymap-set uwumacs-leader-map "i" #'lem-find-lambda-file)
-(keymap-set uwumacs-leader-map "k" #'consult-yank-from-kill-ring)
-(keymap-set uwumacs-leader-map "r" #'consult-register)
-(keymap-set uwumacs-leader-map "R" #'consult-recent-file)
-(keymap-set uwumacs-leader-map "[" #'lem-previous-user-buffer)
-(keymap-set uwumacs-leader-map "]" #'lem-next-user-buffer)
-(keymap-set uwumacs-leader-map "{" #'tab-bar-switch-to-prev-tab)
-(keymap-set uwumacs-leader-map "}" #'tab-bar-switch-to-next-tab)
-(keymap-set uwumacs-leader-map "TAB" #'uwumacs-tab-dwim)
-
-#+end_src
-
-* Temporary bridge to Lambda's groups
-
-Lambda's keybinding module still defines the group maps (=SPC f= files,
-=SPC b= buffers, =SPC s= search, and so on) as children of =lem+leader-map=.
-Until the keys chapter owns the whole tree, the UwUmacs leader *inherits*
-from that map: a key not found in the leader falls through to Lambda's map.
-Two adjustments make the inheritance safe. Lambda put a mail menu on =m=,
-which is the localleader key, so that entry is cleared. And the modules that
-still add keys with =meow-leader-define-key= are pointed at the UwUmacs map,
-so every writer lands in one place. The non-modal prefix =C-c C-SPC= opens the
-same map, which is how you reach the leader from Insert state.
-
-#+begin_src emacs-lisp
-(with-eval-after-load 'lem-setup-keybindings
-  (define-key lem+leader-map (kbd "m") nil)
-  (set-keymap-parent uwumacs-leader-map lem+leader-map)
-  (setf (alist-get 'leader meow-keymap-alist) uwumacs-leader-map)
-  (keymap-global-set lem-prefix uwumacs-leader-map)
-  (keymap-set uwumacs-leader-map "p" (cons "project" project-prefix-map))
-  (keymap-set uwumacs-leader-map "v" (cons "version control" lem+vc-keys)))
-
 (provide 'starter-setup-meow)
 ;;; starter-setup-meow.el ends here
 #+end_src
 
-* Where the other keys come from
+* Where the keys are
 
-Until the extraction of Lambda is complete, three modules still add their
-own leader entries: [[file:55-dashboard.org][the dashboard]] (=SPC h=, =SPC H=), [[file:30-platform.org][terminals]] (=SPC o=) and
-[[file:60-programming.org][programming]] (=SPC l=). The [[file:../lambda-library/lambda-user/keybindings.org][cheat sheet]] lists what a new user needs first;
-=SPC /= and which-key show what is actually bound in the current buffer.
+Every key under =SPC= is defined in [[file:42-keys.org][the keys chapter]]; each package
+chapter defines its own =SPC m= menu next to the package.

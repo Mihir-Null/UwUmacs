@@ -52,7 +52,7 @@ This allowlist avoids installing unrelated Lambda workflows just because their s
 #+name: early-config-03-1
 #+begin_src emacs-lisp
 (defconst starter-package-topics
-  '(dashboard functions)
+  '(dashboard)
   "Lambda package topics used by the personal configuration.")
 #+end_src
 
@@ -136,9 +136,6 @@ Set the prefix before Lambda creates its keymaps. C-c C-SPC remains a recovery r
 #+name: config-02-1
 #+begin_src emacs-lisp
 ;;;; Non-modal recovery / learning prefix
-;; Define this before Lambda loads its keybinding module. `defcustom' preserves an
-;; already-bound value, so the module will build its prefix maps with this choice.
-(setq lem-prefix "C-c C-SPC")
 #+end_src
 
 ** Provide an early theme fallback
@@ -161,7 +158,6 @@ A short Messages entry identifies where the user composition begins when reviewi
 #+name: config-04-1
 #+begin_src emacs-lisp
 ;;;; Base framework
-(message "Loading Lambda base modules...")
 #+end_src
 
 ** Select the foundation modules
@@ -170,9 +166,6 @@ Load Lambda's common utilities, settings, scratch, themes, windows, buffers and 
 
 #+name: config-05-1
 #+begin_src emacs-lisp
-(measure-time
- (cl-dolist (mod '(lem-setup-functions))
-   (require mod nil t)))
 ;; Sane defaults, state directories and small helpers (literate/25-defaults.org).
 (require 'uwumacs-defaults)
 #+end_src
@@ -258,22 +251,15 @@ Completion, project and keybinding modules must exist before Meow points at Lamb
 ;;;; After init — interactive editor shell
 (defun starter-after-init ()
   "Load completion, navigation, projects, keymaps, and modal editing."
-  (message "Loading Lambda interactive modules...")
-  (measure-time
-   ;; Lambda's keybinding module defines transients at load time; it goes
-   ;; away with the keys chapter.
-   (require 'transient)
-   (cl-dolist (mod '(lem-setup-keybindings))
-     (require mod nil t)))
-
   ;; Completion and help are ours (literate/60-completion.org, 62-help.org).
   (require 'uwumacs-completion)
   (require 'uwumacs-help)
   (require 'uwumacs-dired)
   (require 'uwumacs-vc)
   (require 'uwumacs-navigation)
-  ;; Lambda keymaps must exist before Meow exposes `lem+leader-map' through SPC.
-  (require 'starter-setup-meow))
+  (require 'starter-setup-meow)
+  ;; The leader tree (literate/42-keys.org) after Meow is up.
+  (require 'uwumacs-keys))
 #+end_src
 
 ** Connect after-init-hook
@@ -348,10 +334,7 @@ Waiting for the feature avoids racing its initialization. The following policy t
 #+name: config-16-1
 #+begin_src emacs-lisp
 ;;;; Discoverability
-;; which-key is built into Emacs 30+ and enabled by Lambda's keybinding module.
-(with-eval-after-load 'which-key
-  (setopt which-key-idle-delay 0.45
-          which-key-idle-secondary-delay 0.05))
+;; which-key is configured in the keys chapter (literate/42-keys.org).
 #+end_src
 
 ** Publish the module

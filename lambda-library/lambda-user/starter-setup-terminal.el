@@ -101,15 +101,6 @@ multiple numbered terminal buffers can be created in the usual EAT way."
       (setenv "CHERE_INVOKING" "1")
       (starter--eat-with-msys2-process-wrapper
        #'eat (format "%s --login -i" (shell-quote-argument bash)) arg))))
-(defvar-keymap starter+terminal-keys
-  :doc "Integrated terminal commands."
-  "e" #'starter-eat
-  "p" #'starter-eat-project
-  "m" #'starter-eat-msys2-ucrt64)
-;; Meow should stay out of terminal input.  Keep EAT in insert state and expose a
-;; compact terminal namespace without changing Lambda's native recovery prefix.
-(with-eval-after-load 'meow
-  (add-to-list 'meow-mode-state-list '(eat-mode . insert))
-  (meow-leader-define-key `("o" . ,starter+terminal-keys)))
+
 (provide 'starter-setup-terminal)
 ;;; starter-setup-terminal.el ends here

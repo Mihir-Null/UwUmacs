@@ -385,24 +385,6 @@ The three commands keep ordinary, project-local and MSYS2 sessions discoverable 
 
 #+name: starter-setup-terminal-11-1
 #+begin_src emacs-lisp
-(defvar-keymap starter+terminal-keys
-  :doc "Integrated terminal commands."
-  "e" #'starter-eat
-  "p" #'starter-eat-project
-  "m" #'starter-eat-msys2-ucrt64)
-#+end_src
-
-** Enable Meow after its dependencies
-
-The package gets predictable starting states for shells and special buffers, a small angle-bracket thing, and Org syntax integration. Global mode is enabled only after installing our keymaps.
-
-#+name: starter-setup-terminal-12-1
-#+begin_src emacs-lisp
-;; Meow should stay out of terminal input.  Keep EAT in insert state and expose a
-;; compact terminal namespace without changing Lambda's native recovery prefix.
-(with-eval-after-load 'meow
-  (add-to-list 'meow-mode-state-list '(eat-mode . insert))
-  (meow-leader-define-key `("o" . ,starter+terminal-keys)))
 #+end_src
 
 ** Publish the module

@@ -59,7 +59,7 @@
       (dots-test-check (string-suffix-p "var/etc/custom.el" custom-file)
                        "Customize file is not in persistent state")
       (dolist (feature '(config starter-setup-literate starter-setup-dashboard starter-setup-meow
-                        uwumacs-leader starter-setup-treesit starter-setup-languages
+                        uwumacs-leader uwumacs-keys starter-setup-treesit starter-setup-languages
                         starter-setup-terminal uwumacs-org uwumacs-ui starter-setup-frames))
         (dots-test-check (featurep feature) (format "Missing feature %s" feature)))
       (dots-test-check (equal custom-enabled-themes '(doom-sonokai)) "Theme changed")
@@ -78,16 +78,14 @@
                        "SPC is not the literal leader in Normal state")
       (dots-test-check (eq (lookup-key meow-motion-state-keymap (kbd "SPC")) uwumacs-leader-map)
                        "SPC is not the literal leader in Motion state")
-      (dots-test-check (null (lookup-key lem+leader-map (kbd "m")))
-                       "Localleader key m is shadowed by Lambda's mail map")
       (dots-test-check (eq (lookup-key uwumacs-leader-map (kbd "l e")) #'starter-eglot)
                        "SPC l is not the language-server menu")
       (dots-test-check (eq (lookup-key uwumacs-leader-map (kbd "s l")) #'vertico-repeat)
                        "SPC s l is not completion history")
-      (dots-test-check (eq (lookup-key uwumacs-leader-map (kbd "H"))
+      (dots-test-check (eq (lookup-key uwumacs-leader-map (kbd "h ?"))
                            #'starter-dashboard-open-cheatsheet)
                        "Cheat-sheet leader binding was overwritten")
-      (dots-test-check (eq (lookup-key uwumacs-leader-map (kbd "h")) #'dashboard-open)
+      (dots-test-check (eq (lookup-key uwumacs-leader-map (kbd "h h")) #'dashboard-open)
                        "Home leader binding was overwritten")
       (require 'bookmark) (require 'recentf) (require 'project)
       (save-window-excursion

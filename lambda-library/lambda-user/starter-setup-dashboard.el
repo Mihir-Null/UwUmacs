@@ -152,9 +152,7 @@ Exclude trailing padding and compensate for leading indentation."
   ;; Skip the home page when Emacs was invoked with a file argument.
   (dashboard-setup-startup-hook))
 ;; Keep r/p/b/? and dashboard item shortcuts alongside Meow j/k and SPC.
-(with-eval-after-load 'starter-setup-meow
-  (add-to-list 'meow-mode-state-list '(dashboard-mode . motion))
-  (meow-leader-define-key '("h" . dashboard-open)
-                         '("H" . starter-dashboard-open-cheatsheet)))
+(with-eval-after-load 'meow
+  (add-to-list 'meow-mode-state-list '(dashboard-mode . motion)))
 (provide 'starter-setup-dashboard)
 ;;; starter-setup-dashboard.el ends here

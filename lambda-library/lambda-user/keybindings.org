@@ -1,168 +1,203 @@
-#+title: Emacs-Dots: keys & commands
-#+startup: showall
-#+options: toc:nil
+#+TITLE: UwUmacs keys and commands
+#+OPTIONS: toc:2 num:nil
+#+STARTUP: showall
 
-* Start here
+This is the offline cheat sheet. Everything here is a real key binding, so
+=C-h k= followed by the key explains it, =SPC /= lists the leader for the
+current buffer, and which-key shows the next keys after a short pause.
+The startup check verifies every =SPC= row below against the live keymap.
 
-This sheet describes the Meow + Lambda bindings in Emacs-Dots.
-=C-= means Ctrl, =M-= means Alt, =SPC= means Space, and =RET= means Enter.
-Keys separated by spaces are pressed in sequence; uppercase letters use Shift.
+* The three things to learn first
 
-In Meow normal or motion state, press =SPC= and pause for the which-key menu.
-In insert state, use =C-c C-SPC= for the same leader map, or Escape first.
-Use =M-x= to run any command below by name. =C-g= cancels a prompt.
+1. =SPC SPC= runs any command by name. Type a few letters of what you want.
+2. =SPC= then a letter opens a group; wait for which-key, or press =C-h=.
+3. =ESC= gets you back to Normal state; =i= starts typing again.
 
-The SPC menu title shows the physical keys already entered; its rows show the
-next key to press. For example, after =SPC f=, press =f= for =find-file=.
-M-x command annotations also prefer complete physical leader sequences, such as
-=SPC s s= for =consult-line=, when opened from Normal or Motion state. In Insert
-state, or when a command has no reachable SPC binding, they retain native Emacs
-shortcuts. These annotations describe shortcuts from the editing buffer; type
-the command name or select a candidate while the M-x prompt itself is open.
+* Meow in one minute
 
-| Key       | Action                       | Command                          |
-|-----------+------------------------------+----------------------------------|
-| SPC SPC   | Run a command                | execute-extended-command         |
-| SPC h     | Return to the dashboard      | dashboard-open                   |
-| SPC H     | Open this sheet              | starter-dashboard-open-cheatsheet |
-| ? at home | Open this sheet              | starter-dashboard-open-cheatsheet |
-| C-h k     | Explain the next key sequence | describe-key                    |
-| C-h m     | Help for this buffer's modes | describe-mode                    |
-| C-h f     | Help for a command/function  | describe-function                |
-| SPC ?     | Search available commands    | consult-apropos                  |
+Meow is *select, then act*. In Normal state:
 
-Try =M-x meow-tutor= for guided editing practice. For the complete live maps,
-run =M-x describe-keymap= and choose =lem+leader-map= or =meow-normal-state-keymap=.
-Those live maps include your later customizations; this sheet is a curated guide.
+| Key | Selects |
+|---+---|
+| =w= / =W= | word / symbol |
+| =x= | line |
+| =o= | block (paragraph, or what the mode calls a block) |
+| =,= / =.= | inside / around a thing: =(= =[= ={= ="= =w= =l= |
+| =f= / =t= | to a character |
+| =v= | visit: search and select |
+| =e= / =b= | extend by word forward / back |
+| =0=–=9= | one of the numbered hints Meow shows |
 
-* Meow: select, then act
+| Key | Acts on the selection |
+|---+---|
+| =d= / =s= | delete / kill (cut) |
+| =c= | change: delete and start typing |
+| =y= / =p= | copy / paste |
+| =r= | replace with the clipboard |
+| =u= / =U= | undo / undo inside the selection |
+| =i= / =a= | type before / after |
+| =A= / =I= | open a line below / above |
 
-Normal state moves/selects text; insert state types text. Start with =w= to
-select a word, then =c= to replace it. Press Escape to return to normal state.
+=M-x meow-tutor= teaches the rest interactively.
 
-| Keys         | Action                                      |
-|--------------+---------------------------------------------|
-| h j k l      | Move left / down / up / right                |
-| H J K L      | Extend selection in that direction          |
-| w / W        | Select word / symbol                        |
-| b / e        | Move/select backward / forward by word      |
-| x            | Select line                                 |
-| o            | Select a block                              |
-| , / .        | Select inside / bounds of a thing           |
-| i / a        | Insert before / append after selection      |
-| I / A        | Open a line above / below                   |
-| c            | Change selection, then type replacement     |
-| d            | Delete selection                            |
-| s            | Cut (kill) selection                        |
-| y / p        | Copy selection / paste (yank)               |
-| u / U        | Undo / undo within selection                |
-| ;            | Reverse selection direction                 |
-| z / Escape   | Pop previous selection / cancel selection   |
-| f / t        | Find a character / move till a character    |
-| v / n        | Visit matching text / search selection      |
-| g / G        | Beginning / end of buffer                   |
-| :            | Go to line                                  |
-| 0 through 9  | Expand using Meow's numbered hints           |
+* States
 
-Normal-state =s= cuts text; =SPC s= opens the search menu.
-Special buffers such as the dashboard keep their own shortcuts in motion state.
+| Mode line | State | Where |
+|---+---+---|
+| =N= | Normal | text buffers; keys select and act |
+| =I= | Insert | typing; =ESC= leaves |
+| =M= | Motion | Dired, Magit, Help, Info, the agenda: the mode's own keys, plus =j= =k= and =SPC= |
+| =B= | Beacon | multiple cursors; see the tutor |
 
-* Files, buffers, search
+Shells start in Insert. =C-c C-SPC= opens the leader from Insert state.
 
-| Key     | Action                         | Command               |
-|---------+--------------------------------+-----------------------|
-| SPC f f | Open a file                    | find-file             |
-| SPC f s | Save                           | save-buffer           |
-| SPC f r | Recent files                   | consult-recent-file   |
-| SPC f b | Bookmarks                      | consult-bookmark      |
-| SPC b b | Switch buffer                  | consult-buffer        |
-| SPC b k | Close this buffer              | lem-kill-this-buffer  |
-| SPC b a | List/manage buffers            | ibuffer               |
-| SPC [   | Previous user buffer           | lem-previous-user-buffer |
-| SPC ]   | Next user buffer               | lem-next-user-buffer  |
-| SPC d   | Open containing directory      | dired-jump            |
-| SPC s s | Search lines in this buffer    | consult-line          |
-| SPC s d | Search files with ripgrep      | consult-ripgrep       |
-| SPC k   | Choose previously copied text  | consult-yank-from-kill-ring |
+* Leader groups
 
-=C-x C-f= opens files and =C-x C-s= saves from any editing state.
+Press =SPC=, then:
 
-* Projects, windows and workspaces
+| Key | Group |
+|---+---|
+| =b= | buffers |
+| =f= | files |
+| =s= | search |
+| =p= | project |
+| =v= | version control |
+| =w= | windows and frames |
+| =W= | workspaces |
+| =c= | code |
+| =e= | eval Lisp |
+| =l= | language server |
+| =F= | diagnostics |
+| =i= | insert |
+| =o= | open |
+| =t= | toggle |
+| =C= | this configuration |
+| =h= | help |
+| =q= | quit |
+| =u= | your own keys |
+| =m= | this major mode (the localleader) |
 
-| Key       | Action                     | Command                         |
-|-----------+----------------------------+---------------------------------|
-| SPC p p   | Open project workspace     | tabspaces-open-or-create-project-and-workspace |
-| SPC p f   | Find a project file        | project-find-file               |
-| SPC p b   | Switch project buffer      | consult-project-buffer          |
-| C-x 2     | New OS frame               | make-frame-command              |
-| C-x 3     | New OS frame               | make-frame-command              |
-| C-x 5 f   | File in another frame      | find-file-other-frame           |
-| C-x 5 b   | Buffer in another frame    | switch-to-buffer-other-frame     |
-| C-x 5 0   | Close this OS frame        | delete-frame                    |
-| C-x o     | Move to another window     | other-window                    |
-| C-x 0     | Close this window          | delete-window                   |
-| C-x 1     | Keep only this window      | delete-other-windows             |
-| SPC b t   | New workspace tab          | tab-bar-new-tab                 |
-| SPC { / } | Previous / next tab        | tab-bar-switch-to-prev/next-tab  |
-| SPC TAB   | Select a workspace tab     | uwumacs-tab-dwim                 |
+* Everyday keys
 
-=SPC w= shows window commands; =SPC W= shows workspace commands.
-Frames are OS windows managed by your desktop. A window is an internal pane,
-a buffer holds text, and a tab remembers a window layout. With frames-only-mode,
-=SPC w h= / =SPC w v= also create frames and =C-x 4= uses other-frame commands.
-Completion panels remain inside the editor. =M-x frames-only-mode= toggles the
-policy and restores the original split keys when disabled.
-For Git without optional packages, start with =M-x vc-dir=.
+| Key | Does | Command |
+|---+---+---|
+| SPC SPC | Run a command by name | execute-extended-command |
+| SPC / | Describe the leader here | uwumacs-describe-leader |
+| SPC ? | Search commands by description | consult-apropos |
+| SPC f f | Open a file | find-file |
+| SPC f s | Save | save-buffer |
+| SPC f r | Recent files | consult-recent-file |
+| SPC f b | Bookmarks | consult-bookmark |
+| SPC b b | Switch buffer | consult-buffer |
+| SPC b k | Close this buffer | kill-current-buffer |
+| SPC b a | List all buffers | ibuffer |
+| SPC [ | Previous buffer | uwumacs-previous-user-buffer |
+| SPC ] | Next buffer | uwumacs-next-user-buffer |
+| SPC d | Directory of this file | dired-jump |
+| SPC x | Scratch buffer | scratch-buffer |
+| SPC s s | Search lines here | consult-line |
+| SPC s d | Search files with ripgrep | consult-ripgrep |
+| SPC s . | Search the symbol at point | uwumacs-search-symbol-at-point |
+| SPC k | Paste from the kill ring | consult-yank-from-kill-ring |
+| SPC ; | Comment this line | comment-line |
 
-* Terminals and language tools
+* Projects and workspaces
 
-| Key     | Action                        | Command                   |
-|---------+-------------------------------+---------------------------|
-| SPC o e | EAT with the normal shell     | starter-eat          |
-| SPC o p | Project-local EAT             | starter-eat-project  |
-| SPC o m | MSYS2 UCRT64 Bash (Windows)    | starter-eat-msys2-ucrt64     |
-| SPC l e | Start/manage language server  | starter-eglot             |
-| SPC l a | Code actions                  | eglot-code-actions        |
-| SPC l R | Rename symbol                 | eglot-rename              |
-| SPC l f | Format buffer                 | eglot-format-buffer       |
-| SPC l d | Go to definition              | xref-find-definitions     |
-| SPC l r | Find references               | xref-find-references      |
-| SPC l h | Documentation                 | eldoc-doc-buffer          |
-| SPC l q | Shut down language server     | eglot-shutdown            |
+| Key | Does | Command |
+|---+---+---|
+| SPC p p | Open a project in its own workspace | tabspaces-open-or-create-project-and-workspace |
+| SPC p f | Find a file in the project | project-find-file |
+| SPC p b | Switch to a project buffer | consult-project-buffer |
+| SPC p G | Magit status for the project | uwumacs-project-magit |
+| SPC W s | Switch or create a workspace | tabspaces-switch-or-create-workspace |
+| SPC W d | Close this workspace | tabspaces-close-workspace |
+| SPC TAB | Switch tab | uwumacs-tab-dwim |
 
-The normal Windows shell is PowerShell. Language servers must be installed
-separately; they do not start automatically in this configuration.
+* Version control
 
-* Org, appearance and configuration
+| Key | Does | Command |
+|---+---+---|
+| SPC v s | Magit status | magit-status |
+| SPC v l | Log | magit-log |
+| SPC v d | Diff | magit-diff |
+| SPC v b | Blame | magit-blame |
+| SPC v c | Commit | magit-commit |
 
-| Command                    | Purpose                                    |
-|----------------------------+--------------------------------------------|
-| org-agenda                 | Agenda (also available from the dashboard) |
-| org-capture                | Capture an inbox TODO (t) or note (n)       |
-| org-todo                   | Change a heading's TODO state              |
-| starter-ui-toggle-theme    | Toggle dark/light theme (SPC t t)           |
-| display-line-numbers-mode  | Toggle line numbers (SPC t n)               |
-| starter-dashboard-open-config | Open the literate guide (dashboard Config) |
-| starter-literate-open      | Open the literate reading guide             |
-| starter-literate-tangle    | Regenerate Lisp from saved Org sources      |
-| starter-literate-check     | Check source/output agreement without writing |
-| starter-treesit-refresh-mode-remaps | Recheck installed grammars          |
+In the status buffer: =s= stage, =u= unstage, =c c= commit, =P p= push,
+=TAB= fold, =SPC m= for a labelled menu.
 
-* Symbols not showing?
+* Windows and frames
 
-- =M-x describe-char= describes the character at point, including its font.
-- =M-x describe-variable RET nerd-icons-font-family= shows the icon font name.
-- The default is =Symbols Nerd Font Mono=. The GUI must see that exact family;
-  installing a font and configuring an icon consumer are separate steps.
-- After installing a font in Windows, restart Emacs. In a terminal, configure
-  the terminal emulator's font instead.
+New editing surfaces are OS windows (frames); your window manager arranges them.
 
-* References and editable sources
+| Key | Does | Command |
+|---+---+---|
+| SPC w n | New frame | make-frame-command |
+| SPC w k | Close this frame | delete-frame |
+| SPC w w | Jump to a window | ace-window |
+| SPC w h | Split below, inside this frame | split-window-below |
+| SPC w v | Split right, inside this frame | split-window-right |
+| SPC w u | Undo the last layout change | winner-undo |
+| SPC t f | Toggle frames-only mode | frames-only-mode |
 
-- [[https://github.com/meow-edit/meow/blob/master/KEYBINDING_QWERTY.org][Meow QWERTY reference]] and =M-x meow-tutor=.
-- [[https://github.com/rainstormstudio/nerd-icons.el][Nerd Icons font setup]].
-- [[file:../../literate/40-editing.org][Editable Meow configuration]].
-- [[file:../lambda-setup/lem-setup-keybindings.el][Lambda leader groups]].
-- [[file:../../literate/60-programming.org][Editable language configuration]] and [[file:../../literate/30-platform.org][terminal configuration]].
+* Open, code, help
 
-- [[file:../../literate/index.org][Literate guide: ownership, editing and rebuilding]].
+| Key | Does | Command |
+|---+---+---|
+| SPC o e | Terminal (EAT) | starter-eat |
+| SPC o m | MSYS2 terminal (Windows) | starter-eat-msys2-ucrt64 |
+| SPC o s | Eshell for this project | uwumacs-eshell-project |
+| SPC o a | Agenda dashboard | uwumacs-org-dashboard |
+| SPC o c | Capture a note or task | org-capture |
+| SPC c c | Comment | comment-dwim |
+| SPC c d | Duplicate line or region | duplicate-dwim |
+| SPC c s | Surround with a pair | embrace-commander |
+| SPC e e | Evaluate the last expression | eval-last-sexp |
+| SPC l e | Start or manage a language server | starter-eglot |
+| SPC l a | Code actions | eglot-code-actions |
+| SPC l R | Rename symbol | eglot-rename |
+| SPC l d | Go to definition | xref-find-definitions |
+| SPC F d | List problems in this buffer | flymake-show-buffer-diagnostics |
+| SPC i s | Insert a snippet | yas-insert-snippet |
+| SPC t t | Light or dark theme | uwumacs-toggle-theme |
+| SPC h k | What does this key do | helpful-key |
+| SPC h f | Describe a function | helpful-callable |
+| SPC h v | Describe a variable | helpful-variable |
+| SPC h m | Describe this mode | describe-mode |
+| SPC h b | Keys that work here | embark-bindings |
+| SPC h t | Meow tutorial | meow-tutor |
+| SPC h h | Home page | dashboard-open |
+| SPC h ? | This cheat sheet | starter-dashboard-open-cheatsheet |
+| SPC C c | Open the configuration guide | starter-literate-open |
+| SPC C f | Open a configuration chapter | uwumacs-find-config-file |
+| SPC C t | Rebuild the configuration | starter-literate-tangle |
+| SPC q q | Save everything and quit | save-buffers-kill-emacs |
+| SPC q r | Restart Emacs | restart-emacs |
+
+* The localleader: SPC m
+
+=SPC m= is different in every major mode. Examples:
+
+| Mode | =SPC m= then | Does |
+|---+---+---|
+| any code | =c= / =r= | compile / recompile |
+| any code | =e= | choose a problem to jump to |
+| Emacs Lisp | =e= / =d= / =b= | eval last sexp / defun / buffer |
+| Org | =t= / =s= / =d= | todo state / schedule / deadline |
+| Org | =a= / =c= | agenda / capture |
+| Dired | =c= / =r= / =d= | copy / rename / delete |
+| Dired | =y= / =p= | copy to clipboard / paste here |
+| Magit | =s= / =u= / =c= | stage / unstage / commit |
+| Eshell | =h= | search history |
+| Info | =i= / =s= | index / search |
+
+* Plain Emacs keys worth knowing
+
+| Key | Does |
+|---+---|
+| =C-g= | cancel anything |
+| =C-x C-f= / =C-x C-s= | open / save (also under =SPC f=) |
+| =C-.= | act on the thing at point (Embark) |
+| =C-h B= | every key that works right now |
+| =M-`= | toggle the last popup |
+| =C-x C-+= / =C-x C-0= | text bigger / reset |

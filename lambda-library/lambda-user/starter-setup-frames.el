@@ -16,10 +16,6 @@
   (add-to-list 'frames-only-mode-configuration-variables
                '(popper-display-control nil))
   (frames-only-mode-remap-common-window-split-keybindings)
-  (define-key frames-only-mode-mode-map
-              [remap lem-split-window-below-and-focus] #'make-frame-command)
-  (define-key frames-only-mode-mode-map
-              [remap lem-split-window-right-and-focus] #'make-frame-command)
   ;; Re-evaluating this file must not overwrite the mode's saved defaults.
   (unless frames-only-mode
     (frames-only-mode 1)))
