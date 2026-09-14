@@ -124,7 +124,7 @@
     (should (equal (uwumacs-platform-test-reveal 'darwin file)
                    (list "open" "-R" file)))
     (should (equal (uwumacs-platform-test-reveal 'windows-nt file)
-                   (list "explorer.exe" (concat "/select," (convert-standard-filename file)))))
+                   (list "explorer.exe" (concat "/select," (subst-char-in-string ?/ ?\\ file)))))
     (should (equal (uwumacs-platform-test-reveal 'gnu/linux file)
                    (list "xdg-open" (file-name-directory file))))))
 

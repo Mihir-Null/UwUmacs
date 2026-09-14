@@ -166,8 +166,11 @@ current directory."
                       (file-name-directory file))))
     (pcase system-type
       ('darwin (call-process "open" nil 0 nil "-R" file))
+      ;; Explorer wants backslashes; `convert-standard-filename' would do
+      ;; it, but only on a Windows build, and the tests run this branch
+      ;; anywhere by binding `system-type'.
       ('windows-nt (call-process "explorer.exe" nil 0 nil
-                                 (concat "/select," (convert-standard-filename file))))
+                                 (concat "/select," (subst-char-in-string ?/ ?\\ file))))
       (_ (call-process "xdg-open" nil 0 nil directory)))))
 ;; Do not force a font here. Inheriting the platform default makes first boot robust.
 ;; Fonts are chosen in the appearance chapter.
