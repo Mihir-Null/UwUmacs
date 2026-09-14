@@ -75,7 +75,9 @@
         display-line-numbers-type 'visual
         display-line-numbers-width-start t)
 (blink-cursor-mode -1)
-(fringe-mode '(1 . 0))
+;; Builds without a window system (some CI Emacsen) have no fringe.el.
+(when (fboundp 'fringe-mode)
+  (fringe-mode '(1 . 0)))
 
 (setopt scroll-step 1
         scroll-margin 3

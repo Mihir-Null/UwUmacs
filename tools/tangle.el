@@ -61,6 +61,10 @@ No personal startup, package installation, or source-block evaluation is run."
          (sources (alist-get 'sources manifest))
          (outputs (alist-get 'outputs manifest))
          (stage (make-temp-file "emacs-dots-tangle-" t))
+         ;; Chapters and outputs are UTF-8 with LF line endings on every
+         ;; platform; never let the host locale guess and double-encode.
+         (coding-system-for-read 'utf-8)
+         (coding-system-for-write 'utf-8-unix)
          (org-confirm-babel-evaluate t)
          (org-src-preserve-indentation t)
          (enable-local-variables nil)
