@@ -107,4 +107,5 @@ All on branch `dev/uwumacs-config-review-dc1bee`, each commit verified with the 
 | `0eea287` | Own 86-line startup replaces Lambda's bootstrap and the composition root |
 | `210f91a` | `lisp/` and `uwumacs-*` names throughout |
 | `cd0127a` | Sidebars restored and `diff-hl` gutter added after the user clarified that frames apply to full buffers, not panels |
-| (next) | Org polish, avy, meow-tree-sitter, vundo, keycast, Casual menus, spelling wiring, gpg dependency, GPL-3.0-or-later licence |
+| `5e60d4a` | Org polish, avy, meow-tree-sitter, vundo, keycast, Casual menus, spelling wiring, GPL-3.0-or-later licence |
+| `d40cf20` | Gpg4win first on `exec-path` so GNU ELPA signatures verify on Windows |
