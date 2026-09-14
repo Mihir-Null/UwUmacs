@@ -38,7 +38,7 @@ section describing states and the =SPC m= menu, and "Try it" at the end.
 |---+---|
 | [[file:10-startup.org][Startup]] | The two files Emacs reads, and the order the rest loads in |
 | [[file:25-defaults.org][Defaults]] | Files, backups, text, the interface, windows, scratch, the server |
-| [[file:30-platform.org][Platform]] | Shells per operating system, paths, MSYS2 and EAT entries on Windows |
+| [[file:30-platform.org][Platform]] | Shells per operating system, paths, MSYS2 and EAT entries on Windows, modifier keys and the Trash on macOS |
 | [[file:35-shells.org][Shells]] | Eshell, EAT, Tramp |
 | [[file:40-editing.org][Editing]] | Meow's states and grammar |
 | [[file:41-leader.org][Leader]] | Why =SPC= is a real keymap, and how modes get their own menu |

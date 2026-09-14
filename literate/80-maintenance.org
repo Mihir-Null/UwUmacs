@@ -43,6 +43,13 @@ The following blocks are consecutive fragments of this source section. Some shar
 ;; `setq' if MSYS2 is not installed at the normal C:/msys64/ location.
 ;; (setq uwumacs-msys2-root "D:/Tools/msys64/")
 
+;; macOS
+;; Modifier keys are applied after this file loads, so `setopt' works here.
+;; Swap Command and Option, or give the right Option key to Emacs too:
+;; (setopt uwumacs-macos-modifiers '((ns-command-modifier . meta)
+;;                                   (ns-option-modifier . super)
+;;                                   (ns-right-option-modifier . meta)))
+
 ;; Language tooling
 ;; Eglot is available manually through SPC l e. Automatic startup and external
 ;; language packages are opt-in because their servers/runtimes are platform-owned.

@@ -1,0 +1,109 @@
+#+TITLE: Deploying UwUmacs with Nix
+
+The repository is a flake. It does not put the configuration in the Nix
+store: the configuration installs its Emacs Lisp packages under =var/= and
+keeps =private.el= beside the modules, and both must stay writable. What the
+flake provides is everything *around* the configuration: Emacs itself, every
+program the chapters look for, and the icon font, so a fresh Mac needs one
+=darwin-rebuild switch= and one =git clone=.
+
+| Output | What it is |
+|---+---|
+| =darwinModules.default= | nix-darwin module: =programs.uwumacs.enable= installs Emacs, the tools and the font system-wide |
+| =homeManagerModules.default= | home-manager module: links a checkout to =~/.config/emacs=; can install the tools per user |
+| =packages.<system>.default= | the Emacs the modules install (=pkgs.emacs=, 31.1 at the time of writing) |
+| =packages.<system>.tools= | one environment with every tool, for =nix profile install= |
+| =devShells.<system>.default= | Emacs plus the tools, for running the batch checks |
+
+The tools are listed once, in [[file:tools.nix][tools.nix]], each with the chapter that discovers
+it: =git=, =ripgrep=, =fd=, =gnupg=, =hunspell= with an English dictionary,
+and on macOS GNU =ls= as =gls= (Dired) and =trash= (the platform chapter).
+Google Sans Code, the preferred editing font, is not in nixpkgs; the
+platform font is used until it is installed by hand.
+
+* nix-darwin
+
+Add the flake as an input and import the module:
+
+#+begin_src nix
+{
+  inputs.uwumacs.url = "github:Mihir-Null/UwUmacs";
+  inputs.uwumacs.inputs.nixpkgs.follows = "nixpkgs";
+
+  outputs = { nix-darwin, uwumacs, ... }: {
+    darwinConfigurations.mac = nix-darwin.lib.darwinSystem {
+      modules = [
+        uwumacs.darwinModules.default
+        { programs.uwumacs.enable = true; }
+      ];
+    };
+  };
+}
+#+end_src
+
+Then clone the configuration somewhere writable. Emacs looks in
+=~/.config/emacs= when =~/.emacs.d= does not exist:
+
+#+begin_src sh
+git clone https://github.com/Mihir-Null/UwUmacs.git ~/.config/emacs
+#+end_src
+
+Options under =programs.uwumacs=:
+
+- =package= :: the Emacs to install. Default =pkgs.emacs=, the Cocoa build;
+  =pkgs.emacs-macport= is the Mitsuharu port. UwUmacs needs 30.1 or later.
+- =daemon= :: start the Emacs server at login through launchd, so
+  =emacsclient= opens files as frames of one running Emacs. Off by default;
+  the configuration starts a server itself whenever it has a display.
+
+* home-manager
+
+With nix-darwin's home-manager module, the checkout can be linked into
+place declaratively. The link points outside the store on purpose.
+
+#+begin_src nix
+home-manager.users.me = {
+  imports = [ uwumacs.homeManagerModules.default ];
+  programs.uwumacs = {
+    enable = true;
+    source = "/Users/me/src/UwUmacs";  # a writable clone
+    installPackages = false;           # nix-darwin already installed them
+  };
+};
+#+end_src
+
+Without nix-darwin, leave =installPackages= on and the same tools go into
+the user profile. [[file:example/flake.nix][example/flake.nix]] is a complete host with both modules.
+
+* Without a module
+
+#+begin_src sh
+nix profile install github:Mihir-Null/UwUmacs#default github:Mihir-Null/UwUmacs#tools
+#+end_src
+
+* Developing
+
+=nix develop= in the repository gives a shell with Emacs and the tools; the
+batch checks from [[file:../AGENTS.md][AGENTS.md]] run unchanged inside it. To evaluate the
+example host against the checkout you are in, override its input:
+
+#+begin_src sh
+nix flake check --no-build
+nix eval --no-write-lock-file --override-input uwumacs path:$PWD \
+  --json ./nix/example#darwinConfigurations.example.config.environment.systemPackages \
+  --apply 'ps: map (p: p.name) ps'
+#+end_src
+
+CI runs both on Linux; building the example needs a Mac. nixpkgs-unstable
+dropped =x86_64-darwin= in 26.11, so an Intel Mac should point the flake's
+=nixpkgs= input at the =nixpkgs-26.05-darwin= branch.
+
+* What the configuration does on its own
+
+The Nix module is a convenience; the configuration works with Homebrew or a
+manual install too. On macOS the startup chapter puts the Nix profiles
+(=/run/current-system/sw/bin=, the per-user profile, =~/.nix-profile/bin=)
+and Homebrew on =exec-path= before anything runs, because an Emacs.app
+started from the Dock inherits no shell =PATH=; the shells chapter then
+imports the login shell's environment. The platform chapter's macOS section
+explains the keys, the Trash and the title bar.

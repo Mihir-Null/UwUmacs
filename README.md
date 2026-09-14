@@ -29,7 +29,7 @@ git clone https://github.com/Mihir-Null/UwUmacs.git ~/.emacs.d
 emacs --init-directory=/path/to/UwUmacs
 ```
 
-The first start installs the Emacs Lisp packages it needs into `var/elpa/`. Emacs verifies GNU ELPA's signed index with `gpg`, so install [Gpg4win](https://gpg4win.org/) if on Windows (GnuPG is usually already present on Linux and macOS); the startup file points Emacs at it, because the `gpg` that Git for Windows ships cannot verify anything from Emacs. Without a native `gpg` the check is skipped. Language servers, `ripgrep`, Git, a spell checker (`hunspell`, on Windows most simply from MSYS2) and fonts are yours to install; On windows these are easiest to configure and install via msys2 or wsl. The configuration checks for dependencies and degrades quietly. Icons need [Symbols Nerd Font Mono](https://www.nerdfonts.com/); the editing font is Google Sans Code if present, otherwise the platform default.
+The first start installs the Emacs Lisp packages it needs into `var/elpa/`. Emacs verifies GNU ELPA's signed index with `gpg`, so install [Gpg4win](https://gpg4win.org/) if on Windows (GnuPG is usually already present on Linux, and `brew install gnupg` provides it on macOS); the startup file points Emacs at it, because the `gpg` that Git for Windows ships cannot verify anything from Emacs. Without a native `gpg` the check is skipped. Language servers, `ripgrep`, Git, a spell checker (`hunspell`, on Windows most simply from MSYS2) and fonts are yours to install; On windows these are easiest to configure and install via msys2 or wsl. On macOS, [the Nix flake](nix/README.org) installs Emacs and every one of them in one `darwin-rebuild`, and Homebrew works too. The configuration checks for dependencies and degrades quietly. Icons need [Symbols Nerd Font Mono](https://www.nerdfonts.com/); the editing font is Google Sans Code if present, otherwise the platform default.
 
 ## Dive in
 
@@ -48,6 +48,7 @@ The first start installs the Emacs Lisp packages it needs into `var/elpa/`. Emac
   lisp/                    generated modules (uwumacs-*.el), cheat sheet, themes, private.el
   tests/                   tangle tests, startup verifier, leader tests, frame tests
   tools/tangle.el          the builder
+  flake.nix, nix/          Nix: a nix-darwin module, a home-manager module, a dev shell
   var/                     packages, caches, custom.el (ignored by Git)
 ```
 
@@ -77,15 +78,20 @@ From the repository root, with an existing package directory:
 ```sh
 emacs -Q --batch -l tools/tangle.el -- --check
 emacs -Q --batch -l tests/tangle-tests.el -f ert-run-tests-batch-and-exit
+emacs -Q --batch -l tests/uwumacs-platform-tests.el -f ert-run-tests-batch-and-exit
 EMACS_DOTS_TEST_PACKAGES=/path/to/var/elpa emacs -Q --batch -l tests/uwumacs-leader-tests.el -f ert-run-tests-batch-and-exit
 EMACS_DOTS_TEST_PACKAGES=/path/to/var/elpa emacs -Q --batch -l tests/verify-config.el
 ```
 
-The verifier copies the configuration to a temporary directory, forbids package installation, starts it, and checks the leader, the localleader key, the dashboard buttons, the theme toggle and every `SPC` row of the cheat sheet against the live keymap. [GitHub Actions](.github/workflows/ci.yml) runs the same checks on every push: the tangle check, then a fresh clone that installs its packages and starts on Emacs 30.1 and 31.1 on Linux, plus an informational Windows run; a weekly run repeats the fresh install without the package cache to catch upstream breakage. `tests/frames-tests.el` covers frame policy and needs a graphical session: `M-x ert RET ^dots-frames- RET`.
+The verifier copies the configuration to a temporary directory, forbids package installation, starts it, and checks the leader, the localleader key, the dashboard buttons, the theme toggle and every `SPC` row of the cheat sheet against the live keymap. The platform tests bind `system-type` to each operating system in turn, so the macOS, Windows and Linux branches all run on any machine without packages. [GitHub Actions](.github/workflows/ci.yml) runs the same checks on every push: the tangle check, then a fresh clone that installs its packages and starts on Emacs 30.1 and 31.1 on Linux, plus informational Windows and macOS runs, and a Nix job that checks the flake and evaluates its nix-darwin example; a weekly run repeats the fresh install without the package cache to catch upstream breakage. `tests/frames-tests.el` covers frame policy and needs a graphical session: `M-x ert RET ^dots-frames- RET`.
 
 ## Windows notes
 
 Windows Emacs resolves `~` to `AppData/Roaming` when `HOME` is unset, so a `.emacs.d` under your profile folder is not found by default. On the machine this was built on, `AppData/Roaming/.emacs.d` is a directory junction to the repository at `C:/Users/walnu/.config/emacs-dots/`; `--init-directory` is the alternative. PowerShell is the default shell; `SPC o m` opens an MSYS2 UCRT64 shell in EAT when MSYS2 is at `C:/msys64/` (set `uwumacs-msys2-root` in `private.el` otherwise). Do not recursively delete a junction or its target.
+
+## macOS notes
+
+Emacs from the Dock has no shell `PATH`, so the startup file puts the Nix profiles and Homebrew on `exec-path` when they exist, and the shells chapter then imports your login shell's environment (`~/.zprofile` included). Option is Meta and Command is Super, so `⌘C`, `⌘V`, `⌘S`, `⌘Z` and `⌘⇧Z` do what you expect; the right Option key still types accented characters. `⌘Q` closes the frame while others remain and quits Emacs from the last one, because frames are this configuration's windows. Deleting a file moves it to the Trash, through the `trash` command (`brew install trash`, or the Nix module) when present so Finder's Put Back works. The title bar follows the theme. `SPC f o` reveals the current file in Finder. Dired uses GNU `ls` as `gls` (`brew install coreutils`) when it is installed, for directories-first listings. `private.el` can change the modifier keys through `uwumacs-macos-modifiers`. The whole macOS policy is one section of [the platform chapter](literate/30-platform.org); deploying with nix-darwin is described in [nix/README.org](nix/README.org).
 
 ## Licence
 
