@@ -1,4 +1,15 @@
-# :3 UwUmacs
+<h1 align="center">
+  <a href="https://git.io/typing-svg">
+    <img src="https://readme-typing-svg.demolab.com?font=Google+Sans+Code&weight=600&duration=4000&pause=250&color=1ADCD4EB&background=393939B1&center=true&vCenter=true&multiline=true&repeat=false&width=435&height=70&lines=UwUmacs;%3A3" alt=":3 UwUmacs" />
+  </a>
+  
+![Emacs](https://img.shields.io/badge/gnuemacs-%237F5AB6.svg?style=for-the-badge&logo=gnuemacs&logoColor=white)
+![Org Mode](https://img.shields.io/badge/orgmode-%2377AA99.svg?style=for-the-badge&logo=org&logoColor=white)
+![Last Commit](https://img.shields.io/github/last-commit/Mihir-Null/UwUmacs?style=for-the-badge&logo=git&logoColor=white&color=%237F5AB6)
+![License](https://img.shields.io/github/license/Mihir-Null/UwUmacs?style=for-the-badge&color=%2377AA99)
+![CI/CD](https://img.shields.io/github/actions/workflow/status/Mihir-Null/UwUmacs/ci.yml?style=for-the-badge&logo=githubactions&logoColor=white&label=CI%2FCD&color=%237F5AB6)
+
+</h1>
 
 A user-friendly, batteries-included, opinionated Emacs configuration built around [Meow](https://github.com/meow-edit/meow): select first, then act. It is for Meow what Doom and evil-collection are for Evil: a real `SPC` leader instead of Meow's keypad, a labelled menu for every major mode under `SPC m`, integrations for the packages you actually use, and everything discoverable through which-key and `C-h`. New editing surfaces are OS windows, so your window manager arranges them.
 
