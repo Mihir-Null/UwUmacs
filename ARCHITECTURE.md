@@ -1,115 +1,105 @@
-# UwUmacs / Emacs-Dots — architecture (observed state, 2026-09-13)
+# UwUmacs — architecture and decisions
 
-This file describes what is actually in the repository, not what the plans say should be. Interfaces are marked *(observed)*: descriptive, not contracts. It was written by reverse-engineering the tree at `90b763f` (branch `uwumacs`) and will be revised once the classification below is signed off.
+Single source of truth for the design. Updated 2026-09-14 at the end of the review-driven refactor. The learner-facing explanation lives in [`literate/index.org`](literate/index.org); this file is for whoever changes the design.
 
-## 1. Intent (user's words, 2026-09-13 — confirm)
+## 1. Intent (the user's words)
 
 UwUmacs is a user-friendly, batteries-included, opinionated and extensible Emacs configuration for one person, built on a small sane starter kit (Lambda-Emacs, Colin McLear's config) plus liked packages. It is Meow-first: selection → extension → action, with visual hints. It prefers spawning frames over windows so the desktop window manager manages them. Its main thrust is to be for Meow what Doom/evil-collection are for Evil: retire the Meow keypad, replace on-screen hints and internal keymaps with real literal maps, and integrate the initial package set with the Meow grammar in a clean, extensible way. It must stay learner-friendly: discoverable actions, visual hints, simple to modify and extend, with a heavily explanatory, tutorialised, wiki-style literate config.
 
-## 2. Layers as they exist
+## 2. Shape
 
-| Layer | Where | Lines | Loaded at startup | Notes |
-|---|---|---|---|---|
-| Emacs startup (Lambda-derived) | `early-init.el`, `init.el`, `lisp/lem-default-config.el` | 853 + 176 | yes | Tangled from `literate/10-bootstrap.org`, which is 1,544 lines of copied vendor startup code with a documented local patch. |
-| Lambda vendor modules | `lisp/lambda-setup/lem-setup-*.el` (41 files) | 9,913 | 24 of 41 | 17 modules (~3,014 lines) are never required. 258 defuns; the user layer references 10. `lem-setup-keybindings.el` carries agent edits ("Spec 09", "CLAUDE.md forbids…"), so the tree is not a pristine upstream snapshot. |
-| User layer (`starter-*`) | `lisp/{config,early-config,starter-*}.el` | 1,391 | yes | Tangled from `literate/20…80-*.org`. Modest, idiomatic, well-commented. |
-| Physical-hint adapter | `uwumacs-key-hints.el` | 98 | yes | Advises Meow keypad internals and Marginalia so hints show `SPC f f` instead of keypad translations. Also merged to `main` as PR #4. |
-| UwUmacs core (in progress) | `lisp/uwumacs{,-maps,-state,-registry,-integration-core}.el` | 954 | **no** (not required anywhere) | Tangled from `literate/41-uwumacs-core.org` (94% code, 61 prose lines). Delivers one binding today: `SPC f f` → `find-file`, only if `uwumacs-mode` is enabled manually. |
-| Literate sources | `literate/*.org` (11 chapters + index + framework + manifest.json) | 5,874 | no | Build: `tools/tangle.el` (125 lines) stages, validates, and copies changed outputs; generated `.el` is tracked. |
-| Tests and tooling | `tests/*.el`, `tools/*` | 2,841 + 899 | no | 113 ERT tests + 10 Python. ~1,170 lines of GUI-runner machinery drive 11 graphical tests. |
-| Docs / process | `docs/**` | 14,307 lines, 63k words | no | 38 ADRs (one day), spec, plan, 194-ticket catalogue (107 rows are built-in libraries), 8,187-line inventory JSON, progress ledger, Python validator enforcing four-way duplication. |
+```
+early-init.el, init.el   generated from literate/10-startup.org (86 lines together)
+literate/*.org           19 chapters + index + manifest.json; the source of truth
+lisp/uwumacs-*.el        21 generated modules (2,789 lines); keybindings.org; themes/; private.el
+tests/                   tangle-tests (8), uwumacs-leader-tests (6), verify-config, frames-tests (5, GUI)
+tools/tangle.el          stages, validates and copies generated outputs (125 lines)
+var/                     packages, caches, custom.el; ignored
+```
 
-## 3. Startup flow (observed)
+Startup is a flat list of `require`s in `init.el`, ordered by dependency: defaults → platform → `private.el` → UI → literate commands → dashboard → completion → help → Dired → VC → navigation → Meow → keys → shells → programming → Tree-sitter → languages → terminals → Org → frames. There are no staged hooks; modes that need `after-init-hook` add themselves.
 
-1. `early-init.el`: Lambda directories under `var/`, package archives, loads `early-config.el` (filters `lem-packages-alist` to 20 topics, adds `frames-only-mode`), installs declared packages.
-2. `init.el`: Lambda dispatch → `config.el`.
-3. `config.el` base stage: 10 `lem-setup-*` modules, then `uwumacs-platform`, `private.el` (once), `uwumacs-fonts`, `uwumacs-literate`, `uwumacs-dashboard`.
-4. `after-init-hook`: 9 more `lem-setup-*` (completion, **keybindings**, help, navigation, dired, search, vc, projects, tabs), then `uwumacs-meow` (which requires `uwumacs-key-hints`).
-5. `emacs-startup-hook`: 7 more `lem-setup-*`, then `uwumacs-treesit`, `-languages`, `-terminal`, `-org`, `-ui` (loads Sonokai, replacing the `lambda-dark` theme loaded in stage 3), `-frames`.
+Before the refactor the same configuration was 853 lines of vendored Lambda startup, 9,913 lines of vendored Lambda modules (17 never loaded), 2,384 lines of user modules, a 954-line prototype core that was never loaded, 3,740 lines of tests and tooling, and 14,307 lines of process documentation. Net change against `main`: 122 files, +6,338 / −15,531.
 
-## 4. Key ownership (observed)
+## 3. The Meow layer
 
-`SPC` in Normal/Motion runs `meow-keypad`; the keypad's leader map is `lem+leader-map` (set in `uwumacs-meow.el:25`). Keypad modifier prefixes are disabled, so keys are literal except the keypad's own `C-` fallback at depth ≥ 2. Writers into the `SPC` tree:
+**Leader.** `SPC` is bound to `uwumacs-leader-map`, an ordinary keymap, in Meow's Normal and Motion state maps through Meow's own `meow-normal-define-key` / `meow-motion-define-key`. Because it is a real keymap, `C-h k`, `C-h b`, `where-is`, which-key and Marginalia see the physical keys with no adapter. `C-c C-SPC` opens the same map from Insert state and non-Meow buffers. `meow-keypad` is not bound; `uwumacs-keypad-key` binds it under the leader when set. (`literate/41-leader.org`)
 
-| Writer | Adds | Where |
-|---|---|---|
-| `lem-setup-keybindings.el` | b c C M e f F **m**(mu4e, not installed) n(denote) q S s t u **g**(vc) w W `.` | vendor, via `bind-keys :prefix lem-prefix` |
-| `uwumacs-meow.el` | ? / SPC ; [ ] { } TAB d i k **l**(vertico-repeat) p(project-prefix-map) r R **v**(vc again) | `meow-leader-define-key` |
-| `uwumacs-dashboard.el` | h H | `meow-leader-define-key` |
-| `uwumacs-terminal.el` | o | `meow-leader-define-key` |
-| `uwumacs-languages.el` | **l** (overwrites vertico-repeat) | `meow-leader-define-key` |
+**Localleader.** Meow has no per-mode state maps, so `SPC m` uses one buffer-local entry in `emulation-mode-map-alists`, keyed on `meow-normal-mode` / `meow-motion-mode`, whose map is composed along `derived-mode-all-parents` (most specific first). A `prog-mode` menu is inherited by every language; `emacs-lisp-mode` overrides the keys it redefines. `uwumacs-define-localleader` is one form per mode. The leader map must leave `m` unbound. (`literate/41-leader.org`)
 
-Known damage: `SPC l` double-bound; `SPC m` opens a dead mail menu; `SPC g` and `SPC v` duplicate; `SPC p b` and `SPC p x` reach `project-list-buffers` / the `C-x` submap because the keypad tries `C-b`/`C-x` first (alignment review F7); `git-gutter` and `mu4e` commands are bound but not installed.
+**Integrations.** Each package chapter states which Meow state its buffers start in (`meow-mode-state-list`) and defines its localleader with labelled entries, evil-collection style but literate. Application buffers (Dired, Magit, Help, Info, the agenda, the dashboard) start in Motion so their own keys keep working; shells and commit messages start in Insert.
 
-## 5. Components (observed, not specified)
+**Keys.** `literate/42-keys.org` is the single owner of the tree: labelled group keymaps for buffers, files, search, VC, windows/frames, workspaces, code, eval, language server, diagnostics, insert, open, toggle, config, help, quit and a reserved user group. `SPC p` is Emacs's own `project-prefix-map`. The chapter carries the migration table from the old keys. `lisp/keybindings.org` is the learner cheat sheet; the startup verifier checks every `SPC` row in it against the live map.
 
-| Component | Files | Responsibility | Interface (observed) | Tests | Status |
-|---|---|---|---|---|---|
-| Bootstrap | `early-init.el`, `init.el`, `lem-default-config.el` | Lambda startup, package policy, dispatch to user config | `lem-*` variables, `lem-packages-alist` | `verify-config.el` | existing |
-| Composition root | `config.el`, `early-config.el` | choose Lambda modules and stage user modules | requires in three stages | `verify-config.el` | existing |
-| Platform | `uwumacs-platform.el` | shell selection per OS, project/org dirs, skip exec-path-from-shell on Windows | `uwumacs-platform-apply`, two defcustoms | `verify-config.el` (project dir) | existing |
-| Terminal | `uwumacs-terminal.el` | EAT with MSYS2 wrapper on Windows, `SPC o` menu | `uwumacs-eat*`, `uwumacs-terminal-keys` | none | existing |
-| Meow grammar | `uwumacs-meow.el` | Colin's QWERTY grammar, mode-state list, keypad leader = `lem+leader-map` | `uwumacs-meow-setup` | `key-hints-tests.el` (indirect) | existing |
-| Hint adapter | `uwumacs-key-hints.el` | physical-key labels in keypad prompt, which-key title, Marginalia | advice on `meow--keypad-show-message`, `marginalia-annotate-binding` | 5 batch + 3 GUI | existing, planned for retirement |
-| UwUmacs maps | `uwumacs-maps.el` | validated prefix customs, priority-layered map candidates, owner metadata, base reconciliation | `uwumacs-leader-map`, `uwumacs-user-leader-map`, `uwumacs--build-map-candidate`… | 13 | existing, unloaded |
-| UwUmacs state | `uwumacs-state.el` | buffer-local emulation alist ahead of Meow, eligibility flags, transactional refresh across all buffers, 11 observation hooks | `uwumacs-mode`, `uwumacs-refresh`, `uwumacs-localleader-map` | 22 + 2 GUI | existing, unloaded |
-| UwUmacs registry | `uwumacs-registry.el` | descriptor validation, dependency order, readiness states, setup/cleanup lifetimes, reentrancy rejection, `uwumacs-doctor` | `uwumacs-register/enable/disable-integration` | 26 + 1 GUI | existing, unloaded |
-| Frames policy | `uwumacs-frames.el` | frames-only-mode with completion/popper/Magit exceptions | advice on `lem-display-magit-in-other-window` | 5 GUI | existing |
-| Appearance | `uwumacs-fonts.el`, `uwumacs-ui.el`, `themes/doom-sonokai-theme.el` | fonts before dashboard, Sonokai, doom-modeline, nerd-icons, spacious-padding | `uwumacs-ui-*` | `verify-config.el` | existing |
-| Dashboard | `uwumacs-dashboard.el` | home page over dashboard.el, pixel-centred lines, `SPC h`/`SPC H` | `uwumacs-dashboard-*` | `verify-config.el` | existing |
-| Programming | `uwumacs-treesit.el`, `uwumacs-languages.el` | pinned grammar recipes, conditional remaps, Eglot opt-in, `SPC l` menu | `uwumacs-treesit-*`, `uwumacs-lsp-keys` | none | existing |
-| Org | `uwumacs-org.el` | inbox capture templates, portable directory | none | none | existing |
-| Literate build | `tools/tangle.el`, `uwumacs-literate.el`, `literate/manifest.json` | tangle to staging, validate, copy | `--check`/`--write`, `uwumacs-literate-*` | 8 | existing |
-| GUI runner | `tests/gui-setup.el`, `tests/gui-run.el`, `tools/run-gui-tests.ps1`, `tools/observed-keys.el` | isolated graphical Emacs, watchdogs, audit | env-var protocol | 10 runner tests | existing |
-| Docs/process | `docs/**` | ADRs, plan, catalogue, validator | `validate-plan.py` | 10 Python | existing |
+## 4. Decisions
 
-## 6. Verified alternative for the core (probe evidence, `scratchpad/probe-localleader-c.el`)
+User decisions (2026-09-14):
 
-With the installed Meow (20260714.1200) and Emacs 31.1, this public-API design was executed in batch and behaves as required:
+1. Extract the vendored Lambda tree fully into own literate chapters rather than trim it.
+2. Literal `SPC` leader; the keypad bound to nothing by default, with `uwumacs-keypad-key` as the opt-in.
+3. This file is the only decision record; the ADR folder, validator, inventory, progress ledger and catalogue were deleted.
+4. `early-init.el` and `init.el` are our own short files, tangled from a chapter.
+5. The GUI test runner was deleted; `tests/frames-tests.el` stays runnable by hand.
+6. First integrations: Magit, Dired, Org, EAT and Eshell, Vertico/Consult/Embark, Help and Info.
+7. The result lands as a pull request into `main`, superseding branch `uwumacs`.
 
-- `(meow-normal-define-key (cons "SPC" leader-map))` and `(meow-motion-define-key …)` make `SPC` a real prefix map in Normal and Motion; Insert keeps `self-insert-command`; `meow-keypad` stays callable.
-- One buffer-local variable registered once in `emulation-mode-map-alists` holds `SPC m` → a keymap composed along `derived-mode-all-parents` (most specific first). Result: `emacs-lisp-mode` overrides `prog-mode` entries and inherits the rest; other buffers see nothing.
-- `where-is-internal` returns `SPC f f` and `SPC m e`, so Marginalia's stock M-x annotation and `C-h k`/`C-h b` show physical keys with no adapter; which-key lists groups by their `(cons "label" map)` names.
-- Total: about 20 lines.
+Agent decisions, with the reason:
 
-## 7. Decision log
+- **No registry, no transactions.** `with-eval-after-load`, hooks and `derived-mode-p` are the lazy-readiness and specificity mechanisms Emacs already has. The prototype's descriptor validation, readiness states and reentrancy guards solved problems the native design does not have.
+- **Buffer-local emulation entry over a `menu-item :filter`.** Both work; only the emulation entry is visible to `where-is`, which Marginalia uses for M-x annotations.
+- **Motion state for Magit and Dired** (was Normal for Magit). In Normal state Meow's grammar shadows Magit's `s`, `u`, `c`; Motion keeps the package's keys and adds only `j`/`k` and the leader.
+- **UI loads first.** Theme and fonts before the first frame is drawn; the old two-theme startup (Lambda's dark fallback, then Sonokai) is gone. Theme-dependent faces hang on Emacs 29's `enable-theme-functions`.
+- **Packages declared where used** with `:ensure t`; `init.el` refreshes archives once when none are cached. `embark-consult`, previously assumed to install transitively and absent, is now declared and installed. `kind-icon` dropped so `nerd-icons-corfu` is the one Corfu formatter.
+- **Tangle with tracked outputs** kept: startup never tangles, a clone works, and `tools/tangle.el` (125 lines) is proportionate.
+- **Dropped for good reasons:** icomplete fallback, `completion-preview`, the vertico-buffer internals override, the hand-rolled Info picker (`consult-info`), the help transient (a keymap shows in which-key), `peep-dired`, `dired-sidebar`, `imenu-list` (window-oriented), `diff-hl`, `vdiff-magit`, `git-gutter`, `mu4e`/`denote`/`citar` keys (not installed), `svg-tag-mode`, `reveal-mode`, `lambda-themes`, macOS appearance sync, Fuco's Lisp indent override, `multi-compile`, Homebrew and iTerm helpers, Colin's personal Org file openers and export helpers, `desktop`, time stamps, `anaphora`/`csetq`/`deftoggle`.
+- **Kept from Lambda**, attributed per module header: sane defaults, scrolling and mouse settings, persistent scratch, the completion stack configuration, Helpful/Info setup, Dired extensions, Magit settings, project/tab/workspace setup with workspace-filtered buffers, Org display and agenda defaults, programming aids, Eshell settings and aliases, Tramp, the highlighting packages.
 
-Resolved (inferred from code/docs, not confirmed by the user unless marked):
-- Meow stays the editing engine; UwUmacs owns the leader. *(user)*
-- frames-only-mode with completion/popper/Magit exceptions. *(user)*
-- Literate Org is the source of truth; generated Lisp is tracked; startup never tangles. *(agent, 2026-09-11 plan)*
-- Own the maps rather than mutate vendor maps; no read-key dispatch; transactional map commits; emulation alist ahead of Meow; registry with readiness states. *(agent, ADR-0003…0006)* — **challenged by §6**.
-- Emacs 30.1 floor with a 31.1 host. *(agent, ADR-0008)* — no 30.1 environment exists in the checkout.
+## 5. Verification
 
-Open (for the user): see the numbered questions in the review message of 2026-09-13; answers will be recorded here.
+Batch, from the repository root (`EMACS_DOTS_TEST_PACKAGES` points at an existing `var/elpa`):
 
-## 8. Proposed classification (pending sign-off)
+```sh
+emacs -Q --batch -l tools/tangle.el -- --check
+emacs -Q --batch -l tests/tangle-tests.el -f ert-run-tests-batch-and-exit
+emacs -Q --batch -l tests/uwumacs-leader-tests.el -f ert-run-tests-batch-and-exit
+emacs -Q --batch -l tests/verify-config.el
+```
 
-| Component | Proposal | Reason |
-|---|---|---|
-| UwUmacs maps/state/registry (954 lines + 1,877 test lines) | **Replace** | Re-implements keymaps, `with-eval-after-load`, hooks and `derived-mode-p` behind transactions and readiness states; delivers one binding; §6 does the job in ~20 lines. |
-| Hint adapter (+ its tests, `observed-keys.el`) | **Delete** after the literal leader lands | Unnecessary once `SPC` is a real keymap. |
-| Leader definitions (5 writers) | **Refactor** into one literate chapter with one `uwumacs-leader-map` and per-mode localleaders | Single owner, fixes `SPC l`/`m`/`g`/`v`/`p` damage. |
-| Docs/process layer | **Replace** with `ARCHITECTURE.md` + a learner wiki; keep ADRs only for real decisions | 15 doc lines per code line; duplication enforced by validator. |
-| Lambda vendor tree | **User decision** (keep / trim to loaded / extract used) | 17 unloaded modules; 10 of 258 defuns used; macOS/mail/notes policy leaks into keys. |
-| `starter-*` user modules | **Keep**, light refactors | Sound and modest. |
-| Literate build (`tangle.el`, tests) | **Keep** | Proportionate; make chapter 10 stop tangling vendor code (user decision). |
-| verify-config, tangle-tests | **Keep** (slim verify-config) | Proportionate smoke tests. |
-| GUI runner + runner tests | **User decision** (keep for frames tests, or delete) | 1,170 lines for 11 GUI tests. |
-| Compatibility tests | **Delete** | Hardcode Emacs 30.1 and a directory that does not exist. |
+All four pass at every commit on this branch. The verifier starts the real configuration in an isolated copy with installation forbidden and asserts: `private.el` loads once and its overrides survive, `custom.el` loads from `var/etc`, every module feature is present, `SPC` is `uwumacs-leader-map` in both Meow state maps, `SPC l` and `SPC s l` owners, the dashboard's two buttons open the guide and the cheat sheet, theme toggling never stacks themes, and every cheat-sheet `SPC` row resolves to its command.
 
-## 9. Status
+Not verified here, for the user to check on the real host:
 
-All components: *existing*. Nothing has been verified against a contract written after the review.
+- A graphical startup and the five frame tests (`M-x ert RET ^dots-frames- RET`).
+- First start on a fresh clone (package installation path).
+- Emacs 30.1: the stated floor; only 31.1 exists on this machine.
 
-## 10. Refactor log
+## 6. Open items
 
-- **Phase A (c0e7c97)** — Deleted the prototype core, GUI runner, unloaded Lambda modules and the ADR/catalogue/validator layer. 100 files, −22,383 lines.
-- **Phase B** — Literal leader landed: `literate/41-leader.org` → `uwumacs-leader.el` (95 lines) makes `SPC` a real keymap in Normal and Motion and adds per-mode localleaders under `SPC m`; `literate/40-editing.org` rewritten as a proper chapter; hint adapter and its tests deleted; `SPC l` double-writer resolved (LSP owns it, history is `SPC s l`); Lambda's dead mail menu cleared from `m`. Bridge: the leader inherits `lem+leader-map` until the keys chapter owns the tree. Tests: `tests/uwumacs-leader-tests.el`.
-- **Phase C2** — `literate/25-defaults.org` → `uwumacs-defaults.el` (225 lines) replaces `lem-setup-{libraries,settings,macros,scratch,windows,buffers,colors,server}` (1,177 lines): state directories `uwumacs-{var,cache,etc}-dir`, files/backups, text, interface, windows, persistent scratch, server, user-buffer helpers. Dropped: macOS colour space, desktop, time-stamps, mail/daemon kill helpers, anaphora, `csetq`/`deftoggle`.
-- **Phase C3/C4** — `literate/60-completion.org` → `uwumacs-completion.el` (266 lines) and `literate/62-help.org` → `uwumacs-help.el` (101 lines) replace `lem-setup-completion` and `lem-setup-help` (996 lines). Resolved: `embark-consult` now declared with `:ensure t` and installed; `kind-icon` dropped so `nerd-icons-corfu` is the single Corfu formatter. Dropped: icomplete fallback, completion-preview, the vertico-buffer internals override, macOS locate, the 200-line hand-rolled Info picker (`consult-info`), the help transient (`uwumacs-help-map` keymap instead). Added localleaders for Info, help and Helpful buffers. Transitional gap: `SPC s .` in Lambda's search map points at the removed `consult-line-symbol-at-point` until the keys chapter binds `uwumacs-search-symbol-at-point`.
-- **Phase C5–C7** — `literate/64-dired.org`, `66-vc.org`, `68-navigation.org` → `uwumacs-{dired,vc,navigation}.el` (271 lines) replace `lem-setup-{dired,vc,navigation,projects,search,tabs}` (1,131 lines). Magit and Dired now start in Motion state with labelled localleaders; Magit's frame placement moved from the frames chapter's advice into `uwumacs-magit-display-buffer`; Lambda's project-directory bridge dropped from the platform chapter. Dropped: peep-dired, dired-sidebar, imenu-list, diff-hl, vdiff-magit, git-gutter (uninstalled), quick-commit, clone-from-clipboard, goto-* file openers, circled tab numbers.
-- **Phase C8–C10** — `literate/35-shells.org`, `70-org.org` (rewritten), `72-programming.org` → `uwumacs-{shell,org,programming}.el` replace `lem-setup-{shell,eshell,org-base,org-settings,programming}` (2,187 lines) and the old `uwumacs-org.el`. Shells start in Insert with an Eshell localleader; Org and the agenda get localleaders; `prog-mode` and `emacs-lisp-mode` get localleaders. Dropped: Lambda's three-line Eshell prompt with theme faces, the icon-annotated `ls`, Homebrew aliases, macOS iTerm, Colin's personal Org file openers and export helpers, Fuco's Lisp indent override, multi-compile, term.el tweaks.
-- **Phase C11** — `literate/50-appearance.org` rewritten → `uwumacs-ui.el` replaces `uwumacs-fonts.el`, `uwumacs-ui.el` and `lem-setup-{theme,fonts,faces}` (924 lines). Loads early so the first frame is themed; uses Emacs 29's `enable-theme-functions` instead of Lambda's after-load-theme hook. Dropped: lambda-themes, macOS appearance sync and `dark-mode` shell toggle, svg-tag-mode, reveal-mode, the Fira Code fallback face, super-key text-scale bindings.
-- **Phase D** — `literate/42-keys.org` → `uwumacs-keys.el` (321 lines) is the single owner of the leader tree, replacing `lem-setup-keybindings` and `lem-setup-functions` (1,234 lines) and the leader writes in the dashboard, terminal and languages modules. Groups are labelled `defvar-keymap`s; `SPC p` is Emacs's own `project-prefix-map`; `C-c C-SPC` opens the same tree in Insert. Migration table in the chapter (`SPC h` → help group, `SPC g` → `SPC v`, `SPC R` → `SPC f r`, …). The cheat sheet `keybindings.org` is rewritten and every `SPC` row is verified against the live map. **The vendored `lisp/lambda-setup/` is now empty.**
-- **Phase C-final** — `literate/10-startup.org` tangles our own `early-init.el` and `init.el` (about 100 lines together), replacing Lambda's 853-line bootstrap, `lem-default-config.el`, the tangled `config.el`/`early-config.el` composition root, `10-bootstrap.org`, `20-user-policy.org` and `framework.org`. Startup is now a flat, ordered list of requires; packages are declared with `:ensure t` and a fresh clone refreshes archives once. Lambda's logo and splash assets removed. **No `lem-` symbol remains in the code.**
+- **LICENSE.** The file is MIT (mclear-tools, 2021) while the module headers say the code is distilled from GPL-3.0-or-later sources. Decide the repository licence before publishing widely.
+- `main` carries the physical-hint adapter (PR #4). This branch removes it; merging makes the literal leader the deployed behaviour.
+- Installed packages that nothing declares any more remain in `var/elpa/` (for example `kind-icon`, `peep-dired`, `dired-sidebar`, `imenu-list`, `svg-tag-mode`, `lambda-themes`, the macOS, mail, notes, citation and LLM packages). Prune with `M-x package-autoremove` when convenient.
+- Beacon state is untouched by the leader (as intended); `SPC` in Beacon is Meow's default.
+- `uwumacs-leader-alt-key` is fixed at `C-c C-SPC` in the keys chapter; make it an option if it ever needs to change.
+
+## 7. Extending
+
+- **A key:** `(keymap-set uwumacs-leader-map "u x" #'my-command)` in `private.el`, or a group in `42-keys.org`. Labels: `(cons "label" #'command)`.
+- **A mode menu:** `(uwumacs-define-localleader 'python-mode "r" (cons "run" #'python-shell-send-buffer))` next to the package.
+- **A package:** a chapter with a `use-package … :ensure t` block, a Meow section, a manifest entry and a `require` in the startup chapter.
+
+## 8. Refactor log
+
+All on branch `dev/uwumacs-config-review-dc1bee`, each commit verified with the four batch checks.
+
+| Commit | Step |
+|---|---|
+| `c0e7c97` | Delete the prototype core, GUI runner, unloaded Lambda modules and the process layer (−22,383 lines) |
+| `cad3cf4` | Literal leader and localleaders (`41-leader.org`); hint adapter retired; editing chapter rewritten |
+| `fc58c61` | Defaults chapter replaces eight Lambda modules |
+| `81bb5f5` | Completion and help chapters; `embark-consult` installed; one Corfu formatter |
+| `ddb2723` | Dired, VC and navigation chapters; Magit and Dired in Motion with localleaders |
+| `6c694a4` | Shells, Org and programming chapters |
+| `6bca85f` | Appearance chapter merges fonts, theme, mode line and faces |
+| `8785b63` | Keys chapter owns the whole tree; Lambda's last modules gone |
+| `0eea287` | Own 86-line startup replaces Lambda's bootstrap and the composition root |
+| `210f91a` | `lisp/` and `uwumacs-*` names throughout |

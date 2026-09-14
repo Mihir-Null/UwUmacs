@@ -1,357 +1,79 @@
-# Emacs-Dots — complete Lambda-based configuration
+# :3 UwUmacs
 
-A small, inspectable configuration layer for [Lambda-Emacs](https://codeberg.org/Lambda-Emacs/lambda-emacs), using [Meow](https://github.com/meow-edit/meow) for selection-first modal editing and adapting the useful, portable parts of [Colin McLear's configuration](https://codeberg.org/mclear-tools/dotemacs).
+A user-friendly, batteries-included, opinionated Emacs configuration built around [Meow](https://github.com/meow-edit/meow): select first, then act. It is for Meow what Doom and evil-collection are for Evil: a real `SPC` leader instead of Meow's keypad, a labelled menu for every major mode under `SPC m`, integrations for the packages you actually use, and everything discoverable through which-key and `C-h`. New editing surfaces are OS windows, so your window manager arranges them.
 
-This repository owns both startup and personal configuration, with a pinned Lambda framework snapshot and ordinary Git history.
+The whole configuration is written as a literate book in [`literate/`](literate/index.org): every chapter explains one part of the editor, shows the small piece of Lisp that configures it, and says why.
 
-## Read and edit the literate configuration
+## Install
 
-Start at **[literate/index.org](literate/index.org)**, also available from the
-dashboard's **Config** button or `M-x uwumacs-literate-open`. The nested chapters
-pair small code blocks with explanations and distinguish Emacs core facilities,
-pinned Lambda code, user choices and later development additions.
-
-Edit portable configuration in `literate/`, save it, then run:
-
-```text
-M-x uwumacs-literate-tangle
-M-x uwumacs-literate-check
-```
-
-The first command stages and validates generated Lisp before updating the deployed
-files; the second checks that source and output agree without changing deployed
-files. Restart Emacs to apply changes. From a shell, the same operations are:
-
-```sh
-emacs -Q --batch -l tools/tangle.el -- --write
-emacs -Q --batch -l tools/tangle.el -- --check
-```
-
-Commit the Org sources and generated Lisp together. Startup loads the generated
-Lisp directly, so a clone works without tangling first. The build never generates
-`private.el`, packages, caches or saved Customize state. The pinned Lambda module
-snapshot remains ordinary vendor source, documented in
-[literate/framework.org](literate/framework.org).
-
-## Install and deploy
-
-This is a complete Emacs configuration repository. Lambda startup and framework
-files are included at Lambda revision `6f12527d82184f82a6cb0ca95301bbd6e0cc19a4` (see `ARCHITECTURE.md`).
-A separate Lambda checkout or submodule is not required.
+Requires GNU Emacs 30.1 or later (developed on 31.1). Clone into your init directory, or point Emacs at the clone:
 
 ```sh
 git clone https://github.com/Mihir-Null/Emacs-Dots.git ~/.emacs.d
 ```
 
-For an existing checkout, start Emacs with `--init-directory=/path/to/Emacs-Dots`.
-Emacs 30.1 or later is required. First startup can install the selected Elisp
-packages; external runtimes and language servers remain your responsibility.
-
-```text
-.emacs.d/                       # this repository
-├── literate/                   # editable, documented source chapters
-├── early-init.el               # generated Lambda startup
-├── init.el                     # generated Lambda startup
-├── lisp/
-│   ├── lambda-setup/            # included Lambda framework
-│   └── lambda-user/             # generated user Lisp + local private.el
-│       ├── config.el           # enabled modules
-│       ├── early-config.el     # package installation policy
-│       ├── starter-*.el        # portable preferences
-│       └── private.el          # optional, ignored machine overrides
-└── var/                        # ignored packages and local state
-    ├── elpa/
-    ├── etc/custom.el           # saved Customize preferences
-    └── cache/
+```sh
+emacs --init-directory=/path/to/Emacs-Dots
 ```
 
-`private.el` loads exactly once, after platform variables are defined and before
-later modules consume them. Commit portable preferences in `literate/` and their generated `lambda-user/` output.
-Customize saves local preferences under `var/etc/custom.el`; those settings and
-`private.el` need their own backup and are not reproduced by cloning Git.
+The first start installs the Emacs Lisp packages it needs into `var/elpa/`. Language servers, `ripgrep`, Git and fonts are yours to install; the configuration checks for them and degrades quietly. Icons need [Symbols Nerd Font Mono](https://www.nerdfonts.com/); the editing font is Google Sans Code if present, otherwise the platform default.
 
-On this Windows installation, the editable repository is
-`C:/Users/walnu/.config/emacs-dots/`. Both the normal Windows and Codex-packaged
-AppData `.emacs.d` entries point directly to it. Windows Emacs currently resolves
-`~` to AppData/Roaming because HOME is unset; merely creating
-`C:/Users/walnu/.emacs.d` would not change that. See `docs/DEPLOYMENT.md` for the
-layout, validation, and rollback instructions.
+## First ten minutes
 
-### Nix / NixOS
+- `SPC SPC` runs any command by name. `SPC` then a letter opens a group; wait for the popup or press `C-h`.
+- `SPC h ?` opens the cheat sheet; `SPC h t` starts Meow's interactive tutorial; `SPC h k` explains any key.
+- `SPC f f` opens a file, `SPC b b` switches buffers, `SPC s s` searches lines, `SPC v s` opens Magit.
+- `SPC m` is the menu for the current mode: in Org it schedules and captures, in Dired it copies and renames, in Magit it stages and commits.
+- `SPC C c` opens the reading guide when you want to change something.
 
-The initial model is deliberately simple:
+## How it is organised
 
-```text
-Nix / NixOS / Home Manager
-    -> Emacs 30.1+
-    -> Git, ripgrep, fd, language servers, compilers, etc.
-
-Lambda-Emacs
-    -> Emacs Lisp packages and framework configuration
-
-lambda-user/
-    -> your policy and extensions
+```
+.emacs.d/
+  early-init.el, init.el   the only files Emacs reads on its own, ~90 lines together
+  literate/                the chapters; edit these
+  lisp/                    generated modules (uwumacs-*.el), cheat sheet, themes, private.el
+  tests/                   tangle tests, startup verifier, leader tests, frame tests
+  tools/tangle.el          the builder
+  var/                     packages, caches, custom.el (ignored by Git)
 ```
 
-That keeps the Emacs configuration easy to understand while learning it. If you later want Nix to own Elisp packages too, migrate that responsibility deliberately rather than mixing both approaches from the start.
+Startup is a flat, ordered list of `require`s in `init.el`. Each module comes from one chapter. Packages are declared where they are used with `use-package … :ensure t`. Machine-specific settings go in `lisp/private.el` (`SPC C p` creates it from the example); it is loaded once, early, and ignored by Git.
 
-## What loads by default
+## Change it
 
-The starter keeps enough of Lambda to be a useful daily text editor without importing Colin's personal environment:
+Edit a chapter, then rebuild and check:
 
-- Lambda buffer/window/font/face foundations, while retaining ordinary OS-managed frame decorations;
-- Vertico/Consult-style completion and search from Lambda;
-- built-in `which-key` discoverability;
-- Dired;
-- project.el + Lambda tab/workspace integration;
-- built-in VC integration; Lambda Magit support is available if Magit is separately installed;
-- Org base/settings plus a minimal inbox capture setup;
-- Lambda's general programming layer;
-- pinned Emacs-30-compatible Tree-sitter grammar recipes with safe mode fallback;
-- built-in Eglot commands, with automatic server startup left opt-in;
-- shell + Eshell;
-- **Meow** with Colin-inspired QWERTY selection-first bindings;
-- Lambda's semantic leader maps exposed directly through **`SPC`**;
-- the starter UI layer described below.
-
-Not enabled initially (and unrelated package topics are excluded from automatic installation):
-
-- mail/calendar;
-- bibliography/citation workflow;
-- Colin's teaching modules;
-- personal note-system choices;
-- PDF/Elfeed/LLM stacks;
-- language-specific IDE packages beyond Lambda's general programming layer.
-
-Nix, Racket, and Guile/Scheme packages remain explicit choices through
-`uwumacs-language-packages`; no language runtime or server is silently assumed.
-
-## Tree-sitter grammars
-
-Lambda's upstream recipes follow grammar repository heads.  This user layer
-replaces those entries with exact revisions whose generated parsers use ABI 13
-or 14, keeping every recipe within Emacs 30's supported parser ABI range.
-
-Install one grammar with:
-
-```text
-M-x uwumacs-treesit-install-language-grammar
+```
+M-x uwumacs-literate-tangle      (SPC C t)
+M-x uwumacs-literate-check       (SPC C k)
 ```
 
-Or install every pinned grammar with:
+or from a shell, without loading the configuration:
 
-```text
-M-x uwumacs-treesit-install-all-grammars
+```sh
+emacs -Q --batch -l tools/tangle.el -- --write
 ```
 
-You need Git plus a C/C++ compiler visible to Emacs.  On the current Windows
-setup, `C:/msys64/ucrt64/bin/` supplies GCC.  A `*-ts-mode` remap is added only
-after its grammar loads successfully; otherwise the classic major mode remains
-active.  `M-x uwumacs-treesit-refresh-mode-remaps` rechecks this without a
-restart.
+Restart Emacs and commit the chapter with its generated file. Startup never tangles, so a clone works without a build step. [ARCHITECTURE.md](ARCHITECTURE.md) records the design and the decisions behind it; [`literate/index.org`](literate/index.org) explains how to add a chapter, a key, or a mode menu.
 
-## Integrated terminals
+## Verify
 
-The terminal leader namespace is:
+From the repository root, with an existing package directory:
 
-```text
-SPC o e   EAT using the platform's normal shell
-SPC o p   project-local EAT
-SPC o m   MSYS2 UCRT64 Bash in EAT (native Windows)
+```sh
+emacs -Q --batch -l tools/tangle.el -- --check
+emacs -Q --batch -l tests/tangle-tests.el -f ert-run-tests-batch-and-exit
+EMACS_DOTS_TEST_PACKAGES=/path/to/var/elpa emacs -Q --batch -l tests/uwumacs-leader-tests.el -f ert-run-tests-batch-and-exit
+EMACS_DOTS_TEST_PACKAGES=/path/to/var/elpa emacs -Q --batch -l tests/verify-config.el
 ```
 
-On native Windows, EAT still expects a POSIX `/usr/bin/env sh` launch helper.
-The starter terminal module translates that helper to the configured MSYS2
-installation while leaving the actual ordinary terminal shell as PowerShell.
-Set `uwumacs-msys2-root` (or `MSYS2_ROOT`) if MSYS2 is not in `C:/msys64/`.
+The verifier copies the configuration to a temporary directory, forbids package installation, starts it, and checks the leader, the localleader key, the dashboard buttons, the theme toggle and every `SPC` row of the cheat sheet against the live keymap. `tests/frames-tests.el` covers frame policy and needs a graphical session: `M-x ert RET ^dots-frames- RET`.
 
-Native Windows Emacs uses pipes rather than a Unix PTY.  Ordinary command-line
-work is supported, but job control and some full-screen terminal applications
-may remain limited by that upstream constraint.
+## Windows notes
 
-## Language tooling
+Windows Emacs resolves `~` to `AppData/Roaming` when `HOME` is unset, so a `.emacs.d` under your profile folder is not found by default. On the machine this was built on, `AppData/Roaming/.emacs.d` is a directory junction to the repository at `C:/Users/walnu/.config/emacs-dots/`; `--init-directory` is the alternative. PowerShell is the default shell; `SPC o m` opens an MSYS2 UCRT64 shell in EAT when MSYS2 is at `C:/msys64/` (set `uwumacs-msys2-root` in `private.el` otherwise). Do not recursively delete a junction or its target.
 
-Eglot is built into Emacs and is available without enabling Lambda's broader LSP
-module, which currently auto-starts servers and duplicates Tree-sitter policy.
-The starter uses a smaller `SPC l` namespace:
+## Credits
 
-```text
-SPC l e   start/manage Eglot
-SPC l a   code actions
-SPC l R   rename symbol
-SPC l f   format buffer
-SPC l d   find definition
-SPC l r   find references
-SPC l q   shut down server
-```
-
-Eglot does not auto-start by default.  Once a language server is installed, add
-its modes in `private.el`, for example:
-
-```elisp
-(setq uwumacs-eglot-auto-start-modes '(python-mode python-ts-mode))
-```
-
-Optional editing packages use the same policy:
-
-```elisp
-(setq uwumacs-language-packages '(nix racket guile))
-```
-
-## Keybindings cheat sheet
-
-On the dashboard, click **Keys & commands** or press `?`. From Meow normal or
-motion state, use `SPC H`; `SPC h` returns home. The editable, offline
-[cheat sheet](lisp/keybindings.org) covers Meow, files,
-projects, windows, terminals, language tools and live Emacs help.
-
-Fonts initialize before dashboard layout. Nerd Icons use the installed
-`uwumacs-ui-nerd-font` family (default: `Symbols Nerd Font Mono`) and the
-package's specific glyph ranges. Dashboard heading/file icons respect
-`uwumacs-ui-icons`, like the modeline and completion icons.
-
-## Starter UI
-
-`uwumacs-ui.el` is deliberately separate from behavior/navigation. It can be replaced without changing the editor architecture.
-
-Default presentation:
-
-- **Sonokai (default style)** through a tracked port using the standalone `doom-themes` package;
-- **doom-modeline** at the bottom of the frame;
-- Lambda's built-in `tab-bar`/`tabspaces` workspaces, with the tab bar shown only once there is more than one workspace;
-- modest `spacious-padding`, while keeping native frame decorations so Windows/FancyWM and normal Linux/macOS window managers can resize the frame;
-- line numbers + current-line highlighting in programming buffers;
-- matching-parenthesis highlighting;
-- optional Nerd Icons in the modeline, completion UI, and Dired.
-
-This takes presentation cues from Firemacs while deliberately not importing its custom terminal-first statuscolumn or MRU-tab implementation. The existing Lambda workspace abstraction remains the canonical tab/workspace model.
-
-### Theme selection
-
-The default is:
-
-```elisp
-(setq uwumacs-ui-theme 'doom-sonokai)
-```
-
-The port is stored in [`lisp/themes/`](lisp/themes/README.md), outside the package cache. It preserves Sonokai's default palette; the other Sonokai variants are not included.
-
-For a portable change, edit `uwumacs-ui-theme` in `literate/50-appearance.org` and run `M-x uwumacs-literate-tangle`. For a machine-only override, set it in `lisp/private.el` before `uwumacs-ui` loads. Other `doom-themes` themes can be used the same way, for example:
-
-```elisp
-(setq uwumacs-ui-theme 'doom-one)
-;; or
-(setq uwumacs-ui-theme 'doom-gruvbox)
-```
-
-### Nerd Icons
-
-Icons are set to `auto` by default:
-
-```elisp
-(setq uwumacs-ui-icons 'auto)
-```
-
-In a graphical frame they are enabled only if `Symbols Nerd Font Mono` is actually installed. Missing fonts therefore produce a normal text modeline rather than broken glyphs.
-
-After the `nerd-icons` package has been installed by first startup, run:
-
-```text
-M-x nerd-icons-install-fonts
-```
-
-On Linux/macOS this can install the font directly. On Windows the command downloads the font files, after which they still need to be installed through Windows (right-click the downloaded font files and choose **Install**, then restart Emacs).
-
-To force icons in a terminal that already uses a Nerd Font:
-
-```elisp
-(setq uwumacs-ui-icons t)
-```
-
-To disable them everywhere:
-
-```elisp
-(setq uwumacs-ui-icons nil)
-```
-
-## Portable defaults
-
-`uwumacs-platform.el` avoids account- or machine-specific absolute paths.
-
-- **Windows:** prefers `pwsh.exe`, then `powershell.exe`, then `cmd.exe`.
-- **GNU/Linux / Nix:** prefers `zsh`, then `bash`, then `sh`.
-- **macOS:** prefers `zsh`, then `bash`, then `sh`.
-- Projects default to `~/Projects/` (using `USERPROFILE` on native Windows where appropriate).
-- Org defaults to `~/Documents/org/`.
-- GoogleSansCode Nerd Font is preferred when installed, including its Windows family name `GoogleSansCode NF`; otherwise the platform font remains.
-
-For values that should not be committed, copy `private.example.el` to `private.el`. It is ignored by Git and is loaded after portable defaults are defined but before they are applied.
-
-## Interaction model
-
-Lambda defines semantic keymaps such as buffer, file, search, VC, project, window, and workspace maps. The Meow layer reuses those maps instead of duplicating them.
-
-```text
-SPC b ...   buffers
-SPC f ...   files
-SPC p ...   projects
-SPC s ...   search
-SPC v ...   version control
-SPC w ...   windows
-SPC W ...   tabs/workspaces
-SPC SPC     M-x
-SPC /       describe the leader and localleader bindings
-```
-
-The important architectural point is:
-
-```text
-SPC + which-key
-      ↓
-Meow leader
-      ↓
-Lambda semantic keymaps
-      ↓
-ordinary Emacs commands/keymaps
-```
-
-So the interface is modal and discoverable without hiding the underlying Emacs machinery.
-
-## First things to learn
-
-Run `M-x meow-tutor`, then make frequent use of:
-
-```text
-C-h k   describe-key
-C-h f   describe-function
-C-h v   describe-variable
-C-h m   describe-mode
-M-x describe-keymap
-M-x find-function
-```
-
-See `literate/index.org` for a guided reading sequence and `ARCHITECTURE.md` for the design.
-
-## Upstream / provenance
-
-Active upstreams:
-
-- Lambda-Emacs: `https://codeberg.org/Lambda-Emacs/lambda-emacs`
-- Colin McLear's configuration: `https://codeberg.org/mclear-tools/dotemacs`
-- Meow: `https://github.com/meow-edit/meow`
-
-Presentation references/packages:
-
-- Doom themes: `https://github.com/doomemacs/themes`
-- doom-modeline: `https://github.com/seagle0128/doom-modeline`
-- Nerd Icons: `https://github.com/rainstormstudio/nerd-icons.el`
-- Spacious Padding: `https://github.com/protesilaos/spacious-padding`
-- Firemacs (design reference): `https://github.com/66-firebat/firemacs`
-
-The original user layer was based on the May 2026 mirrors. The complete repository now includes the locally verified August 2026 Lambda revision recorded in `docs/LAMBDA-UPSTREAM.json`. `docs/UPSTREAM.md` records provenance and the small integration patch.
-
-## Learning rule
-
-While learning the system, keep this boundary:
-
-> **Do not edit `lisp/lambda-setup/` unless you have intentionally decided to fork framework behavior.** Prefer normal Emacs extension points in the user chapters under `literate/` (tangled into `lambda-user/`): variables, hooks, keymaps, `use-package`, and `with-eval-after-load`.
+Much of the policy is distilled from [Lambda-Emacs](https://codeberg.org/Lambda-Emacs/lambda-emacs) and [Colin McLear's configuration](https://codeberg.org/mclear-tools/dotemacs) (GPL-3.0-or-later); each chapter says what it took. The Meow grammar follows Meow's documented layout. The Sonokai theme is a tracked port in `lisp/themes/`. Everything else is the work of the packages' authors, declared in the chapters that use them.

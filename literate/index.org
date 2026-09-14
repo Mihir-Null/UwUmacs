@@ -1,211 +1,118 @@
-#+TITLE: Emacs-Dots: a literate configuration
+#+TITLE: UwUmacs: the reading guide
 #+OPTIONS: toc:3 num:nil
 #+STARTUP: overview
 #+PROPERTY: header-args :tangle no :eval never
 
 * Start here
 
-This is the editable source of the personal Emacs configuration. Read a topic,
-its reason for existing, and then the small block that implements it. Org's
-headings let you read at the level you need: use TAB on a heading to fold it,
-S-TAB to change the outline view, and C-c C-o to follow a link.
+UwUmacs is a personal Emacs configuration written as a book. Every chapter
+in this folder explains one part of the editor, shows the small piece of
+Lisp that configures it, and says why. The Lisp blocks are *tangled* (copied
+out) into =lisp/*.el= and the two startup files, which is what Emacs actually
+loads. You read and edit the chapters; Emacs runs the generated files.
 
-The structure takes inspiration from [[https://panadestein.github.io/emacsd/][Panadestein's literate Emacs configuration]].
-We reproduce the documented, nested reading experience while retaining this
-repository's Lambda, Meow, Vertico/Consult and Corfu choices.
+Three ideas hold it together:
 
-** UwUmacs development
+- *Meow* is the editing model: select something, then act on it. The
+  [[file:40-editing.org][editing chapter]] explains it in a page.
+- *SPC* is a real keymap, not a translation trick. Press =SPC=, wait, and
+  which-key shows every group; =SPC m= shows the menu for the current mode.
+  The [[file:41-leader.org][leader chapter]] explains the mechanism and the [[file:42-keys.org][keys chapter]] lists the tree.
+- *Frames, not windows*: new editing surfaces are OS windows so your window
+  manager arranges them. The [[file:45-frames.org][frames chapter]] explains the exceptions.
 
-[[file:../ARCHITECTURE.md][ARCHITECTURE.md]] is the single source of truth for the UwUmacs
-design, its decisions and the refactor in progress: literal =SPC= leader, per-mode
-localleaders and Meow integrations for the packages you actually use.
+If you only read one other thing, read [[file:../lisp/keybindings.org][the cheat sheet]]: =SPC h ?= opens
+it from inside Emacs, and =M-x meow-tutor= teaches the grammar.
 
-** Choose a reading path
+* How to read a chapter
 
-| Chapter | What it explains | Primary ownership |
-|---------+------------------+-------------------|
-| [[file:20-user-policy.org][User policy]] | Package topics, module selection, load order | User configuration |
-| [[file:30-platform.org][Platform and terminals]] | Paths, PowerShell, explicit MSYS2/EAT sessions | User policy + later portability work |
-| [[file:40-editing.org][Selection-first editing]] | Meow grammar and Lambda's leader maps | User adaptation |
-| [[file:45-frames.org][Desktop-managed frames]] | Frame policy, completion exceptions, Magit and split keys | User integration |
-| [[file:50-appearance.org][Fonts and appearance]] | Font selection, icons, themes, modeline, tabs | User policy + later font fixes |
-| [[file:55-dashboard.org][Dashboard]] | Navigation, offline help, pixel-based centering | Subsequent development |
-| [[file:74-languages.org][Programming]] | Pinned parsers, safe remaps, opt-in Eglot | Subsequent development |
-| [[file:70-org.org][Org]] | A minimal inbox and portable directory | User configuration |
-| [[file:80-maintenance.org][Maintenance]] | Private overrides and explicit build commands | User policy + this refactor |
-| [[file:10-bootstrap.org][Bootstrap]] | How early-init.el and init.el load everything | Pinned Lambda code |
-| [[file:framework.org][Framework map]] | Vendored modules, local patch, provenance | Lambda + identified integration patch |
+Open a chapter, press =TAB= on a heading to fold or unfold it, =S-TAB= to see
+the outline. Each chapter has the same shape: what it gives you, one section
+per concern with a short explanation and a small code block, a "Meow in…"
+section describing states and the =SPC m= menu, and "Try it" at the end.
+=C-c '= edits a code block in its own buffer.
 
-For using the editor, open the [[file:../lisp/keybindings.org][keybindings and commands cheat sheet]].
-The dashboard's *Config* button opens this guide; *Keys & commands* opens that
-cheat sheet. =M-x uwumacs-literate-open= also returns here.
+* The chapters, in reading order
 
-* Understand the layers
+| Chapter | What it explains |
+|---+---|
+| [[file:10-startup.org][Startup]] | The two files Emacs reads, and the order the rest loads in |
+| [[file:25-defaults.org][Defaults]] | Files, backups, text, the interface, windows, scratch, the server |
+| [[file:30-platform.org][Platform]] | Shells per operating system, paths, MSYS2 and EAT entries on Windows |
+| [[file:35-shells.org][Shells]] | Eshell, EAT, Tramp |
+| [[file:40-editing.org][Editing]] | Meow's states and grammar |
+| [[file:41-leader.org][Leader]] | Why =SPC= is a real keymap, and how modes get their own menu |
+| [[file:42-keys.org][Keys]] | The whole =SPC= tree, group by group, with a migration table |
+| [[file:45-frames.org][Frames]] | Frames-only mode and its exceptions |
+| [[file:50-appearance.org][Appearance]] | Fonts, theme, mode line, icons, highlighting |
+| [[file:55-dashboard.org][Dashboard]] | The home page |
+| [[file:60-completion.org][Completion]] | Vertico, Orderless, Marginalia, Consult, Embark, Corfu, Cape, snippets |
+| [[file:62-help.org][Help]] | Helpful, Info, Transient, the help menu |
+| [[file:64-dired.org][Dired]] | The file manager |
+| [[file:66-vc.org][Version control]] | Magit and VC |
+| [[file:68-navigation.org][Navigation]] | Recent files, places, projects, search tools, workspaces |
+| [[file:70-org.org][Org]] | Notes, tasks, the agenda |
+| [[file:72-programming.org][Programming]] | Delimiters, structural editing, linting, compiling, Emacs Lisp |
+| [[file:74-languages.org][Languages]] | Tree-sitter grammars and opt-in language servers |
+| [[file:80-maintenance.org][Maintenance]] | Private overrides and the build commands |
 
-** Emacs core: mechanisms, not our choices
+[[file:../ARCHITECTURE.md][ARCHITECTURE.md]] records the design and every decision behind it.
 
-Emacs supplies startup files, Lisp, hooks, faces/fontsets, keymaps, package.el,
-use-package, which-key, project.el, Dired, recentf, bookmarks, tab-bar, Org,
-Tree-sitter integration and Eglot in the supported releases. Setting one of their
-variables is still configuration policy written by Lambda or by us. No Emacs
-core implementation is vendored or modified here.
+* Three layers
 
-External packages have their own authors: Meow, dashboard, Nerd Icons, EAT,
-Doom themes/modeline, Vertico/Consult, Corfu and other selected packages are not
-part of our code merely because we configure them.
+*Emacs* supplies the mechanisms: keymaps, hooks, faces, =package.el=,
+=use-package=, which-key, project.el, Dired, Org, Tree-sitter, Eglot.
+*Packages* supply the features we chose: Meow, the completion stack, Magit,
+EAT, doom-modeline, and the rest; each is declared in the chapter that uses
+it with =use-package … :ensure t=, so a fresh clone installs what it needs.
+*This configuration* is only the policy: which packages, how they are set,
+and the =SPC= tree that ties them together. Much of the policy was distilled
+from [[https://codeberg.org/Lambda-Emacs/lambda-emacs][Lambda-Emacs]] by Colin McLear; the chapters say where.
 
-** Lambda-Emacs: the framework
+* Change something
 
-Lambda supplies the staged bootstrap, module catalogue, utility functions,
-semantic leader maps and integrations. The exact source revision is
-=6f12527d82184f82a6cb0ca95301bbd6e0cc19a4=, recorded in [[file:../ARCHITECTURE.md][ARCHITECTURE.md]]. Its root startup files are now assembled from the
-bootstrap chapter. The larger =lisp/lambda-setup/= snapshot remains
-ordinary vendor source, mapped in [[file:framework.org][the framework chapter]].
+1. Edit the chapter: the prose and the code block together.
+2. =SPC C t= (or =M-x uwumacs-literate-tangle=) rebuilds the generated files in
+   a clean Emacs subprocess and reports in =*Emacs-Dots literate build*=.
+   Unsaved chapters are refused, so a build never uses a stale file.
+3. =SPC C k= checks that chapters and generated files agree without writing.
+4. Restart Emacs. Commit the chapter and the generated file together.
 
-The framework is pinned; archive package versions are not locked. The
-configuration still requires Emacs 30.1 or later. This refactor is not a package
-upgrade or a change to first-start installation policy.
+From a shell, without loading the configuration:
 
-** User configuration: portable choices
-
-The early user policy selects package topics. The composition root selects
-modules and orders local additions. The remaining chapters define paths,
-editing behavior, presentation and a minimal Org setup. These settings are
-portable, versioned choices. Prefer changing these Org sources when a decision
-should apply to every machine.
-
-** Subsequent development: identifiable changes
-
-| Development area | Why it was added | Source |
-|------------------+------------------+--------|
-| Startup ownership | One private.el load; persistent Customize state | [[file:framework.org::#local-integration-patch][Framework patch]] and [[file:20-user-policy.org][user policy]] |
-| Native Windows terminal support | EAT's POSIX helper with PowerShell retained | [[file:30-platform.org][Platform and terminals]] |
-| Conservative programming support | Compatible parser pins, availability checks, explicit servers | [[file:74-languages.org][Programming]] |
-| Fonts and home page | Correct glyph mapping, measured centering, offline help | [[file:50-appearance.org][Fonts]] and [[file:55-dashboard.org][dashboard]] |
-| This refactor | Documented Org sources, staged generation, Config entry point | [[file:80-maintenance.org][Maintenance]] and [[file:../tools/tangle.el][builder]] |
-
-These labels describe provenance and responsibility. They do not imply that a
-whole external package was written in this repository. Original attribution
-and GPL notices are retained in the code.
-
-* How startup and source generation differ
-
-** Ordinary startup
-
-#+begin_example
-Emacs loads early-init.el
-  -> Lambda directories, package policy, early-config.el, selected packages
-Emacs loads init.el
-  -> Lambda dispatch selects lambda-user/config.el
-     -> base modules, platform defaults, private.el once
-     -> apply platform choices, fonts, authoring commands, dashboard
-  -> after-init: completion, keymaps, projects, Meow
-  -> emacs-startup: programming, shells, Org, local extensions, UI
-#+end_example
-
-Startup loads committed Lisp, not this documentation. It does not tangle the
-Org files, evaluate their code blocks or install a separate literate-config
-package. Org can still load normally as an editing subsystem.
-
-** Files on disk
-
-#+begin_example
-.emacs.d/                         repository/deployment root
-  literate/                      editable Org chapters + output manifest
-  early-init.el                  generated Lambda bootstrap
-  init.el                        generated Lambda bootstrap
-  lisp/
-    lambda-setup/                pinned vendor modules, documented local patch
-    lambda-user/
-      config.el, early-config.el generated user composition and package policy
-      starter-*.el               generated user policy and development additions
-      private.example.el         generated, commented example only
-      private.el                 optional machine file, ignored, never tangled
-      keybindings.org            editable offline reference, not a tangle source
-  tools/tangle.el                 small standalone build tool
-  tests/                         build and startup checks
-  var/                           ignored packages, caches and local state
-    etc/custom.el                persistent machine-local Customize values
-#+end_example
-
-All literate code sources live under =literate/=. Their targets are relative to
-the repository root: the two startup files go directly into that root, and user
-modules retain their existing =lisp/= paths. There is no
-extra build directory in the deployed load path.
-
-* Editing and rebuilding
-:PROPERTIES:
-:CUSTOM_ID: editing-and-rebuilding
-:END:
-
-** Make a portable change
-
-1. Open the appropriate chapter from the table above.
-2. Edit the small source block and its explanation together. =C-c '= opens
-   Org's source editor; use it for a complete form. Some long inherited forms
-   span consecutive blocks, identified in their prose, and are not standalone
-   expressions to evaluate.
-3. Save the Org buffers, then run =M-x uwumacs-literate-tangle=.
-4. Run =M-x uwumacs-literate-check= and review the Org and generated Lisp diff.
-5. Restart Emacs to load the new configuration. Commit source and output together.
-
-The builder runs in a clean Emacs subprocess and reports its result in
-=*Emacs-Dots literate build*=. Unsaved Org buffers are rejected so the build
-cannot silently use an older on-disk version. There is deliberately no
-save hook or automatic startup rebuild.
-
-** Build without loading this configuration
-
-From the repository root, with Emacs on PATH:
-
-#+begin_src sh :tangle no
+#+begin_src sh
 emacs -Q --batch -l tools/tangle.el -- --write
 emacs -Q --batch -l tools/tangle.el -- --check
 #+end_src
 
-Use the full executable path if Emacs is not on PATH. On PowerShell, prefix a
-quoted executable path with =&=. The path to =tools/tangle.el= can also be
-absolute; the builder derives the repository root from its own location.
+For a quick experiment, evaluate a block with =C-c C-c= or =SPC e e= on a
+form; that changes the running Emacs without rebuilding anything.
 
-=--write= tangles into temporary storage, validates the declared output set and
-Lisp syntax, then copies only changed files to their deployed paths. =--check=
-performs the same staging and comparison without writing deployed files. A
-mismatch exits with an error instead of discarding a manual Lisp edit. Recover
-such an edit into its Org block before regenerating.
+* Machine-specific settings
 
-The manifest permits only the two startup files and named user Lisp modules.
-It excludes =private.el= and =var/=. Indentation is preserved by the builder,
-including in multiline strings. Use this build entry point for the complete
-configuration rather than tangling isolated fragments by hand.
+Copy =lisp/private.example.el= to =lisp/private.el= (=SPC C p= does it) and
+set paths, fonts, opt-in language servers or your own keys there. Git ignores
+it. =M-x customize= saves to =var/etc/custom.el=, also ignored. Back both up
+yourself.
 
-** Make a machine-only change
+* Add a chapter
 
-Copy the generated =private.example.el= to =private.el= once, then edit the
-private file directly. It loads after portable platform variables exist and
-before their consumers. Customize writes to =var/etc/custom.el=. Both files
-need their own backup; neither is generated or included in Git.
+1. Create =literate/NN-name.org= with the header of any existing chapter,
+   changing the =:tangle= target to =../lisp/uwumacs-name.el=.
+2. Register the source and the output in [[file:manifest.json][manifest.json]].
+3. Add =(require 'uwumacs-name)= to =init.el= in the [[file:10-startup.org][startup chapter]] where
+   it belongs in the order.
+4. Give the package a Meow section: which state its buffers start in, and a
+   =uwumacs-define-localleader= form for its =SPC m= menu.
 
-** Validate and recover
+* Where things are on disk
 
-The [[file:../tests/tangle-tests.el][builder tests]] cover reproducibility, drift, invalid targets and failure
-before deployed writes. The [[file:../tests/verify-config.el][startup check]] uses existing packages in isolated
-state, verifies the final maps and activates the dashboard links. Follow
-[[file:../docs/DEPLOYMENT.md][deployment notes]] for full graphical startup and rollback.
-
-If an edited configuration fails, =emacs -Q= still starts without it. Correct
-the Org source and use the standalone build command, or restore the source
-and generated files from the same known-good Git commit. Keep private state
-backed up separately.
-
-* Adding or updating code
-
-For a new local module, add a documented section and its =:tangle= target,
-register the output and chapter in [[file:manifest.json][manifest.json]], and require the module at
-the appropriate stage in [[file:20-user-policy.org][user policy]]. Merely adding a file does not load it.
-Each output file must belong to one chapter; blocks within that chapter are
-concatenated in document order. When enabling a Lambda module, review its package topic as well as its load
-order. Preserve the ownership note so later readers can distinguish our
-policy from upstream code.
-
-The vendored Lambda modules are being extracted into these chapters; see
-[[file:../ARCHITECTURE.md][ARCHITECTURE.md]] for the plan and status.
+#+begin_example
+.emacs.d/
+  early-init.el, init.el   generated from literate/10-startup.org
+  literate/                these chapters and manifest.json
+  lisp/                    generated modules, the cheat sheet, themes/, private.el
+  tests/                   tangle tests, startup verifier, leader tests, frame tests
+  tools/tangle.el          the builder
+  var/                     packages, caches, custom.el: ignored by Git
+#+end_example
