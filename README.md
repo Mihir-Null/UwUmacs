@@ -7,7 +7,7 @@
 ![Org Mode](https://img.shields.io/badge/orgmode-%2377AA99.svg?style=for-the-badge&logo=org&logoColor=white)
 ![Last Commit](https://img.shields.io/github/last-commit/Mihir-Null/UwUmacs?style=for-the-badge&logo=git&logoColor=white&color=%237F5AB6)
 ![License](https://img.shields.io/github/license/Mihir-Null/UwUmacs?style=for-the-badge&color=%2377AA99)
-![CI/CD](https://img.shields.io/github/actions/workflow/status/Mihir-Null/UwUmacs/ci.yml?style=for-the-badge&logo=githubactions&logoColor=white&label=CI%2FCD&color=%237F5AB6)
+![CI/CD](https://img.shields.io/github/actions/workflow/status/Mihir-Null/UwUmacs/ci.yml?style=for-the-badge&logo=githubactions&logoColor=white&label=CI%2FCD&color=green)
 
 </h1>
 
