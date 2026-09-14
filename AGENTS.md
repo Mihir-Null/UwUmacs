@@ -1,11 +1,11 @@
 # Repository collaboration guidance
 
-## Decision records
+`ARCHITECTURE.md` is the single source of truth for design, decisions and refactor status. Record a material decision there, in the same change that makes it. There is no ADR folder, ticket catalogue or documentation validator.
 
-Record material agent-selected architectural, package-integration, keybinding, scope, compatibility, migration and release decisions in `docs/ADRs/` in the same change that makes them. Follow `docs/ADRs/README.md` and update `docs/ADRs/index.json` and affected cross-links.
+Runtime configuration is authored in `literate/*.org` and tangled with `tools/tangle.el`; generated Lisp is tracked. Before committing, run from the repository root:
 
-Distinguish explicit user requirements from agent-selected implementation details and inherited policy. Record concise context, decision, alternatives, consequences and evidence. Keep implementation state separate from decision status; do not label planned code implemented or imply individual user approval that was not given.
-
-For an existing integration contract, update its wave ADR and linked catalogue/inventory together. Substantive reversals get a successor ADR and supersession link. Routine edits and tool invocations do not need individual ADRs.
-
-Validate documentation changes with `python docs/uwumacs/validate-plan.py`. Use `--check-source-snapshot` only when the original census source is expected to remain unchanged.
+```sh
+emacs -Q --batch -l tools/tangle.el -- --check
+emacs -Q --batch -l tests/tangle-tests.el -f ert-run-tests-batch-and-exit
+EMACS_DOTS_TEST_PACKAGES=/path/to/var/elpa emacs -Q --batch -l tests/verify-config.el
+```

@@ -16,9 +16,9 @@ repository's Lambda, Meow, Vertico/Consult and Corfu choices.
 
 ** UwUmacs development
 
-[[file:../docs/uwumacs/README.md][:3 UwUmacs architecture and roadmap]] describes the planned literal leader,
-menus, and ordered integrations for the enabled configuration. It includes the
-package inventory, acceptance checks, and the boundary around unscheduled packages.
+[[file:../ARCHITECTURE.md][ARCHITECTURE.md]] is the single source of truth for the UwUmacs
+design, its decisions and the refactor in progress: literal =SPC= leader, per-mode
+localleaders and Meow integrations for the packages you actually use.
 
 ** Choose a reading path
 
@@ -58,8 +58,7 @@ part of our code merely because we configure them.
 
 Lambda supplies the staged bootstrap, module catalogue, utility functions,
 semantic leader maps and integrations. The exact source revision is
-=6f12527d82184f82a6cb0ca95301bbd6e0cc19a4=, recorded with original hashes in
-[[file:../docs/LAMBDA-UPSTREAM.json][the upstream manifest]]. Its root startup files are now assembled from the
+=6f12527d82184f82a6cb0ca95301bbd6e0cc19a4=, recorded in [[file:../ARCHITECTURE.md][ARCHITECTURE.md]]. Its root startup files are now assembled from the
 bootstrap chapter. The larger =lambda-library/lambda-setup/= snapshot remains
 ordinary vendor source, mapped in [[file:framework.org][the framework chapter]].
 
@@ -208,6 +207,5 @@ concatenated in document order. When enabling a Lambda module, review its packag
 order. Preserve the ownership note so later readers can distinguish our
 policy from upstream code.
 
-For a Lambda update, follow [[file:../docs/UPSTREAM.md][the upstream procedure]]. Update the bootstrap
-chapter for root-file changes, retain the vendor module boundary, reapply the
-identified local patch, and validate before deployment.
+The vendored Lambda modules are being extracted into these chapters; see
+[[file:../ARCHITECTURE.md][ARCHITECTURE.md]] for the plan and status.

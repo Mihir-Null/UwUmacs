@@ -14,7 +14,7 @@ selection and local extensions. A =lem-= name usually belongs to Lambda;
 dashboard identify separate external projects.
 
 The imported Lambda revision and original hashes are recorded in
-[[file:../docs/LAMBDA-UPSTREAM.json][LAMBDA-UPSTREAM.json]]. The original GPL license is in [[file:../LICENSE][LICENSE]].
+ARCHITECTURE.md. The original GPL license is in [[file:../LICENSE][LICENSE]].
 This chapter documents the vendor boundary; it does not tangle vendor modules.
 Only the inherited root bootstrap is presented as literate code in
 [[file:10-bootstrap.org][the bootstrap chapter]].
@@ -94,24 +94,7 @@ allowlist. Do not enable the entire upstream catalogue just to obtain one comman
 
 | Module | Source summary |
 |--------+----------------|
-| [[file:../lambda-library/lambda-setup/lem-setup-citation.el][lem-setup-citation]] | Bibliography and citation workflow |
-| [[file:../lambda-library/lambda-setup/lem-setup-dashboard.el][lem-setup-dashboard]] | Dashboard setup |
-| [[file:../lambda-library/lambda-setup/lem-setup-debug.el][lem-setup-debug]] | Debugging configuration |
-| [[file:../lambda-library/lambda-setup/lem-setup-elfeed.el][lem-setup-elfeed]] | Setup for elfeed |
-| [[file:../lambda-library/lambda-setup/lem-setup-evil.el][lem-setup-evil]] | Evil (vim emulation) setup |
-| [[file:../lambda-library/lambda-setup/lem-setup-frames.el][lem-setup-frames]] | Frame presentation and placement |
-| [[file:../lambda-library/lambda-setup/lem-setup-llm.el][lem-setup-llm]] | LLM (Large Language Model) integration |
-| [[file:../lambda-library/lambda-setup/lem-setup-lsp.el][lem-setup-lsp]] | LSP and modern programming configuration |
-| [[file:../lambda-library/lambda-setup/lem-setup-macos.el][lem-setup-macos]] | macOS-specific integration |
-| [[file:../lambda-library/lambda-setup/lem-setup-modeline.el][lem-setup-modeline]] | Alternative framework modeline |
-| [[file:../lambda-library/lambda-setup/lem-setup-notes.el][lem-setup-notes]] | packages for notes |
-| [[file:../lambda-library/lambda-setup/lem-setup-org-extensions.el][lem-setup-org-extensions]] | org extensions |
-| [[file:../lambda-library/lambda-setup/lem-setup-skeleton.el][lem-setup-skeleton]] | Setup file for skeletons |
-| [[file:../lambda-library/lambda-setup/lem-setup-splash.el][lem-setup-splash]] | An alternative splash screen |
-| [[file:../lambda-library/lambda-setup/lem-setup-tty-clipboard.el][lem-setup-tty-clipboard]] | TTY clipboard via OSC52 |
-| [[file:../lambda-library/lambda-setup/lem-setup-workspaces.el][lem-setup-workspaces]] | Alternative workspace support |
-| [[file:../lambda-library/lambda-setup/lem-setup-writing.el][lem-setup-writing]] | Writing workflow |
 
 * Updating the snapshot
 
-Follow [[file:../docs/UPSTREAM.md][the upstream update procedure]]. Update the bootstrap Org chapter when importing root-file changes, retain original hashes and attribution, and keep the local settings patch explicit. Run the tangle check, isolated startup test and ordinary graphical startup before deployment.
+The vendor modules are being extracted into user chapters (see ARCHITECTURE.md). Update the bootstrap Org chapter when importing root-file changes, retain original hashes and attribution, and keep the local settings patch explicit. Run the tangle check, isolated startup test and ordinary graphical startup before deployment.

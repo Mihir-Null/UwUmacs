@@ -36,7 +36,7 @@ snapshot remains ordinary vendor source, documented in
 ## Install and deploy
 
 This is a complete Emacs configuration repository. Lambda startup and framework
-files are included at the revision recorded in `docs/LAMBDA-UPSTREAM.json`.
+files are included at Lambda revision `6f12527d82184f82a6cb0ca95301bbd6e0cc19a4` (see `ARCHITECTURE.md`).
 A separate Lambda checkout or submodule is not required.
 
 ```sh
@@ -330,7 +330,7 @@ M-x describe-keymap
 M-x find-function
 ```
 
-See `docs/READING-ORDER.md` for a guided source-reading sequence.
+See `literate/index.org` for a guided reading sequence and `ARCHITECTURE.md` for the design.
 
 ## Upstream / provenance
 
