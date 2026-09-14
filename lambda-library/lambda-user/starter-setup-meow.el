@@ -92,18 +92,10 @@
   (setopt meow-use-dynamic-face-color nil)
   (meow-thing-register 'angle '(regexp "<" ">") '(regexp "<" ">"))
   (add-to-list 'meow-char-thing-table '(?a . angle))
-  (dolist (entry '((magit-status-mode . normal)
-                   (magit-log-mode . normal)
-                   (eshell-mode . insert)
+  (dolist (entry '((eshell-mode . insert)
                    (shell-mode . insert)
                    (term-mode . insert)))
     (add-to-list 'meow-mode-state-list entry))
-  (with-eval-after-load 'magit
-    (add-to-list 'meow-grab-fill-commands 'magit-discard)
-    (add-hook 'magit-mode-hook
-              (lambda ()
-                (local-unset-key (kbd "j"))
-                (local-unset-key (kbd "k")))))
   (with-eval-after-load 'org
     ;; Treat @ as part of symbols/words during Meow movement in Org.
     (modify-syntax-entry ?@ "_" org-mode-syntax-table))
@@ -123,7 +115,7 @@
 (keymap-set uwumacs-leader-map "]" #'lem-next-user-buffer)
 (keymap-set uwumacs-leader-map "{" #'tab-bar-switch-to-prev-tab)
 (keymap-set uwumacs-leader-map "}" #'tab-bar-switch-to-next-tab)
-(keymap-set uwumacs-leader-map "TAB" #'lem-tab-bar-select-tab-dwim)
+(keymap-set uwumacs-leader-map "TAB" #'uwumacs-tab-dwim)
 (with-eval-after-load 'lem-setup-keybindings
   (define-key lem+leader-map (kbd "m") nil)
   (set-keymap-parent uwumacs-leader-map lem+leader-map)

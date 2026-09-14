@@ -104,7 +104,7 @@ Special buffers such as the dashboard keep their own shortcuts in motion state.
 | C-x 1     | Keep only this window      | delete-other-windows             |
 | SPC b t   | New workspace tab          | tab-bar-new-tab                 |
 | SPC { / } | Previous / next tab        | tab-bar-switch-to-prev/next-tab  |
-| SPC TAB   | Select a workspace tab     | lem-tab-bar-select-tab-dwim      |
+| SPC TAB   | Select a workspace tab     | uwumacs-tab-dwim                 |
 
 =SPC w= shows window commands; =SPC W= shows workspace commands.
 Frames are OS windows managed by your desktop. A window is an internal pane,

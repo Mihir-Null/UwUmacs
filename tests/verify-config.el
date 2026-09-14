@@ -51,7 +51,7 @@
       (run-hooks 'emacs-startup-hook)
       (require 'cus-edit)
       (dots-test-check (= dots-test-private-loads 1) "private.el must load once")
-      (dots-test-check (equal lem-project-dir
+      (dots-test-check (equal starter-project-directory
                               (expand-file-name "test-projects/" user-emacs-directory))
                        "Project override was overwritten")
       (dots-test-check (and (boundp 'dots-test-custom-loaded) dots-test-custom-loaded)
@@ -92,6 +92,7 @@
                        "Cheat-sheet leader binding was overwritten")
       (dots-test-check (eq (lookup-key uwumacs-leader-map (kbd "h")) #'dashboard-open)
                        "Home leader binding was overwritten")
+      (require 'bookmark) (require 'recentf) (require 'project)
       (save-window-excursion
         (let ((recentf-list (list lem-config-file))
               (project--list nil) (bookmark-alist nil))

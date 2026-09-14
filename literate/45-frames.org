@@ -25,26 +25,14 @@ commands that would pop up an auxiliary buffer can create a separate frame.
 
 #+end_src
 
-* Adapt Lambda's explicit Magit split
+* Magit gets a frame
 
-Lambda selects its own display function when Magit is first loaded. Advise that
-function, rather than racing the deferred assignment. Reuse a frame already
-showing the buffer; otherwise create a frame. Disabling frames-only-mode, or
-using a terminal frame, restores Lambda's original display behavior. Modern
-Magit already closes newly created frames through =quit-window=. Exclude the
-package's legacy Magit overrides: they can delete terminal frames and unbind
-Magit variables when disabling the mode after Magit was loaded lazily.
+[[file:66-vc.org][The version-control chapter]] sets Magit's display function: a frame while
+this mode is on, the traditional split otherwise. Modern Magit closes frames
+it created through =quit-window=. The package's own legacy Magit overrides are
+excluded below: they can delete terminal frames and unbind Magit variables
+when the mode is disabled after Magit loaded lazily.
 
-#+begin_src emacs-lisp
-(defun starter-frames-display-magit (original buffer)
-  "Display Magit BUFFER in an OS frame, or use ORIGINAL outside frame mode."
-  (if (and (bound-and-true-p frames-only-mode) (display-graphic-p))
-      (display-buffer buffer
-                      '((display-buffer-reuse-window display-buffer-pop-up-frame)
-                        (reusable-frames . t)))
-    (funcall original buffer)))
-
-#+end_src
 
 * Enable frames and preserve completion panels
 
@@ -81,8 +69,6 @@ mode map, so =M-x frames-only-mode= restores the original keys when disabled.
               [remap lem-split-window-below-and-focus] #'make-frame-command)
   (define-key frames-only-mode-mode-map
               [remap lem-split-window-right-and-focus] #'make-frame-command)
-  (advice-add 'lem-display-magit-in-other-window
-              :around #'starter-frames-display-magit)
   ;; Re-evaluating this file must not overwrite the mode's saved defaults.
   (unless frames-only-mode
     (frames-only-mode 1)))

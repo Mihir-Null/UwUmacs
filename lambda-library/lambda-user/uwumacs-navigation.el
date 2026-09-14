@@ -1,0 +1,123 @@
+;;; uwumacs-navigation.el --- Projects, places, search and workspaces -*- lexical-binding: t; -*-
+;; Generated from literate/68-navigation.org; edit the Org source, then tangle.
+
+;; Distilled from Lambda-Emacs by Colin McLear (GPL-3.0-or-later).
+
+;;; Code:
+
+(require 'uwumacs-defaults)
+(setopt save-place-file (expand-file-name "saved-places" uwumacs-cache-dir)
+        save-place-forget-unreadable-files nil)
+(save-place-mode 1)
+
+(setopt recentf-save-file (expand-file-name "recentf" uwumacs-cache-dir)
+        recentf-max-saved-items 500
+        recentf-max-menu-items 10)
+(recentf-mode 1)
+
+(setopt bookmark-default-file (expand-file-name "bookmarks" uwumacs-cache-dir))
+
+(use-package goto-last-change
+  :ensure t
+  :bind (("C-\"" . goto-last-change)))
+
+(dolist (hook '(compilation-mode-hook eshell-mode-hook shell-mode-hook text-mode-hook))
+  (add-hook hook #'goto-address-mode))
+(add-hook 'prog-mode-hook #'goto-address-prog-mode)
+
+(defun uwumacs-jump-in-buffer ()
+  "Jump to a heading or definition in this buffer with completion."
+  (interactive)
+  (if (derived-mode-p 'org-mode)
+      (call-interactively #'consult-org-heading)
+    (call-interactively #'consult-outline)))
+(defun uwumacs-project-magit ()
+  "Open Magit status for the current project."
+  (interactive)
+  (magit-status))
+
+(defun uwumacs-projects-directory ()
+  "Open the directory where projects live."
+  (interactive)
+  (dired starter-project-directory))
+
+(use-package project
+  :ensure nil
+  :bind (:map project-prefix-map
+         ("G" . uwumacs-project-magit)
+         ("t" . uwumacs-projects-directory)
+         ("R" . project-remember-projects-under))
+  :custom
+  (project-list-file (expand-file-name "projects" uwumacs-cache-dir))
+  (project-switch-commands '((project-find-file "Find file")
+                             (project-find-regexp "Find regexp")
+                             (project-find-dir "Find directory")
+                             (project-vc-dir "VC-Dir")
+                             (uwumacs-project-magit "Magit status")))
+  (project-vc-extra-root-markers '(".dir-locals.el" ".project.el" "package.json" "requirements.txt" "autogen.sh"))
+  :config
+  (when (executable-find "rg")
+    (setopt xref-search-program 'ripgrep))
+  (project-forget-zombie-projects))
+(use-package deadgrep :ensure t :commands deadgrep)
+(use-package rg :ensure t :commands rg)
+(use-package visual-regexp
+  :ensure t
+  :commands (vr/query-replace vr/replace))
+(use-package visual-regexp-steroids
+  :ensure t
+  :after visual-regexp)
+(setopt tab-bar-tab-hints t
+        tab-bar-new-tab-choice "*scratch*"
+        tab-bar-close-tab-select 'recent
+        tab-bar-new-tab-to 'rightmost
+        tab-bar-close-last-tab-choice 'tab-bar-mode-disable
+        tab-bar-new-button-show nil
+        tab-bar-close-button-show nil
+        tab-bar-auto-width nil)
+
+(defun uwumacs-tab-dwim ()
+  "Create a tab if there is one, switch if there are two, else choose one."
+  (interactive)
+  (let ((tabs (mapcar (lambda (tab) (alist-get 'name tab)) (tab-bar--tabs-recent))))
+    (cond ((null tabs) (tab-new))
+          ((= (length tabs) 1) (tab-next))
+          (t (tab-bar-switch-to-tab (completing-read "Select tab: " tabs nil t))))))
+
+(use-package tabspaces
+  :ensure t
+  :hook (emacs-startup . tabspaces-mode)
+  :bind (:map project-prefix-map
+         ("p" . tabspaces-open-or-create-project-and-workspace))
+  :custom
+  (tabspaces-use-filtered-buffers-as-default t)
+  (tabspaces-default-tab "Home")
+  :config
+  (with-eval-after-load 'consult
+    (defvar uwumacs-consult-source-workspace
+      (list :name "Workspace Buffers"
+            :narrow ?w
+            :history 'buffer-name-history
+            :category 'buffer
+            :state #'consult--buffer-state
+            :default t
+            :items (lambda () (consult--buffer-query
+                               :predicate #'tabspaces--local-buffer-p
+                               :sort 'visibility
+                               :as #'buffer-name)))
+      "Consult source listing only this workspace's buffers.")
+    (defun uwumacs--consult-tabspaces ()
+      "Show workspace buffers first while tabspaces is on."
+      (if tabspaces-mode
+          (progn
+            (plist-put consult-source-buffer :hidden t)
+            (plist-put consult-source-buffer :default nil)
+            (add-to-list 'consult-buffer-sources 'uwumacs-consult-source-workspace))
+        (plist-put consult-source-buffer :hidden nil)
+        (plist-put consult-source-buffer :default t)
+        (setq consult-buffer-sources (remove 'uwumacs-consult-source-workspace consult-buffer-sources))))
+    (add-hook 'tabspaces-mode-hook #'uwumacs--consult-tabspaces)
+    (uwumacs--consult-tabspaces)))
+
+(provide 'uwumacs-navigation)
+;;; uwumacs-navigation.el ends here

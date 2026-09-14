@@ -8,7 +8,8 @@
 
 ;;; Code:
 
-(require 'meow)
+(declare-function meow-normal-define-key "meow-helpers" (&rest keybinds))
+(declare-function meow-motion-define-key "meow-helpers" (&rest keybinds))
 
 (defgroup uwumacs nil
   "UwUmacs: a literal, discoverable leader for Meow."
@@ -83,6 +84,7 @@ Calling this again for MODE replaces its map."
 (defun uwumacs-leader-enable ()
   "Bind the leader in Meow's Normal and Motion states and start localleaders.
 Safe to call more than once."
+  (require 'meow)
   (meow-normal-define-key (cons uwumacs-leader-key uwumacs-leader-map))
   (meow-motion-define-key (cons uwumacs-leader-key uwumacs-leader-map))
   (when uwumacs-keypad-key
