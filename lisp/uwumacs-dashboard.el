@@ -12,6 +12,15 @@
   "Open the local keybindings and commands cheat sheet."
   (interactive)
   (find-file (expand-file-name "keybindings.org" uwumacs-lisp-dir)))
+(defun uwumacs-dashboard-open-tutor (&rest _)
+  "Start Meow's interactive tutorial."
+  (interactive)
+  (call-interactively #'meow-tutor))
+
+(defun uwumacs-dashboard-open-keys-chapter (&rest _)
+  "Open the keys chapter: the whole SPC tree, group by group."
+  (interactive)
+  (find-file (expand-file-name "literate/42-keys.org" user-emacs-directory)))
 (defun uwumacs-dashboard-open-file (&rest _)
   "Prompt for a file from a dashboard button."
   (interactive)
@@ -75,6 +84,22 @@ Exclude trailing padding and compensate for leading indentation."
     (with-selected-window window
       (with-current-buffer dashboard-buffer-name
         (uwumacs-dashboard-center-lines)))))
+(defvar uwumacs-dashboard-key-guide
+  '(("SPC SPC" "run a command by name" "SPC h ?" "the cheat sheet")
+    ("SPC f f" "open a file"           "SPC h t" "Meow's tutorial")
+    ("SPC m"   "menu for this mode"    "SPC C c" "the reading guide"))
+  "Rows of (KEY WHAT KEY WHAT) shown at the bottom of the home page.")
+
+(defun uwumacs-dashboard-insert-key-guide ()
+  "Insert the short guide to the first keys."
+  (insert "\n")
+  (dolist (row uwumacs-dashboard-key-guide)
+    (pcase-let ((`(,left-key ,left-what ,right-key ,right-what) row))
+      (insert (propertize (format "%-8s" left-key) 'face 'dashboard-navigator)
+              (propertize (format "%-24s" left-what) 'face 'font-lock-comment-face)
+              (propertize (format "%-8s" right-key) 'face 'dashboard-navigator)
+              (propertize right-what 'face 'font-lock-comment-face)
+              "\n"))))
 (use-package dashboard
   :ensure t
   :demand t
@@ -82,8 +107,14 @@ Exclude trailing padding and compensate for leading indentation."
   (setq dashboard-buffer-name "*home*"
         dashboard-startup-banner 'ascii
         dashboard-banner-ascii
-        "╭──────────────────────────╮\n│            λ             │\n│       EMACS · DOTS       │\n╰──────────────────────────╯"
-        dashboard-banner-logo-title "selection first · systems visible"
+        (mapconcat #'identity
+                   '("╭────────────────────────────╮"
+                     "│                            │"
+                     "│     U w U m a c s   :3     │"
+                     "│                            │"
+                     "╰────────────────────────────╯")
+                   "\n")
+        dashboard-banner-logo-title "select · extend · act"
         dashboard-center-content t
         dashboard-vertically-center-content nil
         dashboard-navigation-cycle t
@@ -113,6 +144,7 @@ Exclude trailing padding and compensate for leading indentation."
                                     dashboard-insert-newline
                                     dashboard-insert-init-info
                                     dashboard-insert-items
+                                    uwumacs-dashboard-insert-key-guide
                                     uwumacs-dashboard-center-lines)
         dashboard-init-info
         (lambda ()
@@ -123,12 +155,17 @@ Exclude trailing padding and compensate for leading indentation."
         '((("+" "File" "Open a file" uwumacs-dashboard-open-file)
            ("◆" "Project" "Switch project" uwumacs-dashboard-open-project)
            ("↺" "Recent" "Open a recent file" uwumacs-dashboard-open-recent))
-          (("λ" "Config" "Open Emacs-Dots config" uwumacs-dashboard-open-config)
-           ("◎" "Agenda" "Open Org agenda" uwumacs-dashboard-open-agenda)
-           ("*" "Scratch" "Open scratch buffer"
-            (lambda (&rest _) (switch-to-buffer "*scratch*"))))
-          (("?" "Keys & commands" "Open the local cheat sheet (or press ?)"
-            uwumacs-dashboard-open-cheatsheet))))
+          (("◎" "Agenda" "Open the Org agenda" uwumacs-dashboard-open-agenda)
+           ("*" "Scratch" "Open the scratch buffer"
+            (lambda (&rest _) (switch-to-buffer "*scratch*")))
+           ("λ" "Config" "Open the UwUmacs reading guide (SPC C c)"
+            uwumacs-dashboard-open-config))
+          (("?" "Keys & commands" "Open the local cheat sheet (SPC h ?, or ? here)"
+            uwumacs-dashboard-open-cheatsheet)
+           ("»" "Meow tutor" "Learn select, extend, act (SPC h t)"
+            uwumacs-dashboard-open-tutor)
+           ("§" "Leader tree" "Every SPC key, group by group"
+            uwumacs-dashboard-open-keys-chapter))))
   :config
   (set-face-attribute 'dashboard-text-banner nil
                       :inherit 'font-lock-keyword-face

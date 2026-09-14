@@ -11,7 +11,7 @@
 (defun uwumacs-literate--build (write)
   "Run the isolated literate builder; WRITE selects generation over checking."
   (let ((source-dir (expand-file-name "literate/" user-emacs-directory))
-        (output (get-buffer-create "*Emacs-Dots literate build*")))
+        (output (get-buffer-create "*UwUmacs literate build*")))
     (dolist (buffer (buffer-list))
       (when-let* ((file (buffer-file-name buffer)))
         (when (and (file-in-directory-p file source-dir)

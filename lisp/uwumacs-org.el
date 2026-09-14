@@ -31,7 +31,7 @@
         org-cycle-separator-lines 0
         org-fontify-quote-and-verse-blocks t
         org-image-actual-width 500
-        org-startup-folded nil
+        org-startup-folded 'nofold
         org-catch-invisible-edits 'show-and-error
         org-insert-heading-respect-content t
         org-M-RET-may-split-line '((default . nil))
@@ -68,7 +68,7 @@
         org-log-redeadline nil
         org-log-reschedule nil)
 
-(setopt org-agenda-start-with-log-mode t
+(setopt org-agenda-start-with-log-mode '(closed clock)
         org-agenda-tags-column 0
         org-agenda-block-separator " "
         org-agenda-skip-scheduled-if-done t
