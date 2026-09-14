@@ -1,6 +1,6 @@
 <h1 align="center">
   <a href="https://git.io/typing-svg">
-    <img src="https://readme-typing-svg.demolab.com?font=Google+Sans+Code&weight=600&duration=4000&pause=250&color=1ADCD4EB&background=393939B1&center=true&vCenter=true&multiline=true&repeat=false&width=435&height=70&lines=UwUmacs;%3A3" alt=":3 UwUmacs" />
+    <img src="https://readme-typing-svg.demolab.com?font=Patrick+Hand&size=48&duration=2000&pause=1000&color=CB56FF&center=true&vCenter=true&random=true&width=435&lines=UwUmacs;%3A3macs" alt=":3 UwUmacs" />
   </a>
   
 ![Emacs](https://img.shields.io/badge/gnuemacs-%237F5AB6.svg?style=for-the-badge&logo=gnuemacs&logoColor=white)
