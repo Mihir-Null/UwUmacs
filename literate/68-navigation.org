@@ -76,6 +76,24 @@ current buffer in a side window of the same frame and follows point.
 
 #+end_src
 
+* Jump to anything on screen
+
+Avy overlays a letter on every match of what you type; press the letter and
+point is there. =SPC j j= waits for a character or two, =SPC j l= picks a
+line, =SPC j w= a word. It works across every window of the frame.
+
+#+begin_src emacs-lisp
+(use-package avy
+  :ensure t
+  :commands (avy-goto-char-timer avy-goto-line avy-goto-word-1 avy-goto-symbol-1
+             avy-goto-end-of-line avy-goto-char-in-line)
+  :custom
+  (avy-timeout-seconds 0.4)
+  (avy-all-windows t)
+  (avy-style 'at-full))
+
+#+end_src
+
 * Projects
 
 =project.el= is Emacs's project layer. Switching to a project asks what to

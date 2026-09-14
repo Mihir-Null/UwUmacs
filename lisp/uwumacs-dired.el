@@ -83,7 +83,8 @@
   "!" (cons "shell command" #'dired-do-shell-command)
   "z" (cons "compress" #'dired-do-compress-to)
   "(" (cons "toggle details" #'dired-hide-details-mode)
-  "g" (cons "refresh" #'revert-buffer))
+  "g" (cons "refresh" #'revert-buffer)
+  "?" (cons "menu" #'casual-dired-tmenu))
 
 (provide 'uwumacs-dired)
 ;;; uwumacs-dired.el ends here

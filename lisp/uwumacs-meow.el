@@ -91,7 +91,7 @@
   :config
   (setopt meow-use-dynamic-face-color nil)
   (meow-thing-register 'angle '(regexp "<" ">") '(regexp "<" ">"))
-  (add-to-list 'meow-char-thing-table '(?a . angle))
+  (add-to-list 'meow-char-thing-table '(?< . angle))
   (dolist (entry '((eshell-mode . insert)
                    (shell-mode . insert)
                    (term-mode . insert)))
@@ -102,5 +102,10 @@
   (uwumacs-meow-setup)
   (meow-global-mode 1)
   (uwumacs-leader-enable))
+(use-package meow-tree-sitter
+  :ensure t
+  :after meow
+  :config
+  (meow-tree-sitter-register-defaults))
 (provide 'uwumacs-meow)
 ;;; uwumacs-meow.el ends here

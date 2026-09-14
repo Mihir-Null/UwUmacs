@@ -16,7 +16,7 @@ git clone https://github.com/Mihir-Null/Emacs-Dots.git ~/.emacs.d
 emacs --init-directory=/path/to/Emacs-Dots
 ```
 
-The first start installs the Emacs Lisp packages it needs into `var/elpa/`. Language servers, `ripgrep`, Git and fonts are yours to install; the configuration checks for them and degrades quietly. Icons need [Symbols Nerd Font Mono](https://www.nerdfonts.com/); the editing font is Google Sans Code if present, otherwise the platform default.
+The first start installs the Emacs Lisp packages it needs into `var/elpa/`. Emacs verifies GNU ELPA's signed index with `gpg`, so install [Gpg4win](https://gpg4win.org/) on Windows (GnuPG is usually already present on Linux and macOS); without `gpg` the check is skipped. Language servers, `ripgrep`, Git, a spell checker (`hunspell`, on Windows most simply from MSYS2) and fonts are yours to install; the configuration checks for them and degrades quietly. Icons need [Symbols Nerd Font Mono](https://www.nerdfonts.com/); the editing font is Google Sans Code if present, otherwise the platform default.
 
 ## First ten minutes
 
@@ -73,6 +73,10 @@ The verifier copies the configuration to a temporary directory, forbids package 
 ## Windows notes
 
 Windows Emacs resolves `~` to `AppData/Roaming` when `HOME` is unset, so a `.emacs.d` under your profile folder is not found by default. On the machine this was built on, `AppData/Roaming/.emacs.d` is a directory junction to the repository at `C:/Users/walnu/.config/emacs-dots/`; `--init-directory` is the alternative. PowerShell is the default shell; `SPC o m` opens an MSYS2 UCRT64 shell in EAT when MSYS2 is at `C:/msys64/` (set `uwumacs-msys2-root` in `private.el` otherwise). Do not recursively delete a junction or its target.
+
+## Licence
+
+GPL-3.0-or-later. Copyright (C) 2026 Mihir Talati. Portions are distilled from Lambda-Emacs and Colin McLear's configuration, both GPL-3.0-or-later, and each generated module says so in its header.
 
 ## Credits
 

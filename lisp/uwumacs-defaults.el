@@ -112,6 +112,16 @@
 (setopt undo-limit 67108864
         undo-strong-limit 100663296
         undo-outer-limit 1006632960)
+
+(use-package vundo
+  :ensure t
+  :commands vundo
+  :custom
+  (vundo-glyph-alist vundo-unicode-symbols)
+  (vundo-compact-display t)
+  :config
+  (with-eval-after-load 'meow
+    (add-to-list 'meow-mode-state-list '(vundo-mode . motion))))
 (winner-mode 1)
 (windmove-default-keybindings)
 (setopt window-divider-default-right-width 10

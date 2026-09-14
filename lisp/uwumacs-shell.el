@@ -164,7 +164,8 @@ With REGEXP, go to the most recent directory matching it."
   "d" (cons "directory" #'consult-dir)
   "p" (cons "previous prompt" #'eshell-previous-prompt)
   "n" (cons "next prompt" #'eshell-next-prompt)
-  "i" (cons "insert" #'meow-insert))
+  "i" (cons "insert" #'meow-insert)
+  "?" (cons "menu" #'casual-eshell-tmenu))
 
 (provide 'uwumacs-shell)
 ;;; uwumacs-shell.el ends here

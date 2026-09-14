@@ -73,6 +73,32 @@
   "K" (cons "find key" #'find-function-on-key)
   "t" (cons "meow tutor" #'meow-tutor)
   "C" (cons "meow cheatsheet" #'meow-cheatsheet))
+(use-package keycast
+  :ensure t
+  :commands (keycast-header-line-mode keycast-log-mode keycast-tab-bar-mode)
+  :config
+  (dolist (input '(self-insert-command org-self-insert-command))
+    (add-to-list 'keycast-substitute-alist `(,input "." "Typing...")))
+  (dolist (event '(mouse-event-p mouse-movement-p mwheel-scroll))
+    (add-to-list 'keycast-substitute-alist `(,event nil))))
+(use-package casual
+  :ensure t
+  :defer t)
+
+(with-eval-after-load 'calc (keymap-set calc-mode-map "C-o" #'casual-calc-tmenu))
+(with-eval-after-load 'isearch (keymap-set isearch-mode-map "C-o" #'casual-isearch-tmenu))
+(with-eval-after-load 're-builder (keymap-set reb-mode-map "C-o" #'casual-re-builder-tmenu))
+(with-eval-after-load 'bookmark (keymap-set bookmark-bmenu-mode-map "C-o" #'casual-bookmarks-tmenu))
+(with-eval-after-load 'ibuffer (keymap-set ibuffer-mode-map "C-o" #'casual-ibuffer-tmenu))
+(with-eval-after-load 'dired (keymap-set dired-mode-map "C-o" #'casual-dired-tmenu))
+(with-eval-after-load 'info (keymap-set Info-mode-map "C-o" #'casual-info-tmenu))
+(with-eval-after-load 'compile (keymap-set compilation-mode-map "C-o" #'casual-compile-tmenu))
+
+(uwumacs-define-localleader 'ibuffer-mode
+  "?" (cons "menu" #'casual-ibuffer-tmenu))
+
+(uwumacs-define-localleader 'compilation-mode
+  "?" (cons "menu" #'casual-compile-tmenu))
 (uwumacs-define-localleader 'Info-mode
   "n" (cons "next node" #'Info-next)
   "p" (cons "previous node" #'Info-prev)
@@ -84,13 +110,15 @@
   "s" (cons "search" #'Info-search)
   "m" (cons "menu" #'Info-menu)
   "l" (cons "back" #'Info-history-back)
-  "r" (cons "forward" #'Info-history-forward))
+  "r" (cons "forward" #'Info-history-forward)
+  "?" (cons "menu" #'casual-info-tmenu))
 
 (uwumacs-define-localleader 'help-mode
   "l" (cons "back" #'help-go-back)
   "r" (cons "forward" #'help-go-forward)
   "s" (cons "source" #'help-view-source)
-  "i" (cons "info" #'help-goto-info))
+  "i" (cons "info" #'help-goto-info)
+  "?" (cons "menu" #'casual-help-tmenu))
 
 (with-eval-after-load 'helpful
   (uwumacs-define-localleader 'helpful-mode

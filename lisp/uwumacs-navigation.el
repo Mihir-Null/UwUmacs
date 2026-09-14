@@ -43,6 +43,14 @@
   (if (derived-mode-p 'org-mode)
       (call-interactively #'consult-org-heading)
     (call-interactively #'consult-outline)))
+(use-package avy
+  :ensure t
+  :commands (avy-goto-char-timer avy-goto-line avy-goto-word-1 avy-goto-symbol-1
+             avy-goto-end-of-line avy-goto-char-in-line)
+  :custom
+  (avy-timeout-seconds 0.4)
+  (avy-all-windows t)
+  (avy-style 'at-full))
 (defun uwumacs-project-magit ()
   "Open Magit status for the current project."
   (interactive)

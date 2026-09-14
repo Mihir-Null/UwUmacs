@@ -193,13 +193,25 @@ right click opens a context menu.
 
 Undo is unlimited in practice, and Emacs no longer groups several edits into
 one undo step, which made undoing feel unpredictable. Meow's =u= undoes and
-=U= undoes only inside the selection.
+=U= undoes only inside the selection. When you have undone past a fork,
+=SPC b u= draws the undo history as a tree: =f= and =b= move along it, =n=
+and =p= change branch, =RET= keeps the state under point.
 
 #+begin_src emacs-lisp
 (fset 'undo-auto-amalgamate #'ignore)
 (setopt undo-limit 67108864
         undo-strong-limit 100663296
         undo-outer-limit 1006632960)
+
+(use-package vundo
+  :ensure t
+  :commands vundo
+  :custom
+  (vundo-glyph-alist vundo-unicode-symbols)
+  (vundo-compact-display t)
+  :config
+  (with-eval-after-load 'meow
+    (add-to-list 'meow-mode-state-list '(vundo-mode . motion))))
 
 #+end_src
 

@@ -127,6 +127,54 @@ it on =SPC h=.
 
 #+end_src
 
+* See what you press: keycast
+
+While the grammar is new, =SPC t k= shows each key you press and the command
+it ran in the header line; =SPC t K= keeps a log buffer instead. Typing and
+mouse movement are collapsed so the display stays readable.
+
+#+begin_src emacs-lisp
+(use-package keycast
+  :ensure t
+  :commands (keycast-header-line-mode keycast-log-mode keycast-tab-bar-mode)
+  :config
+  (dolist (input '(self-insert-command org-self-insert-command))
+    (add-to-list 'keycast-substitute-alist `(,input "." "Typing...")))
+  (dolist (event '(mouse-event-p mouse-movement-p mwheel-scroll))
+    (add-to-list 'keycast-substitute-alist `(,event nil))))
+
+#+end_src
+
+* Menus for the built-ins: Casual
+
+Casual gives Emacs's own tools (Dired, Info, calc, isearch, bookmarks,
+ibuffer, the agenda, compilation, Eshell, the regexp builder) a menu of
+everything they can do, drawn with Transient. Each menu is on =?= in that
+mode's =SPC m= menu and on =C-o= in the mode's own map, Casual's convention.
+=SPC c m= opens the general editing menu from any buffer.
+
+#+begin_src emacs-lisp
+(use-package casual
+  :ensure t
+  :defer t)
+
+(with-eval-after-load 'calc (keymap-set calc-mode-map "C-o" #'casual-calc-tmenu))
+(with-eval-after-load 'isearch (keymap-set isearch-mode-map "C-o" #'casual-isearch-tmenu))
+(with-eval-after-load 're-builder (keymap-set reb-mode-map "C-o" #'casual-re-builder-tmenu))
+(with-eval-after-load 'bookmark (keymap-set bookmark-bmenu-mode-map "C-o" #'casual-bookmarks-tmenu))
+(with-eval-after-load 'ibuffer (keymap-set ibuffer-mode-map "C-o" #'casual-ibuffer-tmenu))
+(with-eval-after-load 'dired (keymap-set dired-mode-map "C-o" #'casual-dired-tmenu))
+(with-eval-after-load 'info (keymap-set Info-mode-map "C-o" #'casual-info-tmenu))
+(with-eval-after-load 'compile (keymap-set compilation-mode-map "C-o" #'casual-compile-tmenu))
+
+(uwumacs-define-localleader 'ibuffer-mode
+  "?" (cons "menu" #'casual-ibuffer-tmenu))
+
+(uwumacs-define-localleader 'compilation-mode
+  "?" (cons "menu" #'casual-compile-tmenu))
+
+#+end_src
+
 * Meow in help buffers
 
 Help, Helpful and Info buffers open in Motion state: their own keys work,
@@ -146,13 +194,15 @@ move around the manual.
   "s" (cons "search" #'Info-search)
   "m" (cons "menu" #'Info-menu)
   "l" (cons "back" #'Info-history-back)
-  "r" (cons "forward" #'Info-history-forward))
+  "r" (cons "forward" #'Info-history-forward)
+  "?" (cons "menu" #'casual-info-tmenu))
 
 (uwumacs-define-localleader 'help-mode
   "l" (cons "back" #'help-go-back)
   "r" (cons "forward" #'help-go-forward)
   "s" (cons "source" #'help-view-source)
-  "i" (cons "info" #'help-goto-info))
+  "i" (cons "info" #'help-goto-info)
+  "?" (cons "menu" #'casual-help-tmenu))
 
 (with-eval-after-load 'helpful
   (uwumacs-define-localleader 'helpful-mode

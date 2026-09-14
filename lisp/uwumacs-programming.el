@@ -127,7 +127,8 @@
   "c" (cons "byte compile" #'emacs-lisp-byte-compile)
   "l" (cons "package lint" #'package-lint-current-buffer)
   "m" (cons "macroexpand" #'pp-macroexpand-last-sexp)
-  "D" (cons "find definition" #'elisp-def))
+  "D" (cons "find definition" #'elisp-def)
+  "?" (cons "menu" #'casual-elisp-tmenu))
 
 (provide 'uwumacs-programming)
 ;;; uwumacs-programming.el ends here

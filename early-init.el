@@ -21,6 +21,11 @@
 (setopt package-archives '(("gnu" . "https://elpa.gnu.org/packages/")
                            ("nongnu" . "https://elpa.nongnu.org/nongnu/")
                            ("melpa" . "https://melpa.org/packages/")))
+;; GNU ELPA signs its archive index and Emacs verifies it with gpg (Gpg4win
+;; on Windows).  Without a gpg program the check fails and the whole archive
+;; silently disappears, so skip the check rather than lose the archive.
+(unless (executable-find "gpg")
+  (setq package-check-signature nil))
 
 (when (featurep 'native-compile)
   (startup-redirect-eln-cache (expand-file-name "eln-cache/" uwumacs-cache-dir))

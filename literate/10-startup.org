@@ -22,7 +22,9 @@ order. Nothing else is special.
    later can undo it.
 3. Packages are declared where they are used, with =use-package … :ensure t=.
    A fresh clone installs them on first start; an existing =var/elpa= is used
-   as is.
+   as is. GNU ELPA's index is signed, and Emacs verifies it with =gpg=;
+   install [[https://gpg4win.org/][Gpg4win]] on Windows so that check can run. Without =gpg= the check
+   is skipped rather than silently losing the archive.
 
 * early-init.el
 :PROPERTIES:
@@ -59,6 +61,11 @@ frames created without the toolbar rather than with one that is then removed.
 (setopt package-archives '(("gnu" . "https://elpa.gnu.org/packages/")
                            ("nongnu" . "https://elpa.nongnu.org/nongnu/")
                            ("melpa" . "https://melpa.org/packages/")))
+;; GNU ELPA signs its archive index and Emacs verifies it with gpg (Gpg4win
+;; on Windows).  Without a gpg program the check fails and the whole archive
+;; silently disappears, so skip the check rather than lose the archive.
+(unless (executable-find "gpg")
+  (setq package-check-signature nil))
 
 (when (featurep 'native-compile)
   (startup-redirect-eln-cache (expand-file-name "eln-cache/" uwumacs-cache-dir))

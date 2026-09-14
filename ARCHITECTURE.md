@@ -53,6 +53,9 @@ Agent decisions, with the reason:
 - **Tangle with tracked outputs** kept: startup never tangles, a clone works, and `tools/tangle.el` (125 lines) is proportionate.
 - **Frames mean full buffers, not panels.** The user's frames preference covers buffers you read or edit; sidebars, menus, gutters and the minibuffer stay inside each frame. `dired-sidebar` and `imenu-list` are kept as side windows and `diff-hl` is the git gutter (all under `SPC t`).
 - **Dropped for good reasons:** icomplete fallback, `completion-preview`, the vertico-buffer internals override, the hand-rolled Info picker (`consult-info`), the help transient (a keymap shows in which-key), `peep-dired`, `vdiff-magit`, `git-gutter`, `mu4e`/`denote`/`citar` keys (not installed), `svg-tag-mode`, `reveal-mode`, `lambda-themes`, macOS appearance sync, Fuco's Lisp indent override, `multi-compile`, Homebrew and iTerm helpers, Colin's personal Org file openers and export helpers, `desktop`, time stamps, `anaphora`/`csetq`/`deftoggle`.
+- **Added after the first trial (2026-09-14):** `org-modern` and `org-appear` (hidden markers shown at point), `avy` under `SPC j`, `meow-tree-sitter` things (`f` function, `a` class, `t` test, `y` entry, `,` parameter, `/` comment; the angle-bracket thing moved to `<`), `vundo` on `SPC b u`, `keycast` on `SPC t k`/`K`, Casual's menus on `?` in every localleader and `C-o` in the built-ins' own maps, and spell checking wired to `hunspell`/`aspell` on `PATH` or MSYS2's hunspell.
+- **GNU ELPA needs gpg.** Emacs verifies the signed GNU ELPA index with `gpg`; without one the archive silently disappears and its packages look "unavailable". Gpg4win is the documented Windows dependency, and `early-init.el` skips the check when no `gpg` is found rather than lose the archive.
+- **Licence is GPL-3.0-or-later**, matching the sources the code is distilled from; the old MIT file from Colin's tooling is replaced.
 - **Kept from Lambda**, attributed per module header: sane defaults, scrolling and mouse settings, persistent scratch, the completion stack configuration, Helpful/Info setup, Dired extensions, Magit settings, project/tab/workspace setup with workspace-filtered buffers, Org display and agenda defaults, programming aids, Eshell settings and aliases, Tramp, the highlighting packages.
 
 ## 5. Verification
@@ -76,7 +79,6 @@ Not verified here, for the user to check on the real host:
 
 ## 6. Open items
 
-- **LICENSE.** The file is MIT (mclear-tools, 2021) while the module headers say the code is distilled from GPL-3.0-or-later sources. Decide the repository licence before publishing widely.
 - `main` carries the physical-hint adapter (PR #4). This branch removes it; merging makes the literal leader the deployed behaviour.
 - Installed packages that nothing declares any more remain in `var/elpa/` (for example `kind-icon`, `peep-dired`, `svg-tag-mode`, `lambda-themes`, the macOS, mail, notes, citation and LLM packages). Prune with `M-x package-autoremove` when convenient.
 - Beacon state is untouched by the leader (as intended); `SPC` in Beacon is Meow's default.
@@ -105,3 +107,4 @@ All on branch `dev/uwumacs-config-review-dc1bee`, each commit verified with the 
 | `0eea287` | Own 86-line startup replaces Lambda's bootstrap and the composition root |
 | `210f91a` | `lisp/` and `uwumacs-*` names throughout |
 | `cd0127a` | Sidebars restored and `diff-hl` gutter added after the user clarified that frames apply to full buffers, not panels |
+| (next) | Org polish, avy, meow-tree-sitter, vundo, keycast, Casual menus, spelling wiring, gpg dependency, GPL-3.0-or-later licence |

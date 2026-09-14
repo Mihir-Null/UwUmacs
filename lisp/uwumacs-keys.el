@@ -36,6 +36,7 @@
   "M" (cons "global mark ring" #'consult-global-mark)
   "a" (cons "ibuffer" #'ibuffer)
   "x" (cons "scratch" #'scratch-buffer)
+  "u" (cons "undo tree" #'vundo)
   "[" (cons "previous" #'uwumacs-previous-user-buffer)
   "]" (cons "next" #'uwumacs-next-user-buffer))
 
@@ -69,9 +70,19 @@
   "k" (cons "kill ring" #'consult-yank-pop)
   "m" (cons "mark ring" #'consult-mark)
   "t" (cons "todo keywords" #'hl-todo-occur)
+  "p" (cons "spelling" #'consult-flyspell)
   "l" (cons "last completion" #'vertico-repeat))
 (with-eval-after-load 'project
   (keymap-set project-prefix-map "C" #'recompile))
+
+(defvar-keymap uwumacs-jump-map
+  :doc "Jump with on-screen hints."
+  "j" (cons "to character" #'avy-goto-char-timer)
+  "l" (cons "to line" #'avy-goto-line)
+  "w" (cons "to word" #'avy-goto-word-1)
+  "s" (cons "to symbol" #'avy-goto-symbol-1)
+  "e" (cons "to end of line" #'avy-goto-end-of-line)
+  "i" (cons "in this line" #'avy-goto-char-in-line))
 
 (defvar-keymap uwumacs-vc-map
   :doc "Version control."
@@ -133,6 +144,7 @@
   "s" (cons "surround" #'embrace-commander)
   "f" (cons "indent region" #'indent-region)
   "w" (cons "clean whitespace" #'whitespace-cleanup)
+  "m" (cons "editing menu" #'casual-editkit-main-tmenu)
   "p" (cons "complete with" uwumacs-cape-map))
 
 (defvar-keymap uwumacs-eval-map
@@ -224,6 +236,8 @@
   "o" (cons "outline sidebar" #'imenu-list-smart-toggle)
   "g" (cons "git gutter" #'diff-hl-mode)
   "D" (cons "dim other windows" #'dimmer-mode)
+  "k" (cons "show keys (keycast)" #'keycast-header-line-mode)
+  "K" (cons "log keys" #'keycast-log-mode)
   "m" (cons "menu bar" #'menu-bar-mode)
   "p" (cons "structural editing" #'puni-mode)
   "z" (cons "zone out" #'zone))
@@ -297,6 +311,7 @@
 (keymap-set uwumacs-leader-map "b" (cons "buffers" uwumacs-buffer-map))
 (keymap-set uwumacs-leader-map "f" (cons "files" uwumacs-file-map))
 (keymap-set uwumacs-leader-map "s" (cons "search" uwumacs-search-map))
+(keymap-set uwumacs-leader-map "j" (cons "jump" uwumacs-jump-map))
 (keymap-set uwumacs-leader-map "p" (cons "project" project-prefix-map))
 (keymap-set uwumacs-leader-map "v" (cons "version control" uwumacs-vc-map))
 (keymap-set uwumacs-leader-map "w" (cons "windows" uwumacs-window-map))

@@ -222,6 +222,31 @@ their title. Office documents open in their default application.
 
 #+end_src
 
+* Looking the part
+
+=org-modern= draws headings, lists, checkboxes, tags, dates and tables the
+way a document viewer would, in the buffer and in the agenda. Because the
+display chapter hides emphasis markers, =org-appear= reveals them while
+point is inside the marked text, so editing =*bold*= never means guessing
+where the asterisks are.
+
+#+begin_src emacs-lisp
+(use-package org-modern
+  :ensure t
+  :hook ((org-mode . org-modern-mode)
+         (org-agenda-finalize . org-modern-agenda)))
+
+(use-package org-appear
+  :ensure t
+  :hook (org-mode . org-appear-mode)
+  :custom
+  (org-appear-autoemphasis t)
+  (org-appear-autolinks t)
+  (org-appear-autosubmarkers t)
+  (org-appear-autoentities t))
+
+#+end_src
+
 * Meow in Org
 
 Org buffers are text, so they start in Normal state with the full grammar;
@@ -258,7 +283,8 @@ own =C-c= key, which =C-h m= lists.
   "'" (cons "edit source block" #'org-edit-special)
   "w" (cons "wrap in block" #'uwumacs-org-block-wrap)
   "e" (cons "export" #'org-export-dispatch)
-  "i" (cons "insert heading" #'org-insert-heading-respect-content))
+  "i" (cons "insert heading" #'org-insert-heading-respect-content)
+  "?" (cons "menu" #'casual-org-tmenu))
 
 (uwumacs-define-localleader 'org-agenda-mode
   "t" (cons "todo state" #'org-agenda-todo)
@@ -268,7 +294,8 @@ own =C-c= key, which =C-h m= lists.
   "g" (cons "refresh" #'org-agenda-redo)
   "v" (cons "view" #'org-agenda-view-mode-dispatch)
   "f" (cons "filter by tag" #'org-agenda-filter-by-tag)
-  "q" (cons "quit" #'org-agenda-quit))
+  "q" (cons "quit" #'org-agenda-quit)
+  "?" (cons "menu" #'casual-agenda-tmenu))
 
 (provide 'uwumacs-org)
 ;;; uwumacs-org.el ends here

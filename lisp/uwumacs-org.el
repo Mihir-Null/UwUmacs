@@ -152,6 +152,19 @@
             (goto-char start) (insert "#+begin_" type "\n"))
         (insert "#+begin_" type "\n")
         (save-excursion (insert "#+end_" (car (split-string type))))))))
+(use-package org-modern
+  :ensure t
+  :hook ((org-mode . org-modern-mode)
+         (org-agenda-finalize . org-modern-agenda)))
+
+(use-package org-appear
+  :ensure t
+  :hook (org-mode . org-appear-mode)
+  :custom
+  (org-appear-autoemphasis t)
+  (org-appear-autolinks t)
+  (org-appear-autosubmarkers t)
+  (org-appear-autoentities t))
 (with-eval-after-load 'meow
   (add-to-list 'meow-mode-state-list '(org-agenda-mode . motion)))
 (with-eval-after-load 'org
@@ -179,7 +192,8 @@
   "'" (cons "edit source block" #'org-edit-special)
   "w" (cons "wrap in block" #'uwumacs-org-block-wrap)
   "e" (cons "export" #'org-export-dispatch)
-  "i" (cons "insert heading" #'org-insert-heading-respect-content))
+  "i" (cons "insert heading" #'org-insert-heading-respect-content)
+  "?" (cons "menu" #'casual-org-tmenu))
 
 (uwumacs-define-localleader 'org-agenda-mode
   "t" (cons "todo state" #'org-agenda-todo)
@@ -189,7 +203,8 @@
   "g" (cons "refresh" #'org-agenda-redo)
   "v" (cons "view" #'org-agenda-view-mode-dispatch)
   "f" (cons "filter by tag" #'org-agenda-filter-by-tag)
-  "q" (cons "quit" #'org-agenda-quit))
+  "q" (cons "quit" #'org-agenda-quit)
+  "?" (cons "menu" #'casual-agenda-tmenu))
 
 (provide 'uwumacs-org)
 ;;; uwumacs-org.el ends here

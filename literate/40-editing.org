@@ -133,7 +133,7 @@ pick one of the numbered expansion hints Meow draws after a movement.
 * Things, starting states and package shims
 
 A *thing* is what =,= and =.= select: a word, a pair of brackets, a string.
-Angle brackets are added to the built-in set. =meow-mode-state-list= decides
+Angle brackets are added to the built-in set on =<=. =meow-mode-state-list= decides
 the state a buffer starts in; terminals start in Insert because their keys
 belong to the shell. Each package chapter adds its own entries next to the
 package (Dired and Magit start in Motion, for example). Once everything is
@@ -149,7 +149,7 @@ set, Meow is enabled globally and the leader is attached.
   :config
   (setopt meow-use-dynamic-face-color nil)
   (meow-thing-register 'angle '(regexp "<" ">") '(regexp "<" ">"))
-  (add-to-list 'meow-char-thing-table '(?a . angle))
+  (add-to-list 'meow-char-thing-table '(?< . angle))
   (dolist (entry '((eshell-mode . insert)
                    (shell-mode . insert)
                    (term-mode . insert)))
@@ -160,6 +160,23 @@ set, Meow is enabled globally and the leader is attached.
   (uwumacs-meow-setup)
   (meow-global-mode 1)
   (uwumacs-leader-enable))
+
+#+end_src
+
+* Things from the syntax tree
+
+In a Tree-sitter mode (see [[file:74-languages.org][the languages chapter]]) the buffer has a real
+parse tree, and =meow-tree-sitter= turns its nodes into Meow things: =, f=
+selects inside the current function and =. f= the whole function; =a= is a
+class, =t= a test, =y= an entry, =,= a parameter, =/= a comment. In modes
+without a grammar these keys simply report that there is no parser.
+
+#+begin_src emacs-lisp
+(use-package meow-tree-sitter
+  :ensure t
+  :after meow
+  :config
+  (meow-tree-sitter-register-defaults))
 
 #+end_src
 

@@ -393,6 +393,36 @@ The core require/provide protocol records that this file loaded. Later requires 
 
 #+name: uwumacs-terminal-13-1
 #+begin_src emacs-lisp
+;;;; Spelling
+;; Use whichever checker exists: hunspell or aspell on PATH, or MSYS2's
+;; hunspell.  Nothing is enabled when none is installed.
+(defun uwumacs-spell-checker ()
+  "Return the spell-checker program to use, or nil."
+  (or (executable-find "hunspell")
+      (executable-find "aspell")
+      (let ((msys2 (expand-file-name "ucrt64/bin/hunspell.exe" uwumacs-msys2-root)))
+        (and (eq system-type 'windows-nt) (file-executable-p msys2) msys2))))
+
+(with-eval-after-load 'ispell
+  (when-let* ((program (uwumacs-spell-checker)))
+    (setopt ispell-program-name program)
+    (when (string-suffix-p "hunspell.exe" program)
+      (setenv "DICPATH" (expand-file-name "ucrt64/share/hunspell" uwumacs-msys2-root))
+      (setopt ispell-dictionary "en_US"))))
+
+(when (uwumacs-spell-checker)
+  (add-hook 'text-mode-hook #'flyspell-mode)
+  (add-hook 'prog-mode-hook #'flyspell-prog-mode))
+
+(use-package flyspell-correct
+  :ensure t
+  :after flyspell
+  :bind (:map flyspell-mode-map ("C-;" . flyspell-correct-wrapper)))
+
+(use-package consult-flyspell
+  :ensure t
+  :commands consult-flyspell)
+
 (provide 'uwumacs-terminal)
 ;;; uwumacs-terminal.el ends here
 #+end_src
