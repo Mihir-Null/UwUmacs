@@ -6,6 +6,7 @@
 ;;; Code:
 
 (require 'uwumacs-leader)
+(require 'uwumacs-ui)
 (setopt dired-kill-when-opening-new-dired-buffer t
         dired-recursive-copies 'always
         dired-recursive-deletes 'always
@@ -49,6 +50,17 @@
   :after dired
   :config
   (dired-async-mode 1))
+(use-package dired-sidebar
+  :ensure t
+  :commands (dired-sidebar-toggle-sidebar dired-sidebar-show-sidebar)
+  :custom
+  (dired-sidebar-width 36)
+  (dired-sidebar-resize-on-open t)
+  (dired-sidebar-should-follow-file t)
+  (dired-sidebar-theme (if (uwumacs-icons-available-p) 'nerd-icons 'ascii))
+  :config
+  (with-eval-after-load 'meow
+    (add-to-list 'meow-mode-state-list '(dired-sidebar-mode . motion))))
 (with-eval-after-load 'meow
   (add-to-list 'meow-mode-state-list '(dired-mode . motion)))
 

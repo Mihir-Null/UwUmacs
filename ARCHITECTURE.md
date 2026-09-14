@@ -51,7 +51,8 @@ Agent decisions, with the reason:
 - **UI loads first.** Theme and fonts before the first frame is drawn; the old two-theme startup (Lambda's dark fallback, then Sonokai) is gone. Theme-dependent faces hang on Emacs 29's `enable-theme-functions`.
 - **Packages declared where used** with `:ensure t`; `init.el` refreshes archives once when none are cached. `embark-consult`, previously assumed to install transitively and absent, is now declared and installed. `kind-icon` dropped so `nerd-icons-corfu` is the one Corfu formatter.
 - **Tangle with tracked outputs** kept: startup never tangles, a clone works, and `tools/tangle.el` (125 lines) is proportionate.
-- **Dropped for good reasons:** icomplete fallback, `completion-preview`, the vertico-buffer internals override, the hand-rolled Info picker (`consult-info`), the help transient (a keymap shows in which-key), `peep-dired`, `dired-sidebar`, `imenu-list` (window-oriented), `diff-hl`, `vdiff-magit`, `git-gutter`, `mu4e`/`denote`/`citar` keys (not installed), `svg-tag-mode`, `reveal-mode`, `lambda-themes`, macOS appearance sync, Fuco's Lisp indent override, `multi-compile`, Homebrew and iTerm helpers, Colin's personal Org file openers and export helpers, `desktop`, time stamps, `anaphora`/`csetq`/`deftoggle`.
+- **Frames mean full buffers, not panels.** The user's frames preference covers buffers you read or edit; sidebars, menus, gutters and the minibuffer stay inside each frame. `dired-sidebar` and `imenu-list` are kept as side windows and `diff-hl` is the git gutter (all under `SPC t`).
+- **Dropped for good reasons:** icomplete fallback, `completion-preview`, the vertico-buffer internals override, the hand-rolled Info picker (`consult-info`), the help transient (a keymap shows in which-key), `peep-dired`, `vdiff-magit`, `git-gutter`, `mu4e`/`denote`/`citar` keys (not installed), `svg-tag-mode`, `reveal-mode`, `lambda-themes`, macOS appearance sync, Fuco's Lisp indent override, `multi-compile`, Homebrew and iTerm helpers, Colin's personal Org file openers and export helpers, `desktop`, time stamps, `anaphora`/`csetq`/`deftoggle`.
 - **Kept from Lambda**, attributed per module header: sane defaults, scrolling and mouse settings, persistent scratch, the completion stack configuration, Helpful/Info setup, Dired extensions, Magit settings, project/tab/workspace setup with workspace-filtered buffers, Org display and agenda defaults, programming aids, Eshell settings and aliases, Tramp, the highlighting packages.
 
 ## 5. Verification
@@ -77,7 +78,7 @@ Not verified here, for the user to check on the real host:
 
 - **LICENSE.** The file is MIT (mclear-tools, 2021) while the module headers say the code is distilled from GPL-3.0-or-later sources. Decide the repository licence before publishing widely.
 - `main` carries the physical-hint adapter (PR #4). This branch removes it; merging makes the literal leader the deployed behaviour.
-- Installed packages that nothing declares any more remain in `var/elpa/` (for example `kind-icon`, `peep-dired`, `dired-sidebar`, `imenu-list`, `svg-tag-mode`, `lambda-themes`, the macOS, mail, notes, citation and LLM packages). Prune with `M-x package-autoremove` when convenient.
+- Installed packages that nothing declares any more remain in `var/elpa/` (for example `kind-icon`, `peep-dired`, `svg-tag-mode`, `lambda-themes`, the macOS, mail, notes, citation and LLM packages). Prune with `M-x package-autoremove` when convenient.
 - Beacon state is untouched by the leader (as intended); `SPC` in Beacon is Meow's default.
 - `uwumacs-leader-alt-key` is fixed at `C-c C-SPC` in the keys chapter; make it an option if it ever needs to change.
 
@@ -103,3 +104,4 @@ All on branch `dev/uwumacs-config-review-dc1bee`, each commit verified with the 
 | `8785b63` | Keys chapter owns the whole tree; Lambda's last modules gone |
 | `0eea287` | Own 86-line startup replaces Lambda's bootstrap and the composition root |
 | `210f91a` | `lisp/` and `uwumacs-*` names throughout |
+| (next) | Sidebars restored and `diff-hl` gutter added after the user clarified that frames apply to full buffers, not panels |

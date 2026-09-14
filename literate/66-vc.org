@@ -45,8 +45,8 @@ word, and commit messages get wrapped at eighty columns.
 
 * Magit
 
-Magit buffers open in their own frame when [[file:45-frames.org][frames-only mode]] is on, and
-in the other window otherwise. The status buffer refreshes when you save a
+Magit buffers are full buffers, so they open in their own frame when
+[[file:45-frames.org][frames-only mode]] is on, and in the other window otherwise. The status buffer refreshes when you save a
 file, and stashes and untracked files start folded.
 
 #+begin_src emacs-lisp
@@ -75,6 +75,28 @@ file, and stashes and untracked files start folded.
     (setq fill-column 80)
     (setq-local comment-auto-fill-only-comments nil))
   (add-hook 'git-commit-setup-hook #'uwumacs--git-commit-fill))
+
+#+end_src
+
+* Changes in the gutter
+
+=diff-hl= marks added, changed and deleted lines in the left fringe as you
+edit, refreshes after Magit operations, and uses the margin instead when
+there is no fringe. =SPC t g= toggles it in a buffer.
+
+#+begin_src emacs-lisp
+(use-package diff-hl
+  :ensure t
+  :hook ((prog-mode text-mode) . diff-hl-mode)
+  :custom
+  (diff-hl-side 'left)
+  (diff-hl-update-async t)
+  :config
+  (diff-hl-flydiff-mode 1)
+  (unless (display-graphic-p) (diff-hl-margin-mode 1))
+  (with-eval-after-load 'magit
+    (add-hook 'magit-pre-refresh-hook #'diff-hl-magit-pre-refresh)
+    (add-hook 'magit-post-refresh-hook #'diff-hl-magit-post-refresh)))
 
 #+end_src
 

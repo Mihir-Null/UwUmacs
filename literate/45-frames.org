@@ -73,6 +73,16 @@ disabled. The leader's =SPC w h= and =SPC w v= remain real in-frame splits.
 ;;; uwumacs-frames.el ends here
 #+end_src
 
+* What stays inside the frame
+
+Only *full buffers* go to frames. Panels that ask for a side window keep it:
+the file-tree and outline sidebars (=SPC t d=, =SPC t o=), Vertico's
+candidate list, which-key, Transient menus and Corfu. The mode line, the
+fringe gutters and the minibuffer are per frame anyway. The rule of thumb
+when adding a package: a buffer you read or edit gets a frame; a panel that
+serves the buffer next to it uses =display-buffer-in-side-window=, which this
+mode leaves alone.
+
 * Everyday commands and recovery
 
 - =C-x 2= / =C-x 3= and =SPC w n= create native frames; =SPC w h= / =SPC w v= split inside one.

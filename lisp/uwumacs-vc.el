@@ -46,6 +46,18 @@
     (setq fill-column 80)
     (setq-local comment-auto-fill-only-comments nil))
   (add-hook 'git-commit-setup-hook #'uwumacs--git-commit-fill))
+(use-package diff-hl
+  :ensure t
+  :hook ((prog-mode text-mode) . diff-hl-mode)
+  :custom
+  (diff-hl-side 'left)
+  (diff-hl-update-async t)
+  :config
+  (diff-hl-flydiff-mode 1)
+  (unless (display-graphic-p) (diff-hl-margin-mode 1))
+  (with-eval-after-load 'magit
+    (add-hook 'magit-pre-refresh-hook #'diff-hl-magit-pre-refresh)
+    (add-hook 'magit-post-refresh-hook #'diff-hl-magit-post-refresh)))
 (with-eval-after-load 'meow
   (add-to-list 'meow-mode-state-list '(magit-mode . motion))
   (add-hook 'git-commit-setup-hook #'meow-insert-mode))

@@ -32,6 +32,9 @@ under =SPC W=. Searches use ripgrep when it is installed.
 
 * Remembering places and files
 
+The outline sidebar (=SPC t o=) lists the headings or definitions of the
+current buffer in a side window of the same frame and follows point.
+
 #+begin_src emacs-lisp
 (setopt save-place-file (expand-file-name "saved-places" uwumacs-cache-dir)
         save-place-forget-unreadable-files nil)
@@ -51,6 +54,18 @@ under =SPC W=. Searches use ripgrep when it is installed.
 (dolist (hook '(compilation-mode-hook eshell-mode-hook shell-mode-hook text-mode-hook))
   (add-hook hook #'goto-address-mode))
 (add-hook 'prog-mode-hook #'goto-address-prog-mode)
+
+(use-package imenu-list
+  :ensure t
+  :commands (imenu-list-smart-toggle imenu-list-minor-mode)
+  :custom
+  (imenu-list-position 'right)
+  (imenu-list-auto-resize t)
+  (imenu-list-focus-after-activation t)
+  :config
+  ;; Register its side-window placement so frames-only mode never gives it a frame.
+  (when (fboundp 'imenu-list-install-display-buffer)
+    (imenu-list-install-display-buffer)))
 
 (defun uwumacs-jump-in-buffer ()
   "Jump to a heading or definition in this buffer with completion."
