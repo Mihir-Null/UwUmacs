@@ -51,7 +51,7 @@
         eshell-destroy-buffer-when-process-dies t
         eshell-banner-message ""
         eshell-highlight-prompt t
-        eshell-prompt-regexp "^Î» ")
+        eshell-prompt-regexp "^λ ")
 
 (with-eval-after-load 'em-term
   (dolist (command '("htop" "top" "less" "more" "vim" "nano" "ssh" "tail"))
@@ -65,13 +65,13 @@
     (car (vc-git-branches))))
 
 (defun uwumacs-eshell-prompt ()
-  "A two-line prompt: directory and branch, then Î»."
+  "A two-line prompt: directory and branch, then λ."
   (let ((branch (uwumacs--eshell-git-branch)))
     (concat "\n"
             (propertize (abbreviate-file-name (eshell/pwd)) 'face 'font-lock-constant-face)
             (when branch (propertize (format " (%s)" branch) 'face 'font-lock-comment-face))
             "\n"
-            (propertize "Î»" 'face 'font-lock-keyword-face)
+            (propertize "λ" 'face 'font-lock-keyword-face)
             (propertize " " 'face 'default))))
 (setopt eshell-prompt-function #'uwumacs-eshell-prompt)
 (defvar uwumacs-eshell-aliases
@@ -125,7 +125,7 @@ With REGEXP, go to the most recent directory matching it."
 (defun uwumacs--eshell-setup ()
   "Per-buffer Eshell settings."
   (keymap-local-set "C-l" #'uwumacs-eshell-clear)
-  (setq-local imenu-generic-expression '(("Prompt" "^Î» \\(.*\\)" 1)))
+  (setq-local imenu-generic-expression '(("Prompt" "^λ \\(.*\\)" 1)))
   (hl-line-mode -1)
   (visual-line-mode 1))
 (add-hook 'eshell-mode-hook #'uwumacs--eshell-setup)
