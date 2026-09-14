@@ -11,9 +11,11 @@
 
 </h1>
 
-A user-friendly, batteries-included, opinionated Emacs configuration built around [Meow](https://github.com/meow-edit/meow): select first, then act. It is for Meow what Doom and evil-collection are for Evil: a real `SPC` leader instead of Meow's keypad, a labelled menu for every major mode under `SPC m`, integrations for the packages you actually use, and everything discoverable through which-key and `C-h`. New editing surfaces are OS windows, so your window manager arranges them.
+A user-friendly, batteries-included, opinionated Emacs configuration built around [Meow](https://github.com/meow-edit/meow)'s editing paradigm of selection -> extend via visual hints -> act. 
+It is (meant to be) for Meow what Doom and evil-collection are for Evil. It breaks meow's minimal extension rule to implement a real `SPC` leader instead of Meow's keypad, a labelled menu for every major mode under `SPC m`, integrations for the most popular packages, and everything discoverable through which-key and `C-h`. The original keypad still exists, but more as a compatibility option.
+New editing surfaces are OS windows, so your window manager arranges them.
 
-The whole configuration is written as a literate book in [`literate/`](literate/index.org): every chapter explains one part of the editor, shows the small piece of Lisp that configures it, and says why.
+The whole configuration is written as a literate org-roam book (thank you Donald Knuth) in [`literate/`](literate/index.org): every chapter explains one part of the editor, shows the small piece of Lisp that configures it, and explains why.
 
 ## Install
 
@@ -27,9 +29,9 @@ git clone https://github.com/Mihir-Null/UwUmacs.git ~/.emacs.d
 emacs --init-directory=/path/to/UwUmacs
 ```
 
-The first start installs the Emacs Lisp packages it needs into `var/elpa/`. Emacs verifies GNU ELPA's signed index with `gpg`, so install [Gpg4win](https://gpg4win.org/) on Windows (GnuPG is usually already present on Linux and macOS); the startup file points Emacs at it, because the `gpg` that Git for Windows ships cannot verify anything from Emacs. Without a native `gpg` the check is skipped. Language servers, `ripgrep`, Git, a spell checker (`hunspell`, on Windows most simply from MSYS2) and fonts are yours to install; the configuration checks for them and degrades quietly. Icons need [Symbols Nerd Font Mono](https://www.nerdfonts.com/); the editing font is Google Sans Code if present, otherwise the platform default.
+The first start installs the Emacs Lisp packages it needs into `var/elpa/`. Emacs verifies GNU ELPA's signed index with `gpg`, so install [Gpg4win](https://gpg4win.org/) if on Windows (GnuPG is usually already present on Linux and macOS); the startup file points Emacs at it, because the `gpg` that Git for Windows ships cannot verify anything from Emacs. Without a native `gpg` the check is skipped. Language servers, `ripgrep`, Git, a spell checker (`hunspell`, on Windows most simply from MSYS2) and fonts are yours to install; On windows these are easiest to configure and install via msys2 or wsl. The configuration checks for dependencies and degrades quietly. Icons need [Symbols Nerd Font Mono](https://www.nerdfonts.com/); the editing font is Google Sans Code if present, otherwise the platform default.
 
-## First ten minutes
+## Dive in
 
 - `SPC SPC` runs any command by name. `SPC` then a letter opens a group; wait for the popup or press `C-h`.
 - `SPC h ?` opens the cheat sheet; `SPC h t` starts Meow's interactive tutorial; `SPC h k` explains any key.
@@ -37,7 +39,7 @@ The first start installs the Emacs Lisp packages it needs into `var/elpa/`. Emac
 - `SPC m` is the menu for the current mode: in Org it schedules and captures, in Dired it copies and renames, in Magit it stages and commits.
 - `SPC C c` opens the reading guide when you want to change something.
 
-## How it is organised
+## Directory Map
 
 ```
 .emacs.d/
@@ -51,7 +53,7 @@ The first start installs the Emacs Lisp packages it needs into `var/elpa/`. Emac
 
 Startup is a flat, ordered list of `require`s in `init.el`. Each module comes from one chapter. Packages are declared where they are used with `use-package … :ensure t`. Machine-specific settings go in `lisp/private.el` (`SPC C p` creates it from the example); it is loaded once, early, and ignored by Git.
 
-## Change it
+## Make it your own
 
 Edit a chapter, then rebuild and check:
 
@@ -91,4 +93,4 @@ GPL-3.0-or-later. Copyright (C) 2026 Mihir Talati. Portions are distilled from L
 
 ## Credits
 
-Much of the policy is distilled from [Lambda-Emacs](https://codeberg.org/Lambda-Emacs/lambda-emacs) and [Colin McLear's configuration](https://codeberg.org/mclear-tools/dotemacs) (GPL-3.0-or-later); each chapter says what it took. The Meow grammar follows Meow's documented layout. The Sonokai theme is a tracked port in `lisp/themes/`. Everything else is the work of the packages' authors, declared in the chapters that use them.
+Much of the policy is distilled from [Lambda-Emacs](https://codeberg.org/Lambda-Emacs/lambda-emacs) and [Colin McLear's configuration](https://codeberg.org/mclear-tools/dotemacs) (GPL-3.0-or-later); each chapter outlines what it took. The Meow grammar follows Meow's documented layout. The Sonokai theme is a tracked port in `lisp/themes/`. Everything else is the work of the packages' authors, declared in the chapters that use them.
