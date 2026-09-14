@@ -89,7 +89,6 @@
   (meow-use-clipboard t)
   (meow-goto-line-function #'consult-goto-line)
   :config
-  (setopt meow-use-dynamic-face-color nil)
   (meow-thing-register 'angle '(regexp "<" ">") '(regexp "<" ">"))
   (add-to-list 'meow-char-thing-table '(?< . angle))
   (dolist (entry '((eshell-mode . insert)
