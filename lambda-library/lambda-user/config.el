@@ -26,17 +26,13 @@
 ;;;; Base framework
 (message "Loading Lambda base modules...")
 (measure-time
- (cl-dolist (mod '(lem-setup-libraries
-                   lem-setup-settings
-                   lem-setup-functions
-                   lem-setup-macros
-                   lem-setup-scratch
+ (cl-dolist (mod '(lem-setup-functions
                    lem-setup-theme
-                   lem-setup-windows
-                   lem-setup-buffers
                    lem-setup-fonts
                    lem-setup-faces))
    (require mod nil t)))
+;; Sane defaults, state directories and small helpers (literate/25-defaults.org).
+(require 'uwumacs-defaults)
 ;; Deliberately do not load `lem-setup-frames' in the starter configuration.
 ;; Lambda's frame module makes frames undecorated and recenters them. That aesthetic
 ;; is useful as an opt-in, but ordinary OS-managed frames are a more portable base:
@@ -89,9 +85,7 @@
                      lem-setup-shell
                      lem-setup-eshell
                      lem-setup-org-base
-                     lem-setup-org-settings
-                     lem-setup-colors
-                     lem-setup-server))
+                     lem-setup-org-settings))
      (require mod nil t)))
 
   ;; Replace Lambda's moving Tree-sitter grammar recipes and unconditional mode

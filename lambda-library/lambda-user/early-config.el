@@ -14,9 +14,8 @@
 (require 'seq)
 (setopt lem-load-extras t)
 (defconst starter-package-topics
-  '(buffers colors completion dashboard dired eshell faces fonts functions help
-    libraries macros navigation org-settings programming search settings shell
-    tabs windows)
+  '(completion dashboard dired eshell faces fonts functions help
+    navigation org-settings programming search shell tabs)
   "Lambda package topics used by the personal configuration.")
 (setq lem-packages-alist
       (seq-filter (lambda (entry) (memq (car entry) starter-package-topics))

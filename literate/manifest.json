@@ -2,6 +2,7 @@
   "sources": [
     "10-bootstrap.org",
     "20-user-policy.org",
+    "25-defaults.org",
     "30-platform.org",
     "40-editing.org",
     "41-leader.org",
@@ -17,6 +18,7 @@
     "init.el",
     "lambda-library/lambda-user/early-config.el",
     "lambda-library/lambda-user/config.el",
+    "lambda-library/lambda-user/uwumacs-defaults.el",
     "lambda-library/lambda-user/starter-platform.el",
     "lambda-library/lambda-user/starter-setup-terminal.el",
     "lambda-library/lambda-user/starter-setup-meow.el",

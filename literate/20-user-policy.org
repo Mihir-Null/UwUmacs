@@ -52,9 +52,8 @@ This allowlist avoids installing unrelated Lambda workflows just because their s
 #+name: early-config-03-1
 #+begin_src emacs-lisp
 (defconst starter-package-topics
-  '(buffers colors completion dashboard dired eshell faces fonts functions help
-    libraries macros navigation org-settings programming search settings shell
-    tabs windows)
+  '(completion dashboard dired eshell faces fonts functions help
+    navigation org-settings programming search shell tabs)
   "Lambda package topics used by the personal configuration.")
 #+end_src
 
@@ -173,17 +172,13 @@ Load Lambda's common utilities, settings, scratch, themes, windows, buffers and 
 #+name: config-05-1
 #+begin_src emacs-lisp
 (measure-time
- (cl-dolist (mod '(lem-setup-libraries
-                   lem-setup-settings
-                   lem-setup-functions
-                   lem-setup-macros
-                   lem-setup-scratch
+ (cl-dolist (mod '(lem-setup-functions
                    lem-setup-theme
-                   lem-setup-windows
-                   lem-setup-buffers
                    lem-setup-fonts
                    lem-setup-faces))
    (require mod nil t)))
+;; Sane defaults, state directories and small helpers (literate/25-defaults.org).
+(require 'uwumacs-defaults)
 #+end_src
 
 ** Load starter-platform
@@ -310,9 +305,7 @@ The following blocks are consecutive fragments of this source section. Some shar
                      lem-setup-shell
                      lem-setup-eshell
                      lem-setup-org-base
-                     lem-setup-org-settings
-                     lem-setup-colors
-                     lem-setup-server))
+                     lem-setup-org-settings))
      (require mod nil t)))
 
   ;; Replace Lambda's moving Tree-sitter grammar recipes and unconditional mode
