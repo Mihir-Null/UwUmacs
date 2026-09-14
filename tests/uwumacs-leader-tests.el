@@ -9,7 +9,7 @@
   (setq package-user-dir directory))
 (package-initialize)
 (add-to-list 'load-path
-             (expand-file-name "../lambda-library/lambda-user"
+             (expand-file-name "../lisp"
                                (file-name-directory (or load-file-name buffer-file-name))))
 (require 'uwumacs-leader)
 

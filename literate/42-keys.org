@@ -1,9 +1,9 @@
 #+TITLE: The leader tree: every SPC key in one place
 #+OPTIONS: toc:3 num:nil
 #+STARTUP: overview
-#+PROPERTY: header-args:emacs-lisp :tangle ../lambda-library/lambda-user/uwumacs-keys.el :eval never :comments no :padline no :mkdirp yes
+#+PROPERTY: header-args:emacs-lisp :tangle ../lisp/uwumacs-keys.el :eval never :comments no :padline no :mkdirp yes
 
-[[file:index.org][Reading guide]] · [[file:41-leader.org][The leader mechanism]] · [[file:../lambda-library/lambda-user/keybindings.org][Cheat sheet]]
+[[file:index.org][Reading guide]] · [[file:41-leader.org][The leader mechanism]] · [[file:../lisp/keybindings.org][Cheat sheet]]
 
 Ownership: *user configuration*. The vocabulary follows Spacemacs and Doom,
 which most Meow and Evil users already know: a letter for each area, and
@@ -180,7 +180,7 @@ when you want that.
 * Code, evaluation, diagnostics, insertion
 
 =SPC l= is the language-server menu; the servers themselves are opt-in in
-[[file:60-programming.org][the languages chapter]].
+[[file:74-languages.org][the languages chapter]].
 
 #+begin_src emacs-lisp
 (defvar-keymap uwumacs-code-map
@@ -205,7 +205,7 @@ when you want that.
 
 (defvar-keymap uwumacs-lsp-map
   :doc "Language server and code intelligence."
-  "e" (cons "start or manage" #'starter-eglot)
+  "e" (cons "start or manage" #'uwumacs-eglot)
   "q" (cons "shut down" #'eglot-shutdown)
   "=" (cons "reconnect" #'eglot-reconnect)
   "a" (cons "code actions" #'eglot-code-actions)
@@ -257,9 +257,9 @@ when you want that.
 
 (defvar-keymap uwumacs-open-map
   :doc "Open applications."
-  "e" (cons "terminal (EAT)" #'starter-eat)
-  "p" (cons "project terminal" #'starter-eat-project)
-  "m" (cons "MSYS2 terminal" #'starter-eat-msys2-ucrt64)
+  "e" (cons "terminal (EAT)" #'uwumacs-eat)
+  "p" (cons "project terminal" #'uwumacs-eat-project)
+  "m" (cons "MSYS2 terminal" #'uwumacs-eat-msys2-ucrt64)
   "s" (cons "eshell (project)" #'uwumacs-eshell-project)
   "S" (cons "eshell" #'eshell)
   "a" (cons "agenda dashboard" #'uwumacs-org-dashboard)
@@ -321,11 +321,11 @@ when you want that.
 
 (defvar-keymap uwumacs-config-map
   :doc "This configuration."
-  "c" (cons "reading guide" #'starter-literate-open)
+  "c" (cons "reading guide" #'uwumacs-literate-open)
   "f" (cons "find chapter" #'uwumacs-find-config-file)
   "s" (cons "search config" #'uwumacs-search-config)
-  "t" (cons "tangle" #'starter-literate-tangle)
-  "k" (cons "check tangle" #'starter-literate-check)
+  "t" (cons "tangle" #'uwumacs-literate-tangle)
+  "k" (cons "check tangle" #'uwumacs-literate-check)
   "p" (cons "private.el" #'uwumacs-open-private-file)
   "u" (cons "custom.el" #'uwumacs-open-custom-file)
   "a" (cons "architecture" #'uwumacs-open-architecture)
@@ -341,7 +341,7 @@ when you want that.
 (defvar-keymap uwumacs-user-map
   :doc "Your own keys. Add them here or in private.el.")
 
-(keymap-set uwumacs-help-map "?" (cons "cheat sheet" #'starter-dashboard-open-cheatsheet))
+(keymap-set uwumacs-help-map "?" (cons "cheat sheet" #'uwumacs-dashboard-open-cheatsheet))
 
 #+end_src
 

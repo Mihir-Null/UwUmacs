@@ -147,7 +147,7 @@
 
 (defvar-keymap uwumacs-lsp-map
   :doc "Language server and code intelligence."
-  "e" (cons "start or manage" #'starter-eglot)
+  "e" (cons "start or manage" #'uwumacs-eglot)
   "q" (cons "shut down" #'eglot-shutdown)
   "=" (cons "reconnect" #'eglot-reconnect)
   "a" (cons "code actions" #'eglot-code-actions)
@@ -193,9 +193,9 @@
 
 (defvar-keymap uwumacs-open-map
   :doc "Open applications."
-  "e" (cons "terminal (EAT)" #'starter-eat)
-  "p" (cons "project terminal" #'starter-eat-project)
-  "m" (cons "MSYS2 terminal" #'starter-eat-msys2-ucrt64)
+  "e" (cons "terminal (EAT)" #'uwumacs-eat)
+  "p" (cons "project terminal" #'uwumacs-eat-project)
+  "m" (cons "MSYS2 terminal" #'uwumacs-eat-msys2-ucrt64)
   "s" (cons "eshell (project)" #'uwumacs-eshell-project)
   "S" (cons "eshell" #'eshell)
   "a" (cons "agenda dashboard" #'uwumacs-org-dashboard)
@@ -257,11 +257,11 @@
 
 (defvar-keymap uwumacs-config-map
   :doc "This configuration."
-  "c" (cons "reading guide" #'starter-literate-open)
+  "c" (cons "reading guide" #'uwumacs-literate-open)
   "f" (cons "find chapter" #'uwumacs-find-config-file)
   "s" (cons "search config" #'uwumacs-search-config)
-  "t" (cons "tangle" #'starter-literate-tangle)
-  "k" (cons "check tangle" #'starter-literate-check)
+  "t" (cons "tangle" #'uwumacs-literate-tangle)
+  "k" (cons "check tangle" #'uwumacs-literate-check)
   "p" (cons "private.el" #'uwumacs-open-private-file)
   "u" (cons "custom.el" #'uwumacs-open-custom-file)
   "a" (cons "architecture" #'uwumacs-open-architecture)
@@ -277,7 +277,7 @@
 (defvar-keymap uwumacs-user-map
   :doc "Your own keys. Add them here or in private.el.")
 
-(keymap-set uwumacs-help-map "?" (cons "cheat sheet" #'starter-dashboard-open-cheatsheet))
+(keymap-set uwumacs-help-map "?" (cons "cheat sheet" #'uwumacs-dashboard-open-cheatsheet))
 (keymap-set uwumacs-leader-map "SPC" (cons "M-x" #'execute-extended-command))
 (keymap-set uwumacs-leader-map "/" (cons "describe leader" #'uwumacs-describe-leader))
 (keymap-set uwumacs-leader-map "?" (cons "search commands" #'consult-apropos))

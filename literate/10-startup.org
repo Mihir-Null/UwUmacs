@@ -41,7 +41,7 @@ frames created without the toolbar rather than with one that is then removed.
 
 ;;; Code:
 
-(defvar uwumacs-lisp-dir (expand-file-name "lambda-library/lambda-user/" user-emacs-directory)
+(defvar uwumacs-lisp-dir (expand-file-name "lisp/" user-emacs-directory)
   "Directory of the generated configuration modules.")
 
 (defvar uwumacs-var-dir (expand-file-name "var/" user-emacs-directory)
@@ -108,14 +108,14 @@ up before the keys chapter binds the leader, and frames policy goes last.
 
 ;; Foundation: defaults, platform paths, machine overrides, the look.
 (require 'uwumacs-defaults)
-(require 'starter-platform)
+(require 'uwumacs-platform)
 (let ((private (expand-file-name "private.el" uwumacs-lisp-dir)))
   (when (file-exists-p private)
     (load private nil t)))
-(starter-platform-apply)
+(uwumacs-platform-apply)
 (require 'uwumacs-ui)
-(require 'starter-setup-literate)
-(require 'starter-setup-dashboard)
+(require 'uwumacs-literate)
+(require 'uwumacs-dashboard)
 
 ;; Editing: completion, help, files, git, navigation, then Meow and the leader.
 (require 'uwumacs-completion)
@@ -123,17 +123,17 @@ up before the keys chapter binds the leader, and frames policy goes last.
 (require 'uwumacs-dired)
 (require 'uwumacs-vc)
 (require 'uwumacs-navigation)
-(require 'starter-setup-meow)
+(require 'uwumacs-meow)
 (require 'uwumacs-keys)
 
 ;; Applications: shells, programming, Org, and finally frame policy.
 (require 'uwumacs-shell)
 (require 'uwumacs-programming)
-(require 'starter-setup-treesit)
-(require 'starter-setup-languages)
-(require 'starter-setup-terminal)
+(require 'uwumacs-treesit)
+(require 'uwumacs-languages)
+(require 'uwumacs-terminal)
 (require 'uwumacs-org)
-(require 'starter-setup-frames)
+(require 'uwumacs-frames)
 
 ;;; init.el ends here
 #+end_src

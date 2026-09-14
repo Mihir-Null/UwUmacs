@@ -1,13 +1,13 @@
 #+TITLE: Programming: delimiters, structure, linting and compiling
 #+OPTIONS: toc:3 num:nil
 #+STARTUP: overview
-#+PROPERTY: header-args:emacs-lisp :tangle ../lambda-library/lambda-user/uwumacs-programming.el :eval never :comments no :padline no :mkdirp yes
+#+PROPERTY: header-args:emacs-lisp :tangle ../lisp/uwumacs-programming.el :eval never :comments no :padline no :mkdirp yes
 
-[[file:index.org][Reading guide]] · [[file:60-programming.org][Languages: Tree-sitter and Eglot]] · [[file:41-leader.org][Leader]]
+[[file:index.org][Reading guide]] · [[file:74-languages.org][Languages: Tree-sitter and Eglot]] · [[file:41-leader.org][Leader]]
 
 Ownership: *user configuration*, distilled from Lambda-Emacs by Colin McLear
 (=lem-setup-programming=, compilation from =lem-setup-shell=). Language
-parsers and language servers are in [[file:60-programming.org][their own chapter]]; this one is what
+parsers and language servers are in [[file:74-languages.org][their own chapter]]; this one is what
 every programming buffer gets regardless of language.
 
 * What this gives you

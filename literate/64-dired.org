@@ -1,7 +1,7 @@
 #+TITLE: Dired: the file manager
 #+OPTIONS: toc:3 num:nil
 #+STARTUP: overview
-#+PROPERTY: header-args:emacs-lisp :tangle ../lambda-library/lambda-user/uwumacs-dired.el :eval never :comments no :padline no :mkdirp yes
+#+PROPERTY: header-args:emacs-lisp :tangle ../lisp/uwumacs-dired.el :eval never :comments no :padline no :mkdirp yes
 
 [[file:index.org][Reading guide]] · [[file:41-leader.org][Leader]] · [[file:60-completion.org][Completion]]
 

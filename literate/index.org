@@ -30,15 +30,15 @@ localleaders and Meow integrations for the packages you actually use.
 | [[file:45-frames.org][Desktop-managed frames]] | Frame policy, completion exceptions, Magit and split keys | User integration |
 | [[file:50-appearance.org][Fonts and appearance]] | Font selection, icons, themes, modeline, tabs | User policy + later font fixes |
 | [[file:55-dashboard.org][Dashboard]] | Navigation, offline help, pixel-based centering | Subsequent development |
-| [[file:60-programming.org][Programming]] | Pinned parsers, safe remaps, opt-in Eglot | Subsequent development |
+| [[file:74-languages.org][Programming]] | Pinned parsers, safe remaps, opt-in Eglot | Subsequent development |
 | [[file:70-org.org][Org]] | A minimal inbox and portable directory | User configuration |
 | [[file:80-maintenance.org][Maintenance]] | Private overrides and explicit build commands | User policy + this refactor |
 | [[file:10-bootstrap.org][Bootstrap]] | How early-init.el and init.el load everything | Pinned Lambda code |
 | [[file:framework.org][Framework map]] | Vendored modules, local patch, provenance | Lambda + identified integration patch |
 
-For using the editor, open the [[file:../lambda-library/lambda-user/keybindings.org][keybindings and commands cheat sheet]].
+For using the editor, open the [[file:../lisp/keybindings.org][keybindings and commands cheat sheet]].
 The dashboard's *Config* button opens this guide; *Keys & commands* opens that
-cheat sheet. =M-x starter-literate-open= also returns here.
+cheat sheet. =M-x uwumacs-literate-open= also returns here.
 
 * Understand the layers
 
@@ -59,7 +59,7 @@ part of our code merely because we configure them.
 Lambda supplies the staged bootstrap, module catalogue, utility functions,
 semantic leader maps and integrations. The exact source revision is
 =6f12527d82184f82a6cb0ca95301bbd6e0cc19a4=, recorded in [[file:../ARCHITECTURE.md][ARCHITECTURE.md]]. Its root startup files are now assembled from the
-bootstrap chapter. The larger =lambda-library/lambda-setup/= snapshot remains
+bootstrap chapter. The larger =lisp/lambda-setup/= snapshot remains
 ordinary vendor source, mapped in [[file:framework.org][the framework chapter]].
 
 The framework is pinned; archive package versions are not locked. The
@@ -80,7 +80,7 @@ should apply to every machine.
 |------------------+------------------+--------|
 | Startup ownership | One private.el load; persistent Customize state | [[file:framework.org::#local-integration-patch][Framework patch]] and [[file:20-user-policy.org][user policy]] |
 | Native Windows terminal support | EAT's POSIX helper with PowerShell retained | [[file:30-platform.org][Platform and terminals]] |
-| Conservative programming support | Compatible parser pins, availability checks, explicit servers | [[file:60-programming.org][Programming]] |
+| Conservative programming support | Compatible parser pins, availability checks, explicit servers | [[file:74-languages.org][Programming]] |
 | Fonts and home page | Correct glyph mapping, measured centering, offline help | [[file:50-appearance.org][Fonts]] and [[file:55-dashboard.org][dashboard]] |
 | This refactor | Documented Org sources, staged generation, Config entry point | [[file:80-maintenance.org][Maintenance]] and [[file:../tools/tangle.el][builder]] |
 
@@ -114,7 +114,7 @@ package. Org can still load normally as an editing subsystem.
   literate/                      editable Org chapters + output manifest
   early-init.el                  generated Lambda bootstrap
   init.el                        generated Lambda bootstrap
-  lambda-library/
+  lisp/
     lambda-setup/                pinned vendor modules, documented local patch
     lambda-user/
       config.el, early-config.el generated user composition and package policy
@@ -130,7 +130,7 @@ package. Org can still load normally as an editing subsystem.
 
 All literate code sources live under =literate/=. Their targets are relative to
 the repository root: the two startup files go directly into that root, and user
-modules retain their existing =lambda-library/lambda-user/= paths. There is no
+modules retain their existing =lisp/= paths. There is no
 extra build directory in the deployed load path.
 
 * Editing and rebuilding
@@ -145,8 +145,8 @@ extra build directory in the deployed load path.
    Org's source editor; use it for a complete form. Some long inherited forms
    span consecutive blocks, identified in their prose, and are not standalone
    expressions to evaluate.
-3. Save the Org buffers, then run =M-x starter-literate-tangle=.
-4. Run =M-x starter-literate-check= and review the Org and generated Lisp diff.
+3. Save the Org buffers, then run =M-x uwumacs-literate-tangle=.
+4. Run =M-x uwumacs-literate-check= and review the Org and generated Lisp diff.
 5. Restart Emacs to load the new configuration. Commit source and output together.
 
 The builder runs in a clean Emacs subprocess and reports its result in

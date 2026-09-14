@@ -19,23 +19,23 @@
 (dolist (file '("early-init.el" "init.el"))
   (copy-file (expand-file-name file dots-test-source)
              (expand-file-name file dots-test-root)))
-(copy-directory (expand-file-name "lambda-library" dots-test-source)
-                (expand-file-name "lambda-library" dots-test-root) nil t)
+(copy-directory (expand-file-name "lisp" dots-test-source)
+                (expand-file-name "lisp" dots-test-root) nil t)
 (dolist (directory '("literate" "tools"))
   (copy-directory (expand-file-name directory dots-test-source)
                   (expand-file-name directory dots-test-root) nil t))
 (setq user-emacs-directory (file-name-as-directory dots-test-root)
       default-directory user-emacs-directory
       user-init-file (expand-file-name "init.el" user-emacs-directory)
-      starter-org-directory (expand-file-name "org/" user-emacs-directory)
+      uwumacs-org-directory (expand-file-name "org/" user-emacs-directory)
       native-comp-jit-compilation nil)
 (make-directory (expand-file-name "var/etc" user-emacs-directory) t)
 (with-temp-file (expand-file-name "var/etc/custom.el" user-emacs-directory)
   (insert "(setq dots-test-custom-loaded t)\n"))
-(with-temp-file (expand-file-name "lambda-library/lambda-user/private.el" user-emacs-directory)
-  (insert "(unless (boundp 'starter-project-directory) (error \"Private loaded before platform\"))\n"
+(with-temp-file (expand-file-name "lisp/private.el" user-emacs-directory)
+  (insert "(unless (boundp 'uwumacs-project-directory) (error \"Private loaded before platform\"))\n"
           "(setq dots-test-private-loads (1+ (if (boundp 'dots-test-private-loads) dots-test-private-loads 0)))\n"
-          "(setopt starter-project-directory (expand-file-name \"test-projects/\" user-emacs-directory))\n"))
+          "(setopt uwumacs-project-directory (expand-file-name \"test-projects/\" user-emacs-directory))\n"))
 (when (getenv "EMACS_DOTS_TEST_PACKAGES")
   (advice-add 'package-initialize :before
               (lambda (&rest _)
@@ -48,16 +48,16 @@
       (run-hooks 'emacs-startup-hook)
       (require 'cus-edit)
       (dots-test-check (= dots-test-private-loads 1) "private.el must load once")
-      (dots-test-check (equal starter-project-directory
+      (dots-test-check (equal uwumacs-project-directory
                               (expand-file-name "test-projects/" user-emacs-directory))
                        "Project override was overwritten")
       (dots-test-check (and (boundp 'dots-test-custom-loaded) dots-test-custom-loaded)
                        "Persistent Customize file was not loaded")
       (dots-test-check (string-suffix-p "var/etc/custom.el" custom-file)
                        "Customize file is not in persistent state")
-      (dolist (feature '(starter-setup-literate starter-setup-dashboard starter-setup-meow
-                        uwumacs-leader uwumacs-keys starter-setup-treesit starter-setup-languages
-                        starter-setup-terminal uwumacs-org uwumacs-ui starter-setup-frames))
+      (dolist (feature '(uwumacs-literate uwumacs-dashboard uwumacs-meow
+                        uwumacs-leader uwumacs-keys uwumacs-treesit uwumacs-languages
+                        uwumacs-terminal uwumacs-org uwumacs-ui uwumacs-frames))
         (dots-test-check (featurep feature) (format "Missing feature %s" feature)))
       (dots-test-check (equal custom-enabled-themes '(doom-sonokai)) "Theme changed")
       ;; Exercise the real loader in both directions: themes must not stack.
@@ -68,19 +68,19 @@
       (dots-test-check (equal custom-enabled-themes '(doom-sonokai))
                        "Sonokai was not restored by the theme toggle")
       (dots-test-check (and meow-global-mode doom-modeline-mode) "Editor modes missing")
-      (dots-test-check (null starter-eglot-auto-start-modes) "LSP auto-start changed")
-      (dots-test-check (null starter-language-packages) "Language package opt-ins changed")
-      (dots-test-check (not (featurep 'starter-setup-key-hints)) "Hint adapter still loads")
+      (dots-test-check (null uwumacs-eglot-auto-start-modes) "LSP auto-start changed")
+      (dots-test-check (null uwumacs-language-packages) "Language package opt-ins changed")
+      (dots-test-check (not (featurep 'uwumacs-key-hints)) "Hint adapter still loads")
       (dots-test-check (eq (lookup-key meow-normal-state-keymap (kbd "SPC")) uwumacs-leader-map)
                        "SPC is not the literal leader in Normal state")
       (dots-test-check (eq (lookup-key meow-motion-state-keymap (kbd "SPC")) uwumacs-leader-map)
                        "SPC is not the literal leader in Motion state")
-      (dots-test-check (eq (lookup-key uwumacs-leader-map (kbd "l e")) #'starter-eglot)
+      (dots-test-check (eq (lookup-key uwumacs-leader-map (kbd "l e")) #'uwumacs-eglot)
                        "SPC l is not the language-server menu")
       (dots-test-check (eq (lookup-key uwumacs-leader-map (kbd "s l")) #'vertico-repeat)
                        "SPC s l is not completion history")
       (dots-test-check (eq (lookup-key uwumacs-leader-map (kbd "h ?"))
-                           #'starter-dashboard-open-cheatsheet)
+                           #'uwumacs-dashboard-open-cheatsheet)
                        "Cheat-sheet leader binding was overwritten")
       (dots-test-check (eq (lookup-key uwumacs-leader-map (kbd "h h")) #'dashboard-open)
                        "Home leader binding was overwritten")
@@ -90,7 +90,7 @@
               (project--list nil) (bookmark-alist nil))
           (dashboard-open) (set-buffer dashboard-buffer-name)
           (run-hooks 'post-command-hook)
-          (dots-test-check (eq (key-binding (kbd "?")) #'starter-dashboard-open-cheatsheet)
+          (dots-test-check (eq (key-binding (kbd "?")) #'uwumacs-dashboard-open-cheatsheet)
                            "Dashboard shortcut is hidden by modal editing")
           (goto-char (point-min))
           (search-forward "Config")
@@ -120,7 +120,7 @@
 (let ((emacs-lisp-mode-hook nil) (prog-mode-hook nil))
   (dolist (file (append (list (expand-file-name "early-init.el" dots-test-source)
                              (expand-file-name "init.el" dots-test-source))
-                        (directory-files (expand-file-name "lambda-library/lambda-user" dots-test-source)
+                        (directory-files (expand-file-name "lisp" dots-test-source)
                                          t "\\.el$")))
     (condition-case err
         (with-temp-buffer (insert-file-contents file) (emacs-lisp-mode) (check-parens))

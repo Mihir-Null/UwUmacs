@@ -144,8 +144,8 @@ New editing surfaces are OS windows (frames); your window manager arranges them.
 
 | Key | Does | Command |
 |---+---+---|
-| SPC o e | Terminal (EAT) | starter-eat |
-| SPC o m | MSYS2 terminal (Windows) | starter-eat-msys2-ucrt64 |
+| SPC o e | Terminal (EAT) | uwumacs-eat |
+| SPC o m | MSYS2 terminal (Windows) | uwumacs-eat-msys2-ucrt64 |
 | SPC o s | Eshell for this project | uwumacs-eshell-project |
 | SPC o a | Agenda dashboard | uwumacs-org-dashboard |
 | SPC o c | Capture a note or task | org-capture |
@@ -153,7 +153,7 @@ New editing surfaces are OS windows (frames); your window manager arranges them.
 | SPC c d | Duplicate line or region | duplicate-dwim |
 | SPC c s | Surround with a pair | embrace-commander |
 | SPC e e | Evaluate the last expression | eval-last-sexp |
-| SPC l e | Start or manage a language server | starter-eglot |
+| SPC l e | Start or manage a language server | uwumacs-eglot |
 | SPC l a | Code actions | eglot-code-actions |
 | SPC l R | Rename symbol | eglot-rename |
 | SPC l d | Go to definition | xref-find-definitions |
@@ -167,10 +167,10 @@ New editing surfaces are OS windows (frames); your window manager arranges them.
 | SPC h b | Keys that work here | embark-bindings |
 | SPC h t | Meow tutorial | meow-tutor |
 | SPC h h | Home page | dashboard-open |
-| SPC h ? | This cheat sheet | starter-dashboard-open-cheatsheet |
-| SPC C c | Open the configuration guide | starter-literate-open |
+| SPC h ? | This cheat sheet | uwumacs-dashboard-open-cheatsheet |
+| SPC C c | Open the configuration guide | uwumacs-literate-open |
 | SPC C f | Open a configuration chapter | uwumacs-find-config-file |
-| SPC C t | Rebuild the configuration | starter-literate-tangle |
+| SPC C t | Rebuild the configuration | uwumacs-literate-tangle |
 | SPC q q | Save everything and quit | save-buffers-kill-emacs |
 | SPC q r | Restart Emacs | restart-emacs |
 

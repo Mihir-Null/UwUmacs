@@ -9,10 +9,10 @@ Ownership: *user configuration* for the example and *this literate refactor* for
 
 * private.example
 :PROPERTIES:
-:header-args:emacs-lisp: :tangle ../lambda-library/lambda-user/private.example.el :eval never :comments no :padline no :mkdirp yes
+:header-args:emacs-lisp: :tangle ../lisp/private.example.el :eval never :comments no :padline no :mkdirp yes
 :END:
 
-Deployed file: [[file:../lambda-library/lambda-user/private.example.el][lambda-library/lambda-user/private.example.el]]. Edit the blocks here; generated Lisp is kept in Git for ordinary startup and review.
+Deployed file: [[file:../lisp/private.example.el][lisp/private.example.el]]. Edit the blocks here; generated Lisp is kept in Git for ordinary startup and review.
 
 ** Keep account and machine choices local
 
@@ -35,24 +35,24 @@ The following blocks are consecutive fragments of this source section. Some shar
 
 ;; Paths
 ;; These variables are already defined when private.el is loaded, so `setopt' is useful.
-;; (setopt starter-project-directory (expand-file-name "~/src/"))
-;; (setopt starter-org-directory (expand-file-name "~/Documents/my-org/"))
+;; (setopt uwumacs-project-directory (expand-file-name "~/src/"))
+;; (setopt uwumacs-org-directory (expand-file-name "~/Documents/my-org/"))
 
 ;; Terminal
-;; `starter-setup-terminal' is loaded later, so pre-bind its installation root with
+;; `uwumacs-terminal' is loaded later, so pre-bind its installation root with
 ;; `setq' if MSYS2 is not installed at the normal C:/msys64/ location.
-;; (setq starter-msys2-root "D:/Tools/msys64/")
+;; (setq uwumacs-msys2-root "D:/Tools/msys64/")
 
 ;; Language tooling
 ;; Eglot is available manually through SPC l e. Automatic startup and external
 ;; language packages are opt-in because their servers/runtimes are platform-owned.
-;; (setq starter-eglot-auto-start-modes '(python-mode python-ts-mode)
-;;       starter-language-packages '(nix racket guile))
+;; (setq uwumacs-eglot-auto-start-modes '(python-mode python-ts-mode)
+;;       uwumacs-language-packages '(nix racket guile))
 #+end_src
 
 *** Keep account and machine choices local: continued 2
 
-UI preserve these pre-bound values. starter-ui-light-theme 'doom-one-light
+UI preserve these pre-bound values. uwumacs-ui-light-theme 'doom-one-light
 
 #+name: private.example-01-2
 #+begin_src emacs-lisp
@@ -71,26 +71,26 @@ UI preserve these pre-bound values. starter-ui-light-theme 'doom-one-light
 ;; platform default rather than failing startup.
 #+end_src
 
-* starter-setup-literate
+* uwumacs-literate
 :PROPERTIES:
-:header-args:emacs-lisp: :tangle ../lambda-library/lambda-user/starter-setup-literate.el :eval never :comments no :padline no :mkdirp yes
+:header-args:emacs-lisp: :tangle ../lisp/uwumacs-literate.el :eval never :comments no :padline no :mkdirp yes
 :END:
 
-Deployed file: [[file:../lambda-library/lambda-user/starter-setup-literate.el][lambda-library/lambda-user/starter-setup-literate.el]]. Edit the blocks here; generated Lisp is kept in Git for ordinary startup and review.
+Deployed file: [[file:../lisp/uwumacs-literate.el][lisp/uwumacs-literate.el]]. Edit the blocks here; generated Lisp is kept in Git for ordinary startup and review.
 
 ** Open the reading guide
 
 The path is relative to Lambda's resolved configuration root, so it works from any buffer or working directory.
 
-#+name: starter-setup-literate-01-1
+#+name: uwumacs-literate-01-1
 #+begin_src emacs-lisp
-;;; starter-setup-literate.el --- Edit and build the literate source -*- lexical-binding: t; -*-
+;;; uwumacs-literate.el --- Edit and build the literate source -*- lexical-binding: t; -*-
 ;; Generated from literate/80-maintenance.org; edit the Org source, then tangle.
 ;;; Commentary:
 ;; Development addition: keep authoring explicit and startup independent of Org.
 ;;; Code:
 
-(defun starter-literate-open (&rest _)
+(defun uwumacs-literate-open (&rest _)
   "Open the literate configuration's reading guide."
   (interactive)
   (find-file (expand-file-name "literate/index.org" user-emacs-directory)))
@@ -100,9 +100,9 @@ The path is relative to Lambda's resolved configuration root, so it works from a
 
 Unsaved Org buffers are rejected before reading files from disk. A separate -Q process uses the bundled Org without loading personal startup; its output is displayed for review. Successful generation still requires a restart to apply configuration changes.
 
-#+name: starter-setup-literate-02-1
+#+name: uwumacs-literate-02-1
 #+begin_src emacs-lisp
-(defun starter-literate--build (write)
+(defun uwumacs-literate--build (write)
   "Run the isolated literate builder; WRITE selects generation over checking."
   (let ((source-dir (expand-file-name "literate/" user-emacs-directory))
         (output (get-buffer-create "*Emacs-Dots literate build*")))
@@ -131,33 +131,33 @@ Unsaved Org buffers are rejected before reading files from disk. A separate -Q p
 
 This is the explicit write operation. The builder stages and validates all declared outputs before copying changed files into the configuration tree.
 
-#+name: starter-setup-literate-03-1
+#+name: uwumacs-literate-03-1
 #+begin_src emacs-lisp
-(defun starter-literate-tangle ()
+(defun uwumacs-literate-tangle ()
   "Regenerate deployed Lisp from saved literate sources."
   (interactive)
-  (starter-literate--build t))
+  (uwumacs-literate--build t))
 #+end_src
 
 ** Detect source/output drift
 
 This read-only mode compares staged output with deployed Lisp. It catches edits to generated files and forgotten rebuilds without silently choosing one version.
 
-#+name: starter-setup-literate-04-1
+#+name: uwumacs-literate-04-1
 #+begin_src emacs-lisp
-(defun starter-literate-check ()
+(defun uwumacs-literate-check ()
   "Check that deployed Lisp matches saved literate sources without writing it."
   (interactive)
-  (starter-literate--build nil))
+  (uwumacs-literate--build nil))
 #+end_src
 
 ** Publish the module
 
 The core require/provide protocol records that this file loaded. Later requires can reuse the feature without evaluating the module again.
 
-#+name: starter-setup-literate-05-1
+#+name: uwumacs-literate-05-1
 #+begin_src emacs-lisp
-(provide 'starter-setup-literate)
-;;; starter-setup-literate.el ends here
+(provide 'uwumacs-literate)
+;;; uwumacs-literate.el ends here
 #+end_src
 

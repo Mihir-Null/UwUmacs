@@ -1,8 +1,8 @@
-;;; starter-setup-terminal.el --- Integrated terminal entries -*- lexical-binding: t; -*-
+;;; uwumacs-terminal.el --- Integrated terminal entries -*- lexical-binding: t; -*-
 ;; Generated from literate/30-platform.org; edit the Org source, then tangle.
 
 ;;; Commentary:
-;; Keep the ordinary Windows shell policy in `starter-platform.el', while exposing
+;; Keep the ordinary Windows shell policy in `uwumacs-platform.el', while exposing
 ;; MSYS2 as an explicit Unix-like development terminal through EAT.
 ;;
 ;; MSYS2 documents the essential environment setup as setting MSYSTEM to UCRT64,
@@ -14,46 +14,46 @@
 ;;; Code:
 
 (require 'cl-lib)
-(defgroup starter-terminal nil
+(defgroup uwumacs-terminal nil
   "Integrated terminal entries for the starter configuration."
-  :group 'lambda-emacs)
-(defcustom starter-msys2-root
+  :group 'uwumacs)
+(defcustom uwumacs-msys2-root
   (file-name-as-directory
    (or (getenv "MSYS2_ROOT") "C:/msys64/"))
   "Root directory of the MSYS2 installation on Windows."
   :type 'directory)
-(defun starter--msys2-bash ()
+(defun uwumacs--msys2-bash ()
   "Return the configured MSYS2 Bash executable path."
-  (expand-file-name "usr/bin/bash.exe" starter-msys2-root))
-(defun starter--msys2-env ()
+  (expand-file-name "usr/bin/bash.exe" uwumacs-msys2-root))
+(defun uwumacs--msys2-env ()
   "Return the configured MSYS2 env executable path."
-  (expand-file-name "usr/bin/env.exe" starter-msys2-root))
-(defun starter--msys2-process-path ()
+  (expand-file-name "usr/bin/env.exe" uwumacs-msys2-root))
+(defun uwumacs--msys2-process-path ()
   "Return PATH for an MSYS2 UCRT64 child process.
 
 The MSYS2 POSIX tools are included so EAT can find its `sh' and `stty'
 helpers.  This value is only installed in the dynamically scoped child
 environment; it does not alter Emacs's global PATH or `exec-path'."
   (mapconcat #'identity
-             (list (expand-file-name "ucrt64/bin" starter-msys2-root)
-                   (expand-file-name "usr/bin" starter-msys2-root)
+             (list (expand-file-name "ucrt64/bin" uwumacs-msys2-root)
+                   (expand-file-name "usr/bin" uwumacs-msys2-root)
                    (or (getenv "PATH") ""))
              (if (characterp path-separator)
                  (char-to-string path-separator)
                path-separator)))
-(defun starter--eat-with-msys2-process-wrapper (function &rest args)
+(defun uwumacs--eat-with-msys2-process-wrapper (function &rest args)
   "Call EAT FUNCTION with ARGS through MSYS2's POSIX process wrapper.
 
 EAT currently starts its terminal process with `/usr/bin/env sh', a path
 which native Windows Emacs cannot resolve.  Translate only that outer helper
 to the configured MSYS2 `env.exe'; paths used inside the MSYS2 shell retain
 their normal POSIX meaning."
-  (let ((env (starter--msys2-env))
+  (let ((env (uwumacs--msys2-env))
         (make-process-function (symbol-function 'make-process))
         (process-environment (copy-sequence process-environment)))
     (unless (file-executable-p env)
-      (user-error "MSYS2 env not found at %s; customize starter-msys2-root" env))
-    (setenv "PATH" (starter--msys2-process-path))
+      (user-error "MSYS2 env not found at %s; customize uwumacs-msys2-root" env))
+    (setenv "PATH" (uwumacs--msys2-process-path))
     ;; Rebinding a C primitive can otherwise make native-comp try to write a
     ;; trampoline beside the Emacs installation, which is normally read-only.
     (let ((native-comp-enable-subr-trampolines nil))
@@ -66,22 +66,22 @@ their normal POSIX meaning."
                                         (cons env (cdr command)))))
                      (apply make-process-function plist)))))
         (apply function args)))))
-(defun starter-eat (&optional arg)
+(defun uwumacs-eat (&optional arg)
   "Open an ordinary EAT terminal, portably passing prefix ARG.
 
 On native Windows, use MSYS2 only for EAT's POSIX launch helper.  The terminal
-still runs the native shell selected by `starter-platform-apply'."
+still runs the native shell selected by `uwumacs-platform-apply'."
   (interactive "P")
   (if (eq system-type 'windows-nt)
-      (starter--eat-with-msys2-process-wrapper #'eat nil arg)
+      (uwumacs--eat-with-msys2-process-wrapper #'eat nil arg)
     (eat nil arg)))
-(defun starter-eat-project (&optional arg)
+(defun uwumacs-eat-project (&optional arg)
   "Open project-local EAT, portably passing prefix ARG."
   (interactive "P")
   (if (eq system-type 'windows-nt)
-      (starter--eat-with-msys2-process-wrapper #'eat-project arg)
+      (uwumacs--eat-with-msys2-process-wrapper #'eat-project arg)
     (eat-project arg)))
-(defun starter-eat-msys2-ucrt64 (&optional arg)
+(defun uwumacs-eat-msys2-ucrt64 (&optional arg)
   "Open an MSYS2 UCRT64 login shell in EAT.
 
 The terminal starts in `default-directory' and leaves Emacs's native Windows
@@ -90,17 +90,17 @@ multiple numbered terminal buffers can be created in the usual EAT way."
   (interactive "P")
   (unless (eq system-type 'windows-nt)
     (user-error "The MSYS2 UCRT64 terminal entry is for native Windows Emacs"))
-  (let ((bash (starter--msys2-bash)))
+  (let ((bash (uwumacs--msys2-bash)))
     (unless (file-executable-p bash)
-      (user-error "MSYS2 Bash not found at %s; customize starter-msys2-root" bash))
+      (user-error "MSYS2 Bash not found at %s; customize uwumacs-msys2-root" bash))
     (let ((process-environment (copy-sequence process-environment))
           (eat-buffer-name "*eat:msys2-ucrt64*"))
       ;; MSYS2's documented environment selector.  CHERE_INVOKING keeps the
       ;; current Emacs directory instead of changing to the MSYS2 home directory.
       (setenv "MSYSTEM" "UCRT64")
       (setenv "CHERE_INVOKING" "1")
-      (starter--eat-with-msys2-process-wrapper
+      (uwumacs--eat-with-msys2-process-wrapper
        #'eat (format "%s --login -i" (shell-quote-argument bash)) arg))))
 
-(provide 'starter-setup-terminal)
-;;; starter-setup-terminal.el ends here
+(provide 'uwumacs-terminal)
+;;; uwumacs-terminal.el ends here

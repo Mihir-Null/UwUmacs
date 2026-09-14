@@ -12,14 +12,14 @@
 
 ;; Foundation: defaults, platform paths, machine overrides, the look.
 (require 'uwumacs-defaults)
-(require 'starter-platform)
+(require 'uwumacs-platform)
 (let ((private (expand-file-name "private.el" uwumacs-lisp-dir)))
   (when (file-exists-p private)
     (load private nil t)))
-(starter-platform-apply)
+(uwumacs-platform-apply)
 (require 'uwumacs-ui)
-(require 'starter-setup-literate)
-(require 'starter-setup-dashboard)
+(require 'uwumacs-literate)
+(require 'uwumacs-dashboard)
 
 ;; Editing: completion, help, files, git, navigation, then Meow and the leader.
 (require 'uwumacs-completion)
@@ -27,16 +27,16 @@
 (require 'uwumacs-dired)
 (require 'uwumacs-vc)
 (require 'uwumacs-navigation)
-(require 'starter-setup-meow)
+(require 'uwumacs-meow)
 (require 'uwumacs-keys)
 
 ;; Applications: shells, programming, Org, and finally frame policy.
 (require 'uwumacs-shell)
 (require 'uwumacs-programming)
-(require 'starter-setup-treesit)
-(require 'starter-setup-languages)
-(require 'starter-setup-terminal)
+(require 'uwumacs-treesit)
+(require 'uwumacs-languages)
+(require 'uwumacs-terminal)
 (require 'uwumacs-org)
-(require 'starter-setup-frames)
+(require 'uwumacs-frames)
 
 ;;; init.el ends here

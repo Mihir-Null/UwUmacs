@@ -1,7 +1,7 @@
 #+TITLE: Frames: let the desktop window manager arrange Emacs
 #+OPTIONS: toc:3 num:nil
 #+STARTUP: overview
-#+PROPERTY: header-args:emacs-lisp :tangle ../lambda-library/lambda-user/starter-setup-frames.el :eval never :comments no :padline no :mkdirp yes
+#+PROPERTY: header-args:emacs-lisp :tangle ../lisp/uwumacs-frames.el :eval never :comments no :padline no :mkdirp yes
 
 [[file:index.org][Reading guide]] · [[file:20-user-policy.org][Startup policy]]
 
@@ -18,7 +18,7 @@ frame module. Ordinary file and buffer switching still uses the current frame;
 commands that would pop up an auxiliary buffer can create a separate frame.
 
 #+begin_src emacs-lisp
-;;; starter-setup-frames.el --- Desktop-managed Emacs frames -*- lexical-binding: t; -*-
+;;; uwumacs-frames.el --- Desktop-managed Emacs frames -*- lexical-binding: t; -*-
 ;; Generated from literate/45-frames.org; edit the Org source, then tangle.
 
 ;;; Code:
@@ -69,8 +69,8 @@ disabled. The leader's =SPC w h= and =SPC w v= remain real in-frame splits.
   (unless frames-only-mode
     (frames-only-mode 1)))
 
-(provide 'starter-setup-frames)
-;;; starter-setup-frames.el ends here
+(provide 'uwumacs-frames)
+;;; uwumacs-frames.el ends here
 #+end_src
 
 * Everyday commands and recovery

@@ -1,4 +1,4 @@
-;;; starter-setup-frames.el --- Desktop-managed Emacs frames -*- lexical-binding: t; -*-
+;;; uwumacs-frames.el --- Desktop-managed Emacs frames -*- lexical-binding: t; -*-
 ;; Generated from literate/45-frames.org; edit the Org source, then tangle.
 
 ;;; Code:
@@ -20,5 +20,5 @@
   (unless frames-only-mode
     (frames-only-mode 1)))
 
-(provide 'starter-setup-frames)
-;;; starter-setup-frames.el ends here
+(provide 'uwumacs-frames)
+;;; uwumacs-frames.el ends here

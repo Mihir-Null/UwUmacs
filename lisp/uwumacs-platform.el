@@ -1,4 +1,4 @@
-;;; starter-platform.el --- Portable platform defaults -*- lexical-binding: t; -*-
+;;; uwumacs-platform.el --- Portable platform defaults -*- lexical-binding: t; -*-
 ;; Generated from literate/30-platform.org; edit the Org source, then tangle.
 
 ;;; Commentary:
@@ -9,10 +9,10 @@
 
 (require 'seq)
 (require 'subr-x)
-(defgroup starter-platform nil
+(defgroup uwumacs-platform nil
   "Portable defaults for the Lambda learning configuration."
-  :group 'lambda-emacs)
-(defun starter--user-home-directory ()
+  :group 'uwumacs)
+(defun uwumacs--user-home-directory ()
   "Return the user's ordinary home directory for configuration defaults.
 On native Windows, Emacs may define HOME as AppData/Roaming, so prefer
 USERPROFILE for user-owned projects and documents."
@@ -20,21 +20,21 @@ USERPROFILE for user-owned projects and documents."
    (if (eq system-type 'windows-nt)
        (or (getenv "USERPROFILE") (expand-file-name "~"))
      (expand-file-name "~"))))
-(defcustom starter-project-directory
-  (expand-file-name "Projects/" (starter--user-home-directory))
+(defcustom uwumacs-project-directory
+  (expand-file-name "Projects/" (uwumacs--user-home-directory))
   "Default place to look for projects."
   :type 'directory)
-(defcustom starter-org-directory
-  (expand-file-name "Documents/org/" (starter--user-home-directory))
+(defcustom uwumacs-org-directory
+  (expand-file-name "Documents/org/" (uwumacs--user-home-directory))
   "Portable starter Org directory."
   :type 'directory)
-(defun starter--first-executable (&rest programs)
+(defun uwumacs--first-executable (&rest programs)
   "Return the first executable found in PROGRAMS."
   (seq-some #'executable-find programs))
-(defun starter--skip-exec-path-from-shell-on-windows (&rest _)
+(defun uwumacs--skip-exec-path-from-shell-on-windows (&rest _)
   "Keep native Windows Emacs's inherited process environment unchanged."
   nil)
-(defun starter-platform-apply ()
+(defun uwumacs-platform-apply ()
   "Apply the currently configured portable platform defaults."
   ;; Choose a usable shell without assuming a username, Homebrew prefix, Nix profile,
   ;; or conventional Unix filesystem on Windows.
@@ -54,12 +54,12 @@ USERPROFILE for user-owned projects and documents."
        (setq explicit-shell-file-name (executable-find "cmd.exe")
              shell-command-switch "/c"))))
     ('darwin
-     (when-let ((shell (starter--first-executable "zsh" "bash" "sh")))
+     (when-let ((shell (uwumacs--first-executable "zsh" "bash" "sh")))
        (setq-default shell-file-name shell)
        (setq explicit-shell-file-name shell
              shell-command-switch "-c")))
     ('gnu/linux
-     (when-let ((shell (starter--first-executable "zsh" "bash" "sh")))
+     (when-let ((shell (uwumacs--first-executable "zsh" "bash" "sh")))
        (setq-default shell-file-name shell)
        (setq explicit-shell-file-name shell
              shell-command-switch "-c"))))
@@ -71,15 +71,15 @@ USERPROFILE for user-owned projects and documents."
   (if (eq system-type 'windows-nt)
       (with-eval-after-load 'exec-path-from-shell
         (unless (advice-member-p
-                 #'starter--skip-exec-path-from-shell-on-windows
+                 #'uwumacs--skip-exec-path-from-shell-on-windows
                  #'exec-path-from-shell-initialize)
           (advice-add #'exec-path-from-shell-initialize :override
-                      #'starter--skip-exec-path-from-shell-on-windows)))
+                      #'uwumacs--skip-exec-path-from-shell-on-windows)))
     (with-eval-after-load 'exec-path-from-shell
       (setopt exec-path-from-shell-variables
               '("PATH" "MANPATH" "NIX_PATH" "NIX_PROFILES")))))
 ;; Do not force a font here. Inheriting the platform default makes first boot robust.
 ;; Fonts are chosen in the appearance chapter.
 
-(provide 'starter-platform)
-;;; starter-platform.el ends here
+(provide 'uwumacs-platform)
+;;; uwumacs-platform.el ends here

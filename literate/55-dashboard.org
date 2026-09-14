@@ -7,20 +7,20 @@
 
 Ownership: *subsequent development*. The external dashboard package presents core recentf, project.el and bookmarks. Our additions supply the home layout, callbacks, local cheat sheet, font-aware centering and literate Config destination. No second project or workspace database is introduced.
 
-* starter-setup-dashboard
+* uwumacs-dashboard
 :PROPERTIES:
-:header-args:emacs-lisp: :tangle ../lambda-library/lambda-user/starter-setup-dashboard.el :eval never :comments no :padline no :mkdirp yes
+:header-args:emacs-lisp: :tangle ../lisp/uwumacs-dashboard.el :eval never :comments no :padline no :mkdirp yes
 :END:
 
-Deployed file: [[file:../lambda-library/lambda-user/starter-setup-dashboard.el][lambda-library/lambda-user/starter-setup-dashboard.el]]. Edit the blocks here; generated Lisp is kept in Git for ordinary startup and review.
+Deployed file: [[file:../lisp/uwumacs-dashboard.el][lisp/uwumacs-dashboard.el]]. Edit the blocks here; generated Lisp is kept in Git for ordinary startup and review.
 
-** Load starter-setup-fonts
+** Load uwumacs-fonts
 
 Load this dependency before evaluating the forms that use its functions or variables. This preserves the existing startup dependency order.
 
-#+name: starter-setup-dashboard-01-1
+#+name: uwumacs-dashboard-01-1
 #+begin_src emacs-lisp
-;;; starter-setup-dashboard.el --- Doom-like home page -*- lexical-binding: t; -*-
+;;; uwumacs-dashboard.el --- Doom-like home page -*- lexical-binding: t; -*-
 ;; Generated from literate/55-dashboard.org; edit the Org source, then tangle.
 
 ;;; Commentary:
@@ -36,9 +36,9 @@ Load this dependency before evaluating the forms that use its functions or varia
 
 The dashboard callback accepts widget arguments and opens the local Org cheat sheet. The same command is reachable with ? at home and SPC H elsewhere.
 
-#+name: starter-setup-dashboard-02-1
+#+name: uwumacs-dashboard-02-1
 #+begin_src emacs-lisp
-(defun starter-dashboard-open-cheatsheet (&rest _)
+(defun uwumacs-dashboard-open-cheatsheet (&rest _)
   "Open the local keybindings and commands cheat sheet."
   (interactive)
   (find-file (expand-file-name "keybindings.org" uwumacs-lisp-dir)))
@@ -48,9 +48,9 @@ The dashboard callback accepts widget arguments and opens the local Org cheat sh
 
 Prompt for a file from a dashboard button.
 
-#+name: starter-setup-dashboard-03-1
+#+name: uwumacs-dashboard-03-1
 #+begin_src emacs-lisp
-(defun starter-dashboard-open-file (&rest _)
+(defun uwumacs-dashboard-open-file (&rest _)
   "Prompt for a file from a dashboard button."
   (interactive)
   (call-interactively #'find-file))
@@ -60,21 +60,21 @@ Prompt for a file from a dashboard button.
 
 The Config button now opens literate/index.org. The generated config.el remains a runtime file, while the reading guide explains where to edit each choice.
 
-#+name: starter-setup-dashboard-04-1
+#+name: uwumacs-dashboard-04-1
 #+begin_src emacs-lisp
-(defun starter-dashboard-open-config (&rest _)
+(defun uwumacs-dashboard-open-config (&rest _)
   "Open the documented literate configuration."
   (interactive)
-  (starter-literate-open))
+  (uwumacs-literate-open))
 #+end_src
 
 ** Dashboard open project
 
 Choose a project using Emacs project.el.
 
-#+name: starter-setup-dashboard-05-1
+#+name: uwumacs-dashboard-05-1
 #+begin_src emacs-lisp
-(defun starter-dashboard-open-project (&rest _)
+(defun uwumacs-dashboard-open-project (&rest _)
   "Choose a project using Emacs project.el."
   (interactive)
   (call-interactively #'project-switch-project))
@@ -84,9 +84,9 @@ Choose a project using Emacs project.el.
 
 Choose a recently opened file.
 
-#+name: starter-setup-dashboard-06-1
+#+name: uwumacs-dashboard-06-1
 #+begin_src emacs-lisp
-(defun starter-dashboard-open-recent (&rest _)
+(defun uwumacs-dashboard-open-recent (&rest _)
   "Choose a recently opened file."
   (interactive)
   (if (fboundp 'consult-recent-file)
@@ -98,9 +98,9 @@ Choose a recently opened file.
 
 Open the Org agenda.
 
-#+name: starter-setup-dashboard-07-1
+#+name: uwumacs-dashboard-07-1
 #+begin_src emacs-lisp
-(defun starter-dashboard-open-agenda (&rest _)
+(defun uwumacs-dashboard-open-agenda (&rest _)
   "Open the Org agenda."
   (interactive)
   (call-interactively #'org-agenda))
@@ -112,9 +112,9 @@ Icons, proportional headings and display overlays have different pixel widths. M
 
 The following blocks are consecutive fragments of this source section. Some share an open Lisp form; edit them here and rebuild the whole chapter rather than evaluating a fragment on its own.
 
-#+name: starter-setup-dashboard-08-1
+#+name: uwumacs-dashboard-08-1
 #+begin_src emacs-lisp
-(defun starter-dashboard-center-lines ()
+(defun uwumacs-dashboard-center-lines ()
   "Center each visible dashboard line using its rendered pixel width.
 Measure the actual buffer so heading display overlays and icon faces count.
 Exclude trailing padding and compensate for leading indentation."
@@ -148,7 +148,7 @@ Exclude trailing padding and compensate for leading indentation."
 
 Convert the measured width and indentation into a display-space prefix. The center-relative expression follows window resizing; font and theme changes trigger a fresh measurement.
 
-#+name: starter-setup-dashboard-08-2
+#+name: uwumacs-dashboard-08-2
 #+begin_src emacs-lisp
                        (offset (/ (+ width indent) 2.0))
                        (prefix (propertize
@@ -163,14 +163,14 @@ Convert the measured width and indentation into a display-space prefix. The cent
 
 Only a visible dashboard needs measuring. Font, theme and initial window setup hooks use this helper after their changes settle.
 
-#+name: starter-setup-dashboard-09-1
+#+name: uwumacs-dashboard-09-1
 #+begin_src emacs-lisp
-(defun starter-dashboard-recenter (&rest _)
+(defun uwumacs-dashboard-recenter (&rest _)
   "Recompute visible dashboard text metrics after a font or theme change."
   (when-let* ((window (get-buffer-window dashboard-buffer-name t)))
     (with-selected-window window
       (with-current-buffer dashboard-buffer-name
-        (starter-dashboard-center-lines)))))
+        (uwumacs-dashboard-center-lines)))))
 #+end_src
 
 ** Assemble the home page
@@ -179,7 +179,7 @@ Fonts have already initialized. The dashboard renders a text banner, three butto
 
 The following blocks are consecutive fragments of this source section. Some share an open Lisp form; edit them here and rebuild the whole chapter rather than evaluating a fragment on its own.
 
-#+name: starter-setup-dashboard-10-1
+#+name: uwumacs-dashboard-10-1
 #+begin_src emacs-lisp
 (use-package dashboard
   :ensure t
@@ -215,7 +215,7 @@ The following blocks are consecutive fragments of this source section. Some shar
 
 Continue the same definition in its original scope. This fragment follows the preceding block directly in the deployed file.
 
-#+name: starter-setup-dashboard-10-2
+#+name: uwumacs-dashboard-10-2
 #+begin_src emacs-lisp
         dashboard-item-names '(("Recent Files:" . "Recent")
                                ("Projects:" . "Projects")
@@ -227,22 +227,22 @@ Continue the same definition in its original scope. This fragment follows the pr
                                     dashboard-insert-newline
                                     dashboard-insert-init-info
                                     dashboard-insert-items
-                                    starter-dashboard-center-lines)
+                                    uwumacs-dashboard-center-lines)
         dashboard-init-info
         (lambda ()
           (format "Emacs %s · ready in %s"
                   emacs-version
                   (emacs-init-time)))
         dashboard-navigator-buttons
-        '((("+" "File" "Open a file" starter-dashboard-open-file)
-           ("◆" "Project" "Switch project" starter-dashboard-open-project)
-           ("↺" "Recent" "Open a recent file" starter-dashboard-open-recent))
-          (("λ" "Config" "Open Emacs-Dots config" starter-dashboard-open-config)
-           ("◎" "Agenda" "Open Org agenda" starter-dashboard-open-agenda)
+        '((("+" "File" "Open a file" uwumacs-dashboard-open-file)
+           ("◆" "Project" "Switch project" uwumacs-dashboard-open-project)
+           ("↺" "Recent" "Open a recent file" uwumacs-dashboard-open-recent))
+          (("λ" "Config" "Open Emacs-Dots config" uwumacs-dashboard-open-config)
+           ("◎" "Agenda" "Open Org agenda" uwumacs-dashboard-open-agenda)
            ("*" "Scratch" "Open scratch buffer"
             (lambda (&rest _) (switch-to-buffer "*scratch*"))))
           (("?" "Keys & commands" "Open the local cheat sheet (or press ?)"
-            starter-dashboard-open-cheatsheet))))
+            uwumacs-dashboard-open-cheatsheet))))
   :config
   (set-face-attribute 'dashboard-text-banner nil
                       :inherit 'font-lock-keyword-face
@@ -253,7 +253,7 @@ Continue the same definition in its original scope. This fragment follows the pr
 
 Skip the home page when Emacs was invoked with a file argument.
 
-#+name: starter-setup-dashboard-10-3
+#+name: uwumacs-dashboard-10-3
 #+begin_src emacs-lisp
   (set-face-attribute 'dashboard-banner-logo-title nil
                       :inherit 'font-lock-comment-face
@@ -265,21 +265,21 @@ Skip the home page when Emacs was invoked with a file argument.
                       :inherit 'font-lock-keyword-face
                       :weight 'semi-bold)
 
-  (define-key dashboard-mode-map (kbd "?") #'starter-dashboard-open-cheatsheet)
+  (define-key dashboard-mode-map (kbd "?") #'uwumacs-dashboard-open-cheatsheet)
 
-  (add-hook 'window-setup-hook #'starter-dashboard-recenter 100)
-  (add-hook 'after-setting-font-hook #'starter-dashboard-recenter 100)
-  (add-hook 'enable-theme-functions #'starter-dashboard-recenter 100)
+  (add-hook 'window-setup-hook #'uwumacs-dashboard-recenter 100)
+  (add-hook 'after-setting-font-hook #'uwumacs-dashboard-recenter 100)
+  (add-hook 'enable-theme-functions #'uwumacs-dashboard-recenter 100)
 
   ;; Skip the home page when Emacs was invoked with a file argument.
   (dashboard-setup-startup-hook))
 #+end_src
 
-** Apply policy after starter-setup-meow
+** Apply policy after uwumacs-meow
 
 Waiting for the feature avoids racing its initialization. The following policy takes effect once its variables, maps or hooks exist; it does not force an unrelated feature to load now.
 
-#+name: starter-setup-dashboard-11-1
+#+name: uwumacs-dashboard-11-1
 #+begin_src emacs-lisp
 ;; Keep r/p/b/? and dashboard item shortcuts alongside Meow j/k and SPC.
 (with-eval-after-load 'meow
@@ -290,9 +290,9 @@ Waiting for the feature avoids racing its initialization. The following policy t
 
 The core require/provide protocol records that this file loaded. Later requires can reuse the feature without evaluating the module again.
 
-#+name: starter-setup-dashboard-12-1
+#+name: uwumacs-dashboard-12-1
 #+begin_src emacs-lisp
-(provide 'starter-setup-dashboard)
-;;; starter-setup-dashboard.el ends here
+(provide 'uwumacs-dashboard)
+;;; uwumacs-dashboard.el ends here
 #+end_src
 

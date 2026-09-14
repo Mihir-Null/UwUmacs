@@ -1,5 +1,5 @@
 # Machine-specific settings
-/lambda-library/lambda-user/private.el
+/lisp/private.el
 # Packages, persistent local settings, caches and sessions
 /var/
 /elpa/

@@ -1,7 +1,7 @@
 #+TITLE: Sane defaults: files, text, interface and windows
 #+OPTIONS: toc:3 num:nil
 #+STARTUP: overview
-#+PROPERTY: header-args:emacs-lisp :tangle ../lambda-library/lambda-user/uwumacs-defaults.el :eval never :comments no :padline no :mkdirp yes
+#+PROPERTY: header-args:emacs-lisp :tangle ../lisp/uwumacs-defaults.el :eval never :comments no :padline no :mkdirp yes
 
 [[file:index.org][Reading guide]] · [[file:20-user-policy.org][Startup policy]] · [[file:45-frames.org][Frames]]
 

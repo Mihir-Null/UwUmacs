@@ -1,7 +1,7 @@
 #+TITLE: Completion: Vertico, Consult, Embark, Corfu
 #+OPTIONS: toc:3 num:nil
 #+STARTUP: overview
-#+PROPERTY: header-args:emacs-lisp :tangle ../lambda-library/lambda-user/uwumacs-completion.el :eval never :comments no :padline no :mkdirp yes
+#+PROPERTY: header-args:emacs-lisp :tangle ../lisp/uwumacs-completion.el :eval never :comments no :padline no :mkdirp yes
 
 [[file:index.org][Reading guide]] · [[file:25-defaults.org][Defaults]] · [[file:41-leader.org][Leader]] · [[file:62-help.org][Help]]
 

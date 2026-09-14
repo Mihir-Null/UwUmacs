@@ -5,14 +5,14 @@
 
 ;;; Code:
 
-(require 'starter-platform)
+(require 'uwumacs-platform)
 (require 'uwumacs-defaults)
 (require 'uwumacs-leader)
-(make-directory starter-org-directory t)
-(setopt org-directory starter-org-directory
-        org-default-notes-file (expand-file-name "inbox.org" starter-org-directory)
-        org-agenda-files (list starter-org-directory)
-        org-archive-location (expand-file-name "archive.org::datetree/" starter-org-directory)
+(make-directory uwumacs-org-directory t)
+(setopt org-directory uwumacs-org-directory
+        org-default-notes-file (expand-file-name "inbox.org" uwumacs-org-directory)
+        org-agenda-files (list uwumacs-org-directory)
+        org-archive-location (expand-file-name "archive.org::datetree/" uwumacs-org-directory)
         org-id-locations-file (expand-file-name "org-id-locations" uwumacs-cache-dir)
         org-id-method 'ts
         org-id-link-to-org-use-id 'create-if-interactive)

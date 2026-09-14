@@ -7,20 +7,20 @@
 
 Ownership: *user configuration and subsequent development*. Emacs core supplies process creation and shell variables; Lambda installs and configures EAT, an external terminal package. This layer discovers platform paths and adds explicit entry points. PowerShell remains the ordinary Windows shell. MSYS2 UCRT64 is a separate choice, not a global environment replacement.
 
-* starter-platform
+* uwumacs-platform
 :PROPERTIES:
-:header-args:emacs-lisp: :tangle ../lambda-library/lambda-user/starter-platform.el :eval never :comments no :padline no :mkdirp yes
+:header-args:emacs-lisp: :tangle ../lisp/uwumacs-platform.el :eval never :comments no :padline no :mkdirp yes
 :END:
 
-Deployed file: [[file:../lambda-library/lambda-user/starter-platform.el][lambda-library/lambda-user/starter-platform.el]]. Edit the blocks here; generated Lisp is kept in Git for ordinary startup and review.
+Deployed file: [[file:../lisp/uwumacs-platform.el][lisp/uwumacs-platform.el]]. Edit the blocks here; generated Lisp is kept in Git for ordinary startup and review.
 
 ** Load seq
 
 Load this dependency before evaluating the forms that use its functions or variables. This preserves the existing startup dependency order.
 
-#+name: starter-platform-01-1
+#+name: uwumacs-platform-01-1
 #+begin_src emacs-lisp
-;;; starter-platform.el --- Portable platform defaults -*- lexical-binding: t; -*-
+;;; uwumacs-platform.el --- Portable platform defaults -*- lexical-binding: t; -*-
 ;; Generated from literate/30-platform.org; edit the Org source, then tangle.
 
 ;;; Commentary:
@@ -36,7 +36,7 @@ Load this dependency before evaluating the forms that use its functions or varia
 
 Load this dependency before evaluating the forms that use its functions or variables. This preserves the existing startup dependency order.
 
-#+name: starter-platform-02-1
+#+name: uwumacs-platform-02-1
 #+begin_src emacs-lisp
 (require 'subr-x)
 #+end_src
@@ -45,20 +45,20 @@ Load this dependency before evaluating the forms that use its functions or varia
 
 This Custom group gives the following settings a discoverable home in Emacs's built-in customization interface.
 
-#+name: starter-platform-03-1
+#+name: uwumacs-platform-03-1
 #+begin_src emacs-lisp
-(defgroup starter-platform nil
+(defgroup uwumacs-platform nil
   "Portable defaults for the Lambda learning configuration."
-  :group 'lambda-emacs)
+  :group 'uwumacs)
 #+end_src
 
 ** Distinguish Emacs home from personal documents
 
 Native Windows Emacs can use AppData as its home. USERPROFILE is a better default for user-owned projects and documents; other platforms retain their normal home resolution.
 
-#+name: starter-platform-04-1
+#+name: uwumacs-platform-04-1
 #+begin_src emacs-lisp
-(defun starter--user-home-directory ()
+(defun uwumacs--user-home-directory ()
   "Return the user's ordinary home directory for configuration defaults.
 On native Windows, Emacs may define HOME as AppData/Roaming, so prefer
 USERPROFILE for user-owned projects and documents."
@@ -72,10 +72,10 @@ USERPROFILE for user-owned projects and documents."
 
 This is a portable user default, not a machine-specific absolute path. private.el can override it before the project module consumes it.
 
-#+name: starter-platform-05-1
+#+name: uwumacs-platform-05-1
 #+begin_src emacs-lisp
-(defcustom starter-project-directory
-  (expand-file-name "Projects/" (starter--user-home-directory))
+(defcustom uwumacs-project-directory
+  (expand-file-name "Projects/" (uwumacs--user-home-directory))
   "Default place to look for projects."
   :type 'directory)
 #+end_src
@@ -84,10 +84,10 @@ This is a portable user default, not a machine-specific absolute path. private.e
 
 The starter uses a small independent Org directory. Change it explicitly when choosing a different notes location.
 
-#+name: starter-platform-06-1
+#+name: uwumacs-platform-06-1
 #+begin_src emacs-lisp
-(defcustom starter-org-directory
-  (expand-file-name "Documents/org/" (starter--user-home-directory))
+(defcustom uwumacs-org-directory
+  (expand-file-name "Documents/org/" (uwumacs--user-home-directory))
   "Portable starter Org directory."
   :type 'directory)
 #+end_src
@@ -96,9 +96,9 @@ The starter uses a small independent Org directory. Change it explicitly when ch
 
 Trying candidates in order lets the same configuration use a suitable installed shell across machines.
 
-#+name: starter-platform-07-1
+#+name: uwumacs-platform-07-1
 #+begin_src emacs-lisp
-(defun starter--first-executable (&rest programs)
+(defun uwumacs--first-executable (&rest programs)
   "Return the first executable found in PROGRAMS."
   (seq-some #'executable-find programs))
 #+end_src
@@ -107,9 +107,9 @@ Trying candidates in order lets the same configuration use a suitable installed 
 
 The POSIX shell importer cannot ask PowerShell to evaluate Unix shell syntax. This adapter lets Windows keep its inherited process environment.
 
-#+name: starter-platform-08-1
+#+name: uwumacs-platform-08-1
 #+begin_src emacs-lisp
-(defun starter--skip-exec-path-from-shell-on-windows (&rest _)
+(defun uwumacs--skip-exec-path-from-shell-on-windows (&rest _)
   "Keep native Windows Emacs's inherited process environment unchanged."
   nil)
 #+end_src
@@ -120,9 +120,9 @@ The project assignment waits for Lambda's project module so its initialization c
 
 The following blocks are consecutive fragments of this source section. Some share an open Lisp form; edit them here and rebuild the whole chapter rather than evaluating a fragment on its own.
 
-#+name: starter-platform-09-1
+#+name: uwumacs-platform-09-1
 #+begin_src emacs-lisp
-(defun starter-platform-apply ()
+(defun uwumacs-platform-apply ()
   "Apply the currently configured portable platform defaults."
   ;; Choose a usable shell without assuming a username, Homebrew prefix, Nix profile,
   ;; or conventional Unix filesystem on Windows.
@@ -142,7 +142,7 @@ The following blocks are consecutive fragments of this source section. Some shar
        (setq explicit-shell-file-name (executable-find "cmd.exe")
              shell-command-switch "/c"))))
     ('darwin
-     (when-let ((shell (starter--first-executable "zsh" "bash" "sh")))
+     (when-let ((shell (uwumacs--first-executable "zsh" "bash" "sh")))
        (setq-default shell-file-name shell)
        (setq explicit-shell-file-name shell
 #+end_src
@@ -151,11 +151,11 @@ The following blocks are consecutive fragments of this source section. Some shar
 
 Lambda configures exec-path-from-shell.  It supports POSIX shells, so native Windows keeps the environment inherited from Windows instead of asking PowerShell to evaluate Unix `printf' syntax.  Linux/macOS retain Lambda's
 
-#+name: starter-platform-09-2
+#+name: uwumacs-platform-09-2
 #+begin_src emacs-lisp
              shell-command-switch "-c")))
     ('gnu/linux
-     (when-let ((shell (starter--first-executable "zsh" "bash" "sh")))
+     (when-let ((shell (uwumacs--first-executable "zsh" "bash" "sh")))
        (setq-default shell-file-name shell)
        (setq explicit-shell-file-name shell
              shell-command-switch "-c"))))
@@ -167,10 +167,10 @@ Lambda configures exec-path-from-shell.  It supports POSIX shells, so native Win
   (if (eq system-type 'windows-nt)
       (with-eval-after-load 'exec-path-from-shell
         (unless (advice-member-p
-                 #'starter--skip-exec-path-from-shell-on-windows
+                 #'uwumacs--skip-exec-path-from-shell-on-windows
                  #'exec-path-from-shell-initialize)
           (advice-add #'exec-path-from-shell-initialize :override
-                      #'starter--skip-exec-path-from-shell-on-windows)))
+                      #'uwumacs--skip-exec-path-from-shell-on-windows)))
     (with-eval-after-load 'exec-path-from-shell
       (setopt exec-path-from-shell-variables
               '("PATH" "MANPATH" "NIX_PATH" "NIX_PROFILES")))))
@@ -180,33 +180,33 @@ Lambda configures exec-path-from-shell.  It supports POSIX shells, so native Win
 
 The core require/provide protocol records that this file loaded. Later requires can reuse the feature without evaluating the module again.
 
-#+name: starter-platform-10-1
+#+name: uwumacs-platform-10-1
 #+begin_src emacs-lisp
 ;; Do not force a font here. Inheriting the platform default makes first boot robust.
 ;; Fonts are chosen in the appearance chapter.
 
-(provide 'starter-platform)
-;;; starter-platform.el ends here
+(provide 'uwumacs-platform)
+;;; uwumacs-platform.el ends here
 #+end_src
 
-* starter-setup-terminal
+* uwumacs-terminal
 :PROPERTIES:
-:header-args:emacs-lisp: :tangle ../lambda-library/lambda-user/starter-setup-terminal.el :eval never :comments no :padline no :mkdirp yes
+:header-args:emacs-lisp: :tangle ../lisp/uwumacs-terminal.el :eval never :comments no :padline no :mkdirp yes
 :END:
 
-Deployed file: [[file:../lambda-library/lambda-user/starter-setup-terminal.el][lambda-library/lambda-user/starter-setup-terminal.el]]. Edit the blocks here; generated Lisp is kept in Git for ordinary startup and review.
+Deployed file: [[file:../lisp/uwumacs-terminal.el][lisp/uwumacs-terminal.el]]. Edit the blocks here; generated Lisp is kept in Git for ordinary startup and review.
 
 ** Load cl-lib
 
 Load this dependency before evaluating the forms that use its functions or variables. This preserves the existing startup dependency order.
 
-#+name: starter-setup-terminal-01-1
+#+name: uwumacs-terminal-01-1
 #+begin_src emacs-lisp
-;;; starter-setup-terminal.el --- Integrated terminal entries -*- lexical-binding: t; -*-
+;;; uwumacs-terminal.el --- Integrated terminal entries -*- lexical-binding: t; -*-
 ;; Generated from literate/30-platform.org; edit the Org source, then tangle.
 
 ;;; Commentary:
-;; Keep the ordinary Windows shell policy in `starter-platform.el', while exposing
+;; Keep the ordinary Windows shell policy in `uwumacs-platform.el', while exposing
 ;; MSYS2 as an explicit Unix-like development terminal through EAT.
 ;;
 ;; MSYS2 documents the essential environment setup as setting MSYSTEM to UCRT64,
@@ -224,20 +224,20 @@ Load this dependency before evaluating the forms that use its functions or varia
 
 This Custom group gives the following settings a discoverable home in Emacs's built-in customization interface.
 
-#+name: starter-setup-terminal-02-1
+#+name: uwumacs-terminal-02-1
 #+begin_src emacs-lisp
-(defgroup starter-terminal nil
+(defgroup uwumacs-terminal nil
   "Integrated terminal entries for the starter configuration."
-  :group 'lambda-emacs)
+  :group 'uwumacs)
 #+end_src
 
 ** Locate the optional POSIX helper
 
 The default installation path can be overridden locally or through the environment. It is only used for the Windows terminal adapter.
 
-#+name: starter-setup-terminal-03-1
+#+name: uwumacs-terminal-03-1
 #+begin_src emacs-lisp
-(defcustom starter-msys2-root
+(defcustom uwumacs-msys2-root
   (file-name-as-directory
    (or (getenv "MSYS2_ROOT") "C:/msys64/"))
   "Root directory of the MSYS2 installation on Windows."
@@ -248,39 +248,39 @@ The default installation path can be overridden locally or through the environme
 
 Return the configured MSYS2 Bash executable path.
 
-#+name: starter-setup-terminal-04-1
+#+name: uwumacs-terminal-04-1
 #+begin_src emacs-lisp
-(defun starter--msys2-bash ()
+(defun uwumacs--msys2-bash ()
   "Return the configured MSYS2 Bash executable path."
-  (expand-file-name "usr/bin/bash.exe" starter-msys2-root))
+  (expand-file-name "usr/bin/bash.exe" uwumacs-msys2-root))
 #+end_src
 
 **  msys2 env
 
 Return the configured MSYS2 env executable path.
 
-#+name: starter-setup-terminal-05-1
+#+name: uwumacs-terminal-05-1
 #+begin_src emacs-lisp
-(defun starter--msys2-env ()
+(defun uwumacs--msys2-env ()
   "Return the configured MSYS2 env executable path."
-  (expand-file-name "usr/bin/env.exe" starter-msys2-root))
+  (expand-file-name "usr/bin/env.exe" uwumacs-msys2-root))
 #+end_src
 
 ** Build a child-scoped search path
 
 The terminal helper needs MSYS2 tools. Its process environment receives that path without changing the editor's global PATH or the default shell.
 
-#+name: starter-setup-terminal-06-1
+#+name: uwumacs-terminal-06-1
 #+begin_src emacs-lisp
-(defun starter--msys2-process-path ()
+(defun uwumacs--msys2-process-path ()
   "Return PATH for an MSYS2 UCRT64 child process.
 
 The MSYS2 POSIX tools are included so EAT can find its `sh' and `stty'
 helpers.  This value is only installed in the dynamically scoped child
 environment; it does not alter Emacs's global PATH or `exec-path'."
   (mapconcat #'identity
-             (list (expand-file-name "ucrt64/bin" starter-msys2-root)
-                   (expand-file-name "usr/bin" starter-msys2-root)
+             (list (expand-file-name "ucrt64/bin" uwumacs-msys2-root)
+                   (expand-file-name "usr/bin" uwumacs-msys2-root)
                    (or (getenv "PATH") ""))
              (if (characterp path-separator)
                  (char-to-string path-separator)
@@ -291,21 +291,21 @@ environment; it does not alter Emacs's global PATH or `exec-path'."
 
 EAT launches a POSIX helper even when the requested shell is PowerShell. This scoped wrapper substitutes MSYS2 env.exe and binds native trampoline compilation off during the temporary primitive wrapper. The original process function is restored when the call returns.
 
-#+name: starter-setup-terminal-07-1
+#+name: uwumacs-terminal-07-1
 #+begin_src emacs-lisp
-(defun starter--eat-with-msys2-process-wrapper (function &rest args)
+(defun uwumacs--eat-with-msys2-process-wrapper (function &rest args)
   "Call EAT FUNCTION with ARGS through MSYS2's POSIX process wrapper.
 
 EAT currently starts its terminal process with `/usr/bin/env sh', a path
 which native Windows Emacs cannot resolve.  Translate only that outer helper
 to the configured MSYS2 `env.exe'; paths used inside the MSYS2 shell retain
 their normal POSIX meaning."
-  (let ((env (starter--msys2-env))
+  (let ((env (uwumacs--msys2-env))
         (make-process-function (symbol-function 'make-process))
         (process-environment (copy-sequence process-environment)))
     (unless (file-executable-p env)
-      (user-error "MSYS2 env not found at %s; customize starter-msys2-root" env))
-    (setenv "PATH" (starter--msys2-process-path))
+      (user-error "MSYS2 env not found at %s; customize uwumacs-msys2-root" env))
+    (setenv "PATH" (uwumacs--msys2-process-path))
     ;; Rebinding a C primitive can otherwise make native-comp try to write a
     ;; trampoline beside the Emacs installation, which is normally read-only.
     (let ((native-comp-enable-subr-trampolines nil))
@@ -324,16 +324,16 @@ their normal POSIX meaning."
 
 This entry point uses the platform's normal shell and the scoped Windows adapter when necessary.
 
-#+name: starter-setup-terminal-08-1
+#+name: uwumacs-terminal-08-1
 #+begin_src emacs-lisp
-(defun starter-eat (&optional arg)
+(defun uwumacs-eat (&optional arg)
   "Open an ordinary EAT terminal, portably passing prefix ARG.
 
 On native Windows, use MSYS2 only for EAT's POSIX launch helper.  The terminal
-still runs the native shell selected by `starter-platform-apply'."
+still runs the native shell selected by `uwumacs-platform-apply'."
   (interactive "P")
   (if (eq system-type 'windows-nt)
-      (starter--eat-with-msys2-process-wrapper #'eat nil arg)
+      (uwumacs--eat-with-msys2-process-wrapper #'eat nil arg)
     (eat nil arg)))
 #+end_src
 
@@ -341,13 +341,13 @@ still runs the native shell selected by `starter-platform-apply'."
 
 Core project.el supplies the current project location; EAT supplies the terminal. A missing project falls back to the normal directory.
 
-#+name: starter-setup-terminal-09-1
+#+name: uwumacs-terminal-09-1
 #+begin_src emacs-lisp
-(defun starter-eat-project (&optional arg)
+(defun uwumacs-eat-project (&optional arg)
   "Open project-local EAT, portably passing prefix ARG."
   (interactive "P")
   (if (eq system-type 'windows-nt)
-      (starter--eat-with-msys2-process-wrapper #'eat-project arg)
+      (uwumacs--eat-with-msys2-process-wrapper #'eat-project arg)
     (eat-project arg)))
 #+end_src
 
@@ -355,9 +355,9 @@ Core project.el supplies the current project location; EAT supplies the terminal
 
 This separate Windows command selects UCRT64 Bash and its environment. It does not replace PowerShell for ordinary terminals.
 
-#+name: starter-setup-terminal-10-1
+#+name: uwumacs-terminal-10-1
 #+begin_src emacs-lisp
-(defun starter-eat-msys2-ucrt64 (&optional arg)
+(defun uwumacs-eat-msys2-ucrt64 (&optional arg)
   "Open an MSYS2 UCRT64 login shell in EAT.
 
 The terminal starts in `default-directory' and leaves Emacs's native Windows
@@ -366,16 +366,16 @@ multiple numbered terminal buffers can be created in the usual EAT way."
   (interactive "P")
   (unless (eq system-type 'windows-nt)
     (user-error "The MSYS2 UCRT64 terminal entry is for native Windows Emacs"))
-  (let ((bash (starter--msys2-bash)))
+  (let ((bash (uwumacs--msys2-bash)))
     (unless (file-executable-p bash)
-      (user-error "MSYS2 Bash not found at %s; customize starter-msys2-root" bash))
+      (user-error "MSYS2 Bash not found at %s; customize uwumacs-msys2-root" bash))
     (let ((process-environment (copy-sequence process-environment))
           (eat-buffer-name "*eat:msys2-ucrt64*"))
       ;; MSYS2's documented environment selector.  CHERE_INVOKING keeps the
       ;; current Emacs directory instead of changing to the MSYS2 home directory.
       (setenv "MSYSTEM" "UCRT64")
       (setenv "CHERE_INVOKING" "1")
-      (starter--eat-with-msys2-process-wrapper
+      (uwumacs--eat-with-msys2-process-wrapper
        #'eat (format "%s --login -i" (shell-quote-argument bash)) arg))))
 #+end_src
 
@@ -383,7 +383,7 @@ multiple numbered terminal buffers can be created in the usual EAT way."
 
 The three commands keep ordinary, project-local and MSYS2 sessions discoverable in one Lambda leader namespace.
 
-#+name: starter-setup-terminal-11-1
+#+name: uwumacs-terminal-11-1
 #+begin_src emacs-lisp
 #+end_src
 
@@ -391,9 +391,9 @@ The three commands keep ordinary, project-local and MSYS2 sessions discoverable 
 
 The core require/provide protocol records that this file loaded. Later requires can reuse the feature without evaluating the module again.
 
-#+name: starter-setup-terminal-13-1
+#+name: uwumacs-terminal-13-1
 #+begin_src emacs-lisp
-(provide 'starter-setup-terminal)
-;;; starter-setup-terminal.el ends here
+(provide 'uwumacs-terminal)
+;;; uwumacs-terminal.el ends here
 #+end_src
 

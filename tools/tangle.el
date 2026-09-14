@@ -36,7 +36,7 @@
                      (not (member ".." (split-string output "/")))
                      (or (member output '("early-init.el" "init.el"))
                          (and (string-match-p
-                               "\\`lambda-library/lambda-user/[[:alnum:]_.-]+\\.el\\'" output)
+                               "\\`lisp/[[:alnum:]_.-]+\\.el\\'" output)
                               (not (string-suffix-p "/private.el" output)))))
           (error "Output is outside generated configuration paths: %S" output))))
     manifest))

@@ -3,7 +3,7 @@
 
 ;;; Code:
 
-(defvar uwumacs-lisp-dir (expand-file-name "lambda-library/lambda-user/" user-emacs-directory)
+(defvar uwumacs-lisp-dir (expand-file-name "lisp/" user-emacs-directory)
   "Directory of the generated configuration modules.")
 
 (defvar uwumacs-var-dir (expand-file-name "var/" user-emacs-directory)

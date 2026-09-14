@@ -39,7 +39,7 @@
 (defun uwumacs-projects-directory ()
   "Open the directory where projects live."
   (interactive)
-  (dired starter-project-directory))
+  (dired uwumacs-project-directory))
 
 (use-package project
   :ensure nil

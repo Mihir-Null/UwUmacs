@@ -1,7 +1,7 @@
 #+TITLE: The UwUmacs leader: real keys under SPC
 #+OPTIONS: toc:3 num:nil
 #+STARTUP: overview
-#+PROPERTY: header-args:emacs-lisp :tangle ../lambda-library/lambda-user/uwumacs-leader.el :eval never :comments no :padline no :mkdirp yes
+#+PROPERTY: header-args:emacs-lisp :tangle ../lisp/uwumacs-leader.el :eval never :comments no :padline no :mkdirp yes
 
 [[file:index.org][Reading guide]] · [[file:40-editing.org][Selection-first editing]] · [[file:../ARCHITECTURE.md][Architecture]]
 

@@ -1,9 +1,9 @@
 #+TITLE: Selection-first editing with Meow
 #+OPTIONS: toc:3 num:nil
 #+STARTUP: overview
-#+PROPERTY: header-args:emacs-lisp :tangle ../lambda-library/lambda-user/starter-setup-meow.el :eval never :comments no :padline no :mkdirp yes
+#+PROPERTY: header-args:emacs-lisp :tangle ../lisp/uwumacs-meow.el :eval never :comments no :padline no :mkdirp yes
 
-[[file:index.org][Reading guide]] · [[file:41-leader.org][The UwUmacs leader]] · [[file:../lambda-library/lambda-user/keybindings.org][Cheat sheet]]
+[[file:index.org][Reading guide]] · [[file:41-leader.org][The UwUmacs leader]] · [[file:../lisp/keybindings.org][Cheat sheet]]
 
 Ownership: *user configuration*. The key grammar is adapted from Colin
 McLear's Meow setup (GPL-3.0-or-later). Meow is an external package; this
@@ -31,7 +31,7 @@ Run =M-x meow-tutor= once. It teaches the grammar interactively in an hour.
 * The module
 
 #+begin_src emacs-lisp
-;;; starter-setup-meow.el --- Selection-first editing -*- lexical-binding: t; -*-
+;;; uwumacs-meow.el --- Selection-first editing -*- lexical-binding: t; -*-
 ;; Generated from literate/40-editing.org; edit the Org source, then tangle.
 
 ;; Grammar adapted from Colin McLear's cpm-setup-meow.el (GPL-3.0-or-later).
@@ -51,7 +51,7 @@ shifted key does the same while *extending* the current selection. Digits
 pick one of the numbered expansion hints Meow draws after a movement.
 
 #+begin_src emacs-lisp
-(defun starter-meow-setup ()
+(defun uwumacs-meow-setup ()
   "Install the QWERTY selection grammar and the Motion-state basics."
   ;; Motion state: application buffers keep their own keys; only j/k move.
   (meow-motion-define-key
@@ -157,7 +157,7 @@ set, Meow is enabled globally and the leader is attached.
   (with-eval-after-load 'org
     ;; Treat @ as part of symbols/words during Meow movement in Org.
     (modify-syntax-entry ?@ "_" org-mode-syntax-table))
-  (starter-meow-setup)
+  (uwumacs-meow-setup)
   (meow-global-mode 1)
   (uwumacs-leader-enable))
 
@@ -166,8 +166,8 @@ set, Meow is enabled globally and the leader is attached.
 * Publish the module
 
 #+begin_src emacs-lisp
-(provide 'starter-setup-meow)
-;;; starter-setup-meow.el ends here
+(provide 'uwumacs-meow)
+;;; uwumacs-meow.el ends here
 #+end_src
 
 * Where the keys are

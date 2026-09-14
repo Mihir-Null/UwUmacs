@@ -8,9 +8,9 @@
 - Start Menu shortcut: Emacs 31.1 `runemacs.exe`, without config arguments.
 - Editable portable preferences and startup documentation: `literate/`.
 - Generated startup: root `early-init.el` and `init.el`.
-- Generated user modules: `lambda-library/lambda-user/*.el` except the local `private.el`.
-- Tracked theme source: `lambda-library/lambda-user/themes/doom-sonokai-theme.el` (not tangled or package-managed).
-- Private machine overrides: `lambda-library/lambda-user/private.el` (ignored).
+- Generated user modules: `lisp/*.el` except the local `private.el`.
+- Tracked theme source: `lisp/themes/doom-sonokai-theme.el` (not tangled or package-managed).
+- Private machine overrides: `lisp/private.el` (ignored).
 - Installed packages: `var/elpa/` (ignored).
 - Persistent saved preferences: `var/etc/custom.el` (ignored, back up).
 
@@ -22,8 +22,8 @@ For a fresh deployment, clone this complete branch into the chosen Emacs init di
 
 Read [the literate guide](../literate/index.org) before editing portable policy.
 All code chapters are in `literate/`; targets retain the existing `.emacs.d`
-layout beneath the repository root. Run `starter-literate-tangle`, then
-`starter-literate-check`, and commit Org plus generated Lisp together. The
+layout beneath the repository root. Run `uwumacs-literate-tangle`, then
+`uwumacs-literate-check`, and commit Org plus generated Lisp together. The
 standalone `tools/tangle.el` does the same work without loading user startup.
 It stages all outputs and validates them before updating changed files. A
 failed build before copying leaves the deployed configuration intact; copying
@@ -37,7 +37,7 @@ Emacs to apply changes. Keep `private.el` and `var/` backups independent of Git.
 1. `early-init.el` establishes framework directories and packages.
 2. `lambda-user/early-config.el` selects installation topics before the installer runs.
 3. `init.el` loads `lambda-user/config.el`.
-4. Base framework modules define variables; `starter-platform` defines portable paths.
+4. Base framework modules define variables; `uwumacs-platform` defines portable paths.
 5. Optional `private.el` loads once, then portable platform settings are applied.
 6. After-init and startup hooks load the remaining editor, language, and UI layers.
 7. The framework's deferred Customize loader reads `var/etc/custom.el` when `cus-edit` loads. Saved Customize values can override earlier values; keep portable preferences in tracked source and use Customize for local choices deliberately.

@@ -1,5 +1,5 @@
-;;; starter-setup-treesit.el --- Portable Tree-sitter policy -*- lexical-binding: t; -*-
-;; Generated from literate/60-programming.org; edit the Org source, then tangle.
+;;; uwumacs-treesit.el --- Portable Tree-sitter policy -*- lexical-binding: t; -*-
+;; Generated from literate/74-languages.org; edit the Org source, then tangle.
 
 ;;; Commentary:
 ;; Lambda supplies useful grammar recipes, but moving repository heads can start
@@ -12,10 +12,10 @@
 (require 'cl-lib)
 (require 'rx)
 (require 'treesit)
-(defgroup starter-treesit nil
+(defgroup uwumacs-treesit nil
   "Portable Tree-sitter policy for the starter configuration."
-  :group 'lambda-emacs)
-(defcustom starter-treesit-language-source-alist
+  :group 'uwumacs)
+(defcustom uwumacs-treesit-language-source-alist
   '((bash "https://github.com/tree-sitter/tree-sitter-bash"
           "8509e3229b863c255ab6b61f3bf74ad0bf14e8bc")
     (cmake "https://github.com/uyha/tree-sitter-cmake"
@@ -55,8 +55,8 @@ Those ABIs are loadable by Emacs 30 as well as newer Emacs releases.  Each
 entry has the same shape accepted by `treesit-language-source-alist':
 (LANGUAGE REPOSITORY REVISION &optional SOURCE-DIRECTORY CC CXX)."
   :type '(repeat sexp)
-  :group 'starter-treesit)
-(defconst starter-treesit-mode-remaps
+  :group 'uwumacs-treesit)
+(defconst uwumacs-treesit-mode-remaps
   '((yaml-mode yaml-ts-mode yaml)
     (bash-mode bash-ts-mode bash)
     (typescript-mode typescript-ts-mode typescript)
@@ -65,18 +65,18 @@ entry has the same shape accepted by `treesit-language-source-alist':
     (python-mode python-ts-mode python)
     (typst-mode typst-ts-mode typst))
   "Classic mode, Tree-sitter mode, and grammar triples managed here.")
-(defun starter-treesit--language-available-p (language)
+(defun uwumacs-treesit--language-available-p (language)
   "Return non-nil when LANGUAGE can be loaded by this Emacs build."
   (and (treesit-available-p)
        (condition-case nil
            (treesit-language-available-p language)
          (error nil))))
-(defun starter-treesit-apply-pinned-sources ()
+(defun uwumacs-treesit-apply-pinned-sources ()
   "Replace Lambda's moving grammar recipes with pinned recipes."
-  (dolist (source starter-treesit-language-source-alist)
+  (dolist (source uwumacs-treesit-language-source-alist)
     (setf (alist-get (car source) treesit-language-source-alist)
           (cdr source))))
-(defun starter-treesit--git-clone-revision
+(defun uwumacs-treesit--git-clone-revision
     (original-function url revision workdir)
   "Clone URL at exact REVISION into WORKDIR for `treesit'.
 
@@ -101,25 +101,25 @@ ORIGINAL-FUNCTION unchanged."
          "git" nil t nil "-C" workdir "checkout" "--detach" "--quiet"
          "FETCH_HEAD"))
     (funcall original-function url revision workdir)))
-(defun starter-treesit-refresh-mode-remaps (&rest _)
+(defun uwumacs-treesit-refresh-mode-remaps (&rest _)
   "Refresh managed mode remaps for the grammars available right now.
 
 Any unconditional remaps inherited from Lambda are removed first.  A remap is
 then added only when its target mode exists and its grammar loads successfully."
   (interactive)
-  (let ((managed-modes (mapcar #'car starter-treesit-mode-remaps)))
+  (let ((managed-modes (mapcar #'car uwumacs-treesit-mode-remaps)))
     (setq major-mode-remap-alist
           (cl-remove-if
            (lambda (remap) (memq (car remap) managed-modes))
            major-mode-remap-alist)))
-  (dolist (spec starter-treesit-mode-remaps)
+  (dolist (spec uwumacs-treesit-mode-remaps)
     (pcase-let ((`(,classic-mode ,treesit-mode ,language) spec))
       (when (and (fboundp treesit-mode)
-                 (starter-treesit--language-available-p language))
+                 (uwumacs-treesit--language-available-p language))
         (add-to-list 'major-mode-remap-alist
                      (cons classic-mode treesit-mode) t))))
   major-mode-remap-alist)
-(defun starter-treesit-install-language-grammar (language)
+(defun uwumacs-treesit-install-language-grammar (language)
   "Install pinned grammar LANGUAGE, then refresh conditional remaps."
   (interactive
    (list
@@ -127,36 +127,36 @@ then added only when its target mode exists and its grammar loads successfully."
      (completing-read
       "Install pinned grammar: "
       (mapcar (lambda (source) (symbol-name (car source)))
-              starter-treesit-language-source-alist)
+              uwumacs-treesit-language-source-alist)
       nil t))))
-  (unless (assq language starter-treesit-language-source-alist)
+  (unless (assq language uwumacs-treesit-language-source-alist)
     (user-error "No pinned Tree-sitter recipe for %s" language))
-  (starter-treesit-apply-pinned-sources)
+  (uwumacs-treesit-apply-pinned-sources)
   (treesit-install-language-grammar language)
-  (starter-treesit-refresh-mode-remaps))
-(defun starter-treesit-install-all-grammars ()
+  (uwumacs-treesit-refresh-mode-remaps))
+(defun uwumacs-treesit-install-all-grammars ()
   "Install every missing pinned grammar and refresh mode remaps."
   (interactive)
   (unless (treesit-available-p)
     (user-error "This Emacs build does not include Tree-sitter support"))
-  (starter-treesit-apply-pinned-sources)
-  (dolist (source starter-treesit-language-source-alist)
+  (uwumacs-treesit-apply-pinned-sources)
+  (dolist (source uwumacs-treesit-language-source-alist)
     (let ((language (car source)))
-      (unless (starter-treesit--language-available-p language)
+      (unless (uwumacs-treesit--language-available-p language)
         (treesit-install-language-grammar language))))
-  (starter-treesit-refresh-mode-remaps))
-(starter-treesit-apply-pinned-sources)
-(starter-treesit-refresh-mode-remaps)
-(unless (advice-member-p #'starter-treesit--git-clone-revision
+  (uwumacs-treesit-refresh-mode-remaps))
+(uwumacs-treesit-apply-pinned-sources)
+(uwumacs-treesit-refresh-mode-remaps)
+(unless (advice-member-p #'uwumacs-treesit--git-clone-revision
                          #'treesit--git-clone-repo)
   (advice-add #'treesit--git-clone-repo :around
-              #'starter-treesit--git-clone-revision))
+              #'uwumacs-treesit--git-clone-revision))
 ;; Lambda's bulk command calls the built-in installer directly.  Refresh after
 ;; each successful installation so a restart is not required before the remap
 ;; becomes active.
-(unless (advice-member-p #'starter-treesit-refresh-mode-remaps
+(unless (advice-member-p #'uwumacs-treesit-refresh-mode-remaps
                          #'treesit-install-language-grammar)
   (advice-add #'treesit-install-language-grammar :after
-              #'starter-treesit-refresh-mode-remaps))
-(provide 'starter-setup-treesit)
-;;; starter-setup-treesit.el ends here
+              #'uwumacs-treesit-refresh-mode-remaps))
+(provide 'uwumacs-treesit)
+;;; uwumacs-treesit.el ends here

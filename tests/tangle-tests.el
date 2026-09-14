@@ -52,7 +52,7 @@
 
 (ert-deftest dots-tangle-rejects-private-and-traversal-targets ()
   (dots-tangle-test-fixture
-    (dolist (target '("lambda-library/lambda-user/private.el" "../outside.el" "var/etc/custom.el"))
+    (dolist (target '("lisp/private.el" "../outside.el" "var/etc/custom.el"))
       (dots-tangle-test-write root "literate/manifest.json"
         (json-serialize `(:sources ["test.org"] :outputs [,target])))
       (should-error (dots-literate-build root t)))

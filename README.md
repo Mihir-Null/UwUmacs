@@ -7,15 +7,15 @@ This repository owns both startup and personal configuration, with a pinned Lamb
 ## Read and edit the literate configuration
 
 Start at **[literate/index.org](literate/index.org)**, also available from the
-dashboard's **Config** button or `M-x starter-literate-open`. The nested chapters
+dashboard's **Config** button or `M-x uwumacs-literate-open`. The nested chapters
 pair small code blocks with explanations and distinguish Emacs core facilities,
 pinned Lambda code, user choices and later development additions.
 
 Edit portable configuration in `literate/`, save it, then run:
 
 ```text
-M-x starter-literate-tangle
-M-x starter-literate-check
+M-x uwumacs-literate-tangle
+M-x uwumacs-literate-check
 ```
 
 The first command stages and validates generated Lisp before updating the deployed
@@ -52,7 +52,7 @@ packages; external runtimes and language servers remain your responsibility.
 ├── literate/                   # editable, documented source chapters
 ├── early-init.el               # generated Lambda startup
 ├── init.el                     # generated Lambda startup
-├── lambda-library/
+├── lisp/
 │   ├── lambda-setup/            # included Lambda framework
 │   └── lambda-user/             # generated user Lisp + local private.el
 │       ├── config.el           # enabled modules
@@ -124,7 +124,7 @@ Not enabled initially (and unrelated package topics are excluded from automatic 
 - language-specific IDE packages beyond Lambda's general programming layer.
 
 Nix, Racket, and Guile/Scheme packages remain explicit choices through
-`starter-language-packages`; no language runtime or server is silently assumed.
+`uwumacs-language-packages`; no language runtime or server is silently assumed.
 
 ## Tree-sitter grammars
 
@@ -135,19 +135,19 @@ or 14, keeping every recipe within Emacs 30's supported parser ABI range.
 Install one grammar with:
 
 ```text
-M-x starter-treesit-install-language-grammar
+M-x uwumacs-treesit-install-language-grammar
 ```
 
 Or install every pinned grammar with:
 
 ```text
-M-x starter-treesit-install-all-grammars
+M-x uwumacs-treesit-install-all-grammars
 ```
 
 You need Git plus a C/C++ compiler visible to Emacs.  On the current Windows
 setup, `C:/msys64/ucrt64/bin/` supplies GCC.  A `*-ts-mode` remap is added only
 after its grammar loads successfully; otherwise the classic major mode remains
-active.  `M-x starter-treesit-refresh-mode-remaps` rechecks this without a
+active.  `M-x uwumacs-treesit-refresh-mode-remaps` rechecks this without a
 restart.
 
 ## Integrated terminals
@@ -163,7 +163,7 @@ SPC o m   MSYS2 UCRT64 Bash in EAT (native Windows)
 On native Windows, EAT still expects a POSIX `/usr/bin/env sh` launch helper.
 The starter terminal module translates that helper to the configured MSYS2
 installation while leaving the actual ordinary terminal shell as PowerShell.
-Set `starter-msys2-root` (or `MSYS2_ROOT`) if MSYS2 is not in `C:/msys64/`.
+Set `uwumacs-msys2-root` (or `MSYS2_ROOT`) if MSYS2 is not in `C:/msys64/`.
 
 Native Windows Emacs uses pipes rather than a Unix PTY.  Ordinary command-line
 work is supported, but job control and some full-screen terminal applications
@@ -189,30 +189,30 @@ Eglot does not auto-start by default.  Once a language server is installed, add
 its modes in `private.el`, for example:
 
 ```elisp
-(setq starter-eglot-auto-start-modes '(python-mode python-ts-mode))
+(setq uwumacs-eglot-auto-start-modes '(python-mode python-ts-mode))
 ```
 
 Optional editing packages use the same policy:
 
 ```elisp
-(setq starter-language-packages '(nix racket guile))
+(setq uwumacs-language-packages '(nix racket guile))
 ```
 
 ## Keybindings cheat sheet
 
 On the dashboard, click **Keys & commands** or press `?`. From Meow normal or
 motion state, use `SPC H`; `SPC h` returns home. The editable, offline
-[cheat sheet](lambda-library/lambda-user/keybindings.org) covers Meow, files,
+[cheat sheet](lisp/keybindings.org) covers Meow, files,
 projects, windows, terminals, language tools and live Emacs help.
 
 Fonts initialize before dashboard layout. Nerd Icons use the installed
-`starter-ui-nerd-font` family (default: `Symbols Nerd Font Mono`) and the
+`uwumacs-ui-nerd-font` family (default: `Symbols Nerd Font Mono`) and the
 package's specific glyph ranges. Dashboard heading/file icons respect
-`starter-ui-icons`, like the modeline and completion icons.
+`uwumacs-ui-icons`, like the modeline and completion icons.
 
 ## Starter UI
 
-`starter-setup-ui.el` is deliberately separate from behavior/navigation. It can be replaced without changing the editor architecture.
+`uwumacs-ui.el` is deliberately separate from behavior/navigation. It can be replaced without changing the editor architecture.
 
 Default presentation:
 
@@ -231,17 +231,17 @@ This takes presentation cues from Firemacs while deliberately not importing its 
 The default is:
 
 ```elisp
-(setq starter-ui-theme 'doom-sonokai)
+(setq uwumacs-ui-theme 'doom-sonokai)
 ```
 
-The port is stored in [`lambda-library/lambda-user/themes/`](lambda-library/lambda-user/themes/README.md), outside the package cache. It preserves Sonokai's default palette; the other Sonokai variants are not included.
+The port is stored in [`lisp/themes/`](lisp/themes/README.md), outside the package cache. It preserves Sonokai's default palette; the other Sonokai variants are not included.
 
-For a portable change, edit `starter-ui-theme` in `literate/50-appearance.org` and run `M-x starter-literate-tangle`. For a machine-only override, set it in `lambda-library/lambda-user/private.el` before `starter-setup-ui` loads. Other `doom-themes` themes can be used the same way, for example:
+For a portable change, edit `uwumacs-ui-theme` in `literate/50-appearance.org` and run `M-x uwumacs-literate-tangle`. For a machine-only override, set it in `lisp/private.el` before `uwumacs-ui` loads. Other `doom-themes` themes can be used the same way, for example:
 
 ```elisp
-(setq starter-ui-theme 'doom-one)
+(setq uwumacs-ui-theme 'doom-one)
 ;; or
-(setq starter-ui-theme 'doom-gruvbox)
+(setq uwumacs-ui-theme 'doom-gruvbox)
 ```
 
 ### Nerd Icons
@@ -249,7 +249,7 @@ For a portable change, edit `starter-ui-theme` in `literate/50-appearance.org` a
 Icons are set to `auto` by default:
 
 ```elisp
-(setq starter-ui-icons 'auto)
+(setq uwumacs-ui-icons 'auto)
 ```
 
 In a graphical frame they are enabled only if `Symbols Nerd Font Mono` is actually installed. Missing fonts therefore produce a normal text modeline rather than broken glyphs.
@@ -265,18 +265,18 @@ On Linux/macOS this can install the font directly. On Windows the command downlo
 To force icons in a terminal that already uses a Nerd Font:
 
 ```elisp
-(setq starter-ui-icons t)
+(setq uwumacs-ui-icons t)
 ```
 
 To disable them everywhere:
 
 ```elisp
-(setq starter-ui-icons nil)
+(setq uwumacs-ui-icons nil)
 ```
 
 ## Portable defaults
 
-`starter-platform.el` avoids account- or machine-specific absolute paths.
+`uwumacs-platform.el` avoids account- or machine-specific absolute paths.
 
 - **Windows:** prefers `pwsh.exe`, then `powershell.exe`, then `cmd.exe`.
 - **GNU/Linux / Nix:** prefers `zsh`, then `bash`, then `sh`.
@@ -354,4 +354,4 @@ The original user layer was based on the May 2026 mirrors. The complete reposito
 
 While learning the system, keep this boundary:
 
-> **Do not edit `lambda-library/lambda-setup/` unless you have intentionally decided to fork framework behavior.** Prefer normal Emacs extension points in the user chapters under `literate/` (tangled into `lambda-user/`): variables, hooks, keymaps, `use-package`, and `with-eval-after-load`.
+> **Do not edit `lisp/lambda-setup/` unless you have intentionally decided to fork framework behavior.** Prefer normal Emacs extension points in the user chapters under `literate/` (tangled into `lambda-user/`): variables, hooks, keymaps, `use-package`, and `with-eval-after-load`.

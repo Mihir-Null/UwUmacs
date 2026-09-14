@@ -1,4 +1,4 @@
-;;; starter-setup-dashboard.el --- Doom-like home page -*- lexical-binding: t; -*-
+;;; uwumacs-dashboard.el --- Doom-like home page -*- lexical-binding: t; -*-
 ;; Generated from literate/55-dashboard.org; edit the Org source, then tangle.
 
 ;;; Commentary:
@@ -8,33 +8,33 @@
 ;;; Code:
 
 (require 'uwumacs-ui)
-(defun starter-dashboard-open-cheatsheet (&rest _)
+(defun uwumacs-dashboard-open-cheatsheet (&rest _)
   "Open the local keybindings and commands cheat sheet."
   (interactive)
   (find-file (expand-file-name "keybindings.org" uwumacs-lisp-dir)))
-(defun starter-dashboard-open-file (&rest _)
+(defun uwumacs-dashboard-open-file (&rest _)
   "Prompt for a file from a dashboard button."
   (interactive)
   (call-interactively #'find-file))
-(defun starter-dashboard-open-config (&rest _)
+(defun uwumacs-dashboard-open-config (&rest _)
   "Open the documented literate configuration."
   (interactive)
-  (starter-literate-open))
-(defun starter-dashboard-open-project (&rest _)
+  (uwumacs-literate-open))
+(defun uwumacs-dashboard-open-project (&rest _)
   "Choose a project using Emacs project.el."
   (interactive)
   (call-interactively #'project-switch-project))
-(defun starter-dashboard-open-recent (&rest _)
+(defun uwumacs-dashboard-open-recent (&rest _)
   "Choose a recently opened file."
   (interactive)
   (if (fboundp 'consult-recent-file)
       (call-interactively #'consult-recent-file)
     (call-interactively #'recentf-open-files)))
-(defun starter-dashboard-open-agenda (&rest _)
+(defun uwumacs-dashboard-open-agenda (&rest _)
   "Open the Org agenda."
   (interactive)
   (call-interactively #'org-agenda))
-(defun starter-dashboard-center-lines ()
+(defun uwumacs-dashboard-center-lines ()
   "Center each visible dashboard line using its rendered pixel width.
 Measure the actual buffer so heading display overlays and icon faces count.
 Exclude trailing padding and compensate for leading indentation."
@@ -69,12 +69,12 @@ Exclude trailing padding and compensate for leading indentation."
                   (add-text-properties start end
                                        `(line-prefix ,prefix wrap-prefix ,prefix)))))
             (forward-line)))))))
-(defun starter-dashboard-recenter (&rest _)
+(defun uwumacs-dashboard-recenter (&rest _)
   "Recompute visible dashboard text metrics after a font or theme change."
   (when-let* ((window (get-buffer-window dashboard-buffer-name t)))
     (with-selected-window window
       (with-current-buffer dashboard-buffer-name
-        (starter-dashboard-center-lines)))))
+        (uwumacs-dashboard-center-lines)))))
 (use-package dashboard
   :ensure t
   :demand t
@@ -113,22 +113,22 @@ Exclude trailing padding and compensate for leading indentation."
                                     dashboard-insert-newline
                                     dashboard-insert-init-info
                                     dashboard-insert-items
-                                    starter-dashboard-center-lines)
+                                    uwumacs-dashboard-center-lines)
         dashboard-init-info
         (lambda ()
           (format "Emacs %s · ready in %s"
                   emacs-version
                   (emacs-init-time)))
         dashboard-navigator-buttons
-        '((("+" "File" "Open a file" starter-dashboard-open-file)
-           ("◆" "Project" "Switch project" starter-dashboard-open-project)
-           ("↺" "Recent" "Open a recent file" starter-dashboard-open-recent))
-          (("λ" "Config" "Open Emacs-Dots config" starter-dashboard-open-config)
-           ("◎" "Agenda" "Open Org agenda" starter-dashboard-open-agenda)
+        '((("+" "File" "Open a file" uwumacs-dashboard-open-file)
+           ("◆" "Project" "Switch project" uwumacs-dashboard-open-project)
+           ("↺" "Recent" "Open a recent file" uwumacs-dashboard-open-recent))
+          (("λ" "Config" "Open Emacs-Dots config" uwumacs-dashboard-open-config)
+           ("◎" "Agenda" "Open Org agenda" uwumacs-dashboard-open-agenda)
            ("*" "Scratch" "Open scratch buffer"
             (lambda (&rest _) (switch-to-buffer "*scratch*"))))
           (("?" "Keys & commands" "Open the local cheat sheet (or press ?)"
-            starter-dashboard-open-cheatsheet))))
+            uwumacs-dashboard-open-cheatsheet))))
   :config
   (set-face-attribute 'dashboard-text-banner nil
                       :inherit 'font-lock-keyword-face
@@ -143,16 +143,16 @@ Exclude trailing padding and compensate for leading indentation."
                       :inherit 'font-lock-keyword-face
                       :weight 'semi-bold)
 
-  (define-key dashboard-mode-map (kbd "?") #'starter-dashboard-open-cheatsheet)
+  (define-key dashboard-mode-map (kbd "?") #'uwumacs-dashboard-open-cheatsheet)
 
-  (add-hook 'window-setup-hook #'starter-dashboard-recenter 100)
-  (add-hook 'after-setting-font-hook #'starter-dashboard-recenter 100)
-  (add-hook 'enable-theme-functions #'starter-dashboard-recenter 100)
+  (add-hook 'window-setup-hook #'uwumacs-dashboard-recenter 100)
+  (add-hook 'after-setting-font-hook #'uwumacs-dashboard-recenter 100)
+  (add-hook 'enable-theme-functions #'uwumacs-dashboard-recenter 100)
 
   ;; Skip the home page when Emacs was invoked with a file argument.
   (dashboard-setup-startup-hook))
 ;; Keep r/p/b/? and dashboard item shortcuts alongside Meow j/k and SPC.
 (with-eval-after-load 'meow
   (add-to-list 'meow-mode-state-list '(dashboard-mode . motion)))
-(provide 'starter-setup-dashboard)
-;;; starter-setup-dashboard.el ends here
+(provide 'uwumacs-dashboard)
+;;; uwumacs-dashboard.el ends here

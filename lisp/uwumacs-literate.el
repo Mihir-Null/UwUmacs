@@ -1,14 +1,14 @@
-;;; starter-setup-literate.el --- Edit and build the literate source -*- lexical-binding: t; -*-
+;;; uwumacs-literate.el --- Edit and build the literate source -*- lexical-binding: t; -*-
 ;; Generated from literate/80-maintenance.org; edit the Org source, then tangle.
 ;;; Commentary:
 ;; Development addition: keep authoring explicit and startup independent of Org.
 ;;; Code:
 
-(defun starter-literate-open (&rest _)
+(defun uwumacs-literate-open (&rest _)
   "Open the literate configuration's reading guide."
   (interactive)
   (find-file (expand-file-name "literate/index.org" user-emacs-directory)))
-(defun starter-literate--build (write)
+(defun uwumacs-literate--build (write)
   "Run the isolated literate builder; WRITE selects generation over checking."
   (let ((source-dir (expand-file-name "literate/" user-emacs-directory))
         (output (get-buffer-create "*Emacs-Dots literate build*")))
@@ -31,13 +31,13 @@
       (message (if write
                    "Lisp regenerated. Restart Emacs to apply configuration changes."
                  "Literate sources and deployed Lisp agree.")))))
-(defun starter-literate-tangle ()
+(defun uwumacs-literate-tangle ()
   "Regenerate deployed Lisp from saved literate sources."
   (interactive)
-  (starter-literate--build t))
-(defun starter-literate-check ()
+  (uwumacs-literate--build t))
+(defun uwumacs-literate-check ()
   "Check that deployed Lisp matches saved literate sources without writing it."
   (interactive)
-  (starter-literate--build nil))
-(provide 'starter-setup-literate)
-;;; starter-setup-literate.el ends here
+  (uwumacs-literate--build nil))
+(provide 'uwumacs-literate)
+;;; uwumacs-literate.el ends here

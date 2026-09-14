@@ -1,7 +1,7 @@
 #+TITLE: Getting around: projects, recent files, search and workspaces
 #+OPTIONS: toc:3 num:nil
 #+STARTUP: overview
-#+PROPERTY: header-args:emacs-lisp :tangle ../lambda-library/lambda-user/uwumacs-navigation.el :eval never :comments no :padline no :mkdirp yes
+#+PROPERTY: header-args:emacs-lisp :tangle ../lisp/uwumacs-navigation.el :eval never :comments no :padline no :mkdirp yes
 
 [[file:index.org][Reading guide]] · [[file:60-completion.org][Completion]] · [[file:30-platform.org][Platform]]
 
@@ -76,7 +76,7 @@ directories count as projects. Ripgrep backs =xref= searches.
 (defun uwumacs-projects-directory ()
   "Open the directory where projects live."
   (interactive)
-  (dired starter-project-directory))
+  (dired uwumacs-project-directory))
 
 (use-package project
   :ensure nil

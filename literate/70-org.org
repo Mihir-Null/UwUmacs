@@ -1,7 +1,7 @@
 #+TITLE: Org: notes, tasks and the agenda
 #+OPTIONS: toc:3 num:nil
 #+STARTUP: overview
-#+PROPERTY: header-args:emacs-lisp :tangle ../lambda-library/lambda-user/uwumacs-org.el :eval never :comments no :padline no :mkdirp yes
+#+PROPERTY: header-args:emacs-lisp :tangle ../lisp/uwumacs-org.el :eval never :comments no :padline no :mkdirp yes
 
 [[file:index.org][Reading guide]] · [[file:30-platform.org][Platform]] · [[file:41-leader.org][Leader]]
 
@@ -26,7 +26,7 @@ the structure commands; =SPC m a= opens the agenda from anywhere.
 
 ;;; Code:
 
-(require 'starter-platform)
+(require 'uwumacs-platform)
 (require 'uwumacs-defaults)
 (require 'uwumacs-leader)
 
@@ -34,17 +34,17 @@ the structure commands; =SPC m a= opens the agenda from anywhere.
 
 * Where notes live
 
-=starter-org-directory= comes from [[file:30-platform.org][the platform chapter]] so a machine can
+=uwumacs-org-directory= comes from [[file:30-platform.org][the platform chapter]] so a machine can
 override it in =private.el=. Everything captured lands in =inbox.org=;
 the agenda reads every file in the directory. Done tasks are archived
 into a dated tree in one archive file.
 
 #+begin_src emacs-lisp
-(make-directory starter-org-directory t)
-(setopt org-directory starter-org-directory
-        org-default-notes-file (expand-file-name "inbox.org" starter-org-directory)
-        org-agenda-files (list starter-org-directory)
-        org-archive-location (expand-file-name "archive.org::datetree/" starter-org-directory)
+(make-directory uwumacs-org-directory t)
+(setopt org-directory uwumacs-org-directory
+        org-default-notes-file (expand-file-name "inbox.org" uwumacs-org-directory)
+        org-agenda-files (list uwumacs-org-directory)
+        org-archive-location (expand-file-name "archive.org::datetree/" uwumacs-org-directory)
         org-id-locations-file (expand-file-name "org-id-locations" uwumacs-cache-dir)
         org-id-method 'ts
         org-id-link-to-org-use-id 'create-if-interactive)
