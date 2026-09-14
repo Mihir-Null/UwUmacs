@@ -1,0 +1,109 @@
+name: CI
+
+# Three questions, answered on every push and pull request:
+#   1. Do the literate chapters still match the generated Lisp?  (tangle)
+#   2. Does a fresh clone install its packages and start, on the oldest
+#      supported Emacs and the current one?                        (startup)
+#   3. Does the same hold on Windows, the machine this is written on? (windows)
+# The weekly run skips the package cache so upstream package breakage
+# shows up even when nothing here changed.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  schedule:
+    - cron: "17 6 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  tangle:
+    name: Chapters match generated Lisp
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: purcell/setup-emacs@master
+        with:
+          version: "31.1"
+      - name: Tangle check
+        run: emacs -Q --batch -l tools/tangle.el -- --check
+      - name: Tangle tests
+        run: emacs -Q --batch -l tests/tangle-tests.el -f ert-run-tests-batch-and-exit
+
+  startup:
+    name: Fresh install and startup (Emacs ${{ matrix.emacs }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        emacs: ["30.1", "31.1"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: purcell/setup-emacs@master
+        with:
+          version: ${{ matrix.emacs }}
+      - name: Restore the package directory
+        if: github.event_name != 'schedule'
+        uses: actions/cache@v4
+        with:
+          path: var/elpa
+          key: elpa-${{ runner.os }}-${{ matrix.emacs }}-${{ hashFiles('lisp/*.el', 'early-init.el', 'init.el') }}
+          restore-keys: elpa-${{ runner.os }}-${{ matrix.emacs }}-
+      - name: Install packages by starting the configuration
+        run: |
+          emacs -Q --batch \
+            --eval '(setq user-emacs-directory (file-name-as-directory (expand-file-name ".")))' \
+            --eval '(setq native-comp-jit-compilation nil package-native-compile nil)' \
+            -l early-init.el -l init.el \
+            --eval '(princ (format "%d packages active, leader bound: %S\n" (length package-activated-list) (keymapp (keymap-lookup meow-normal-state-keymap "SPC"))))'
+      - name: Leader tests
+        run: emacs -Q --batch -l tests/uwumacs-leader-tests.el -f ert-run-tests-batch-and-exit
+        env:
+          EMACS_DOTS_TEST_PACKAGES: ${{ github.workspace }}/var/elpa
+      - name: Startup verifier
+        run: emacs -Q --batch -l tests/verify-config.el
+        env:
+          EMACS_DOTS_TEST_PACKAGES: ${{ github.workspace }}/var/elpa
+
+  windows:
+    name: Fresh install and startup (Windows, Emacs 31.1)
+    runs-on: windows-latest
+    # Informational until the Windows Emacs action has proven stable here.
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: jcs090218/setup-emacs@master
+        with:
+          version: "31.1"
+      - name: Restore the package directory
+        if: github.event_name != 'schedule'
+        uses: actions/cache@v4
+        with:
+          path: var/elpa
+          key: elpa-${{ runner.os }}-31.1-${{ hashFiles('lisp/*.el', 'early-init.el', 'init.el') }}
+          restore-keys: elpa-${{ runner.os }}-31.1-
+      - name: Install packages by starting the configuration
+        shell: pwsh
+        run: |
+          emacs -Q --batch `
+            --eval '(setq user-emacs-directory (file-name-as-directory (expand-file-name ".")))' `
+            --eval '(setq native-comp-jit-compilation nil package-native-compile nil)' `
+            -l early-init.el -l init.el `
+            --eval '(princ (format "%d packages active\n" (length package-activated-list)))'
+      - name: Leader tests
+        shell: pwsh
+        run: emacs -Q --batch -l tests/uwumacs-leader-tests.el -f ert-run-tests-batch-and-exit
+        env:
+          EMACS_DOTS_TEST_PACKAGES: ${{ github.workspace }}/var/elpa
+      - name: Startup verifier
+        shell: pwsh
+        run: emacs -Q --batch -l tests/verify-config.el
+        env:
+          EMACS_DOTS_TEST_PACKAGES: ${{ github.workspace }}/var/elpa

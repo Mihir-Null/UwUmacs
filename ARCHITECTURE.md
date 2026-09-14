@@ -69,7 +69,7 @@ emacs -Q --batch -l tests/uwumacs-leader-tests.el -f ert-run-tests-batch-and-exi
 emacs -Q --batch -l tests/verify-config.el
 ```
 
-All four pass at every commit on this branch. The verifier starts the real configuration in an isolated copy with installation forbidden and asserts: `private.el` loads once and its overrides survive, `custom.el` loads from `var/etc`, every module feature is present, `SPC` is `uwumacs-leader-map` in both Meow state maps, `SPC l` and `SPC s l` owners, the dashboard's two buttons open the guide and the cheat sheet, theme toggling never stacks themes, and every cheat-sheet `SPC` row resolves to its command.
+All four pass at every commit on this branch, and `.github/workflows/ci.yml` runs them on GitHub for every push and pull request: the tangle check on Emacs 31.1, and a fresh clone that installs its packages by starting `init.el` in batch, then the leader tests and the verifier, on Emacs 30.1 and 31.1 (Linux) with an informational Windows job; a weekly run skips the package cache. The verifier starts the real configuration in an isolated copy with installation forbidden and asserts: `private.el` loads once and its overrides survive, `custom.el` loads from `var/etc`, every module feature is present, `SPC` is `uwumacs-leader-map` in both Meow state maps, `SPC l` and `SPC s l` owners, the dashboard's two buttons open the guide and the cheat sheet, theme toggling never stacks themes, and every cheat-sheet `SPC` row resolves to its command.
 
 Not verified here, for the user to check on the real host:
 

@@ -20,11 +20,11 @@ The whole configuration is written as a literate book in [`literate/`](literate/
 Requires GNU Emacs 30.1 or later (developed on 31.1). Clone into your init directory, or point Emacs at the clone:
 
 ```sh
-git clone https://github.com/Mihir-Null/Emacs-Dots.git ~/.emacs.d
+git clone https://github.com/Mihir-Null/UwUmacs.git ~/.emacs.d
 ```
 
 ```sh
-emacs --init-directory=/path/to/Emacs-Dots
+emacs --init-directory=/path/to/UwUmacs
 ```
 
 The first start installs the Emacs Lisp packages it needs into `var/elpa/`. Emacs verifies GNU ELPA's signed index with `gpg`, so install [Gpg4win](https://gpg4win.org/) on Windows (GnuPG is usually already present on Linux and macOS); the startup file points Emacs at it, because the `gpg` that Git for Windows ships cannot verify anything from Emacs. Without a native `gpg` the check is skipped. Language servers, `ripgrep`, Git, a spell checker (`hunspell`, on Windows most simply from MSYS2) and fonts are yours to install; the configuration checks for them and degrades quietly. Icons need [Symbols Nerd Font Mono](https://www.nerdfonts.com/); the editing font is Google Sans Code if present, otherwise the platform default.
@@ -79,7 +79,7 @@ EMACS_DOTS_TEST_PACKAGES=/path/to/var/elpa emacs -Q --batch -l tests/uwumacs-lea
 EMACS_DOTS_TEST_PACKAGES=/path/to/var/elpa emacs -Q --batch -l tests/verify-config.el
 ```
 
-The verifier copies the configuration to a temporary directory, forbids package installation, starts it, and checks the leader, the localleader key, the dashboard buttons, the theme toggle and every `SPC` row of the cheat sheet against the live keymap. `tests/frames-tests.el` covers frame policy and needs a graphical session: `M-x ert RET ^dots-frames- RET`.
+The verifier copies the configuration to a temporary directory, forbids package installation, starts it, and checks the leader, the localleader key, the dashboard buttons, the theme toggle and every `SPC` row of the cheat sheet against the live keymap. [GitHub Actions](.github/workflows/ci.yml) runs the same checks on every push: the tangle check, then a fresh clone that installs its packages and starts on Emacs 30.1 and 31.1 on Linux, plus an informational Windows run; a weekly run repeats the fresh install without the package cache to catch upstream breakage. `tests/frames-tests.el` covers frame policy and needs a graphical session: `M-x ert RET ^dots-frames- RET`.
 
 ## Windows notes
 

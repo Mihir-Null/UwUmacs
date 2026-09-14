@@ -406,13 +406,30 @@ The core require/provide protocol records that this file loaded. Later requires 
 (with-eval-after-load 'ispell
   (when-let* ((program (uwumacs-spell-checker)))
     (setopt ispell-program-name program)
-    (when (string-suffix-p "hunspell.exe" program)
-      (setenv "DICPATH" (expand-file-name "ucrt64/share/hunspell" uwumacs-msys2-root))
-      (setopt ispell-dictionary "en_US"))))
+    (when (string-match-p "hunspell" program)
+      ;; Hunspell needs a default dictionary name from the environment even
+      ;; to list its dictionaries; Windows sets no LANG, so name it here.
+      (unless (getenv "DICTIONARY") (setenv "DICTIONARY" "en_US"))
+      (setopt ispell-dictionary "en_US")
+      (when (string-prefix-p (expand-file-name uwumacs-msys2-root) program)
+        (setenv "DICPATH" (expand-file-name "ucrt64/share/hunspell" uwumacs-msys2-root))))))
+
+;; A checker that exists but has no dictionary must never break startup:
+;; enable Flyspell, and on any error say so once and carry on.
+(defvar uwumacs--spell-warned nil)
+(defun uwumacs--flyspell (mode-function)
+  "Enable Flyspell with MODE-FUNCTION, reporting a broken checker instead of failing."
+  (condition-case err
+      (funcall mode-function)
+    (error (unless uwumacs--spell-warned
+             (setq uwumacs--spell-warned t)
+             (message "Spell checking off: %s" (error-message-string err))))))
+(defun uwumacs-flyspell-text () (uwumacs--flyspell #'flyspell-mode))
+(defun uwumacs-flyspell-prog () (uwumacs--flyspell #'flyspell-prog-mode))
 
 (when (uwumacs-spell-checker)
-  (add-hook 'text-mode-hook #'flyspell-mode)
-  (add-hook 'prog-mode-hook #'flyspell-prog-mode))
+  (add-hook 'text-mode-hook #'uwumacs-flyspell-text)
+  (add-hook 'prog-mode-hook #'uwumacs-flyspell-prog))
 
 (use-package flyspell-correct
   :ensure t

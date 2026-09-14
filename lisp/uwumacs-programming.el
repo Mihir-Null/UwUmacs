@@ -44,9 +44,14 @@
 (use-package iedit
   :ensure t
   :commands iedit-mode)
+(defun uwumacs--indent-guides ()
+  "Indent guides in graphical frames; the package cannot derive faces without a display."
+  (when (display-graphic-p)
+    (highlight-indent-guides-mode 1)))
+
 (use-package highlight-indent-guides
   :ensure t
-  :hook (prog-mode . highlight-indent-guides-mode)
+  :hook (prog-mode . uwumacs--indent-guides)
   :custom
   (highlight-indent-guides-method 'character)
   (highlight-indent-guides-character ?│)
