@@ -21,11 +21,16 @@
 (setopt package-archives '(("gnu" . "https://elpa.gnu.org/packages/")
                            ("nongnu" . "https://elpa.nongnu.org/nongnu/")
                            ("melpa" . "https://melpa.org/packages/")))
-;; GNU ELPA signs its archive index and Emacs verifies it with gpg (Gpg4win
-;; on Windows).  Without a gpg program the check fails and the whole archive
-;; silently disappears, so skip the check rather than lose the archive.
-(unless (executable-find "gpg")
-  (setq package-check-signature nil))
+;; GNU ELPA signs its archive index and Emacs verifies it with the first
+;; gpg on `exec-path'.  On Windows that is Git for Windows' MSYS gpg, which
+;; cannot open a Windows keyring directory: every signature then fails and
+;; the archives silently vanish.  Put Gpg4win's native gpg first when it is
+;; installed; without one, skip the check rather than lose the archives.
+(let ((gpg4win (or (and (file-directory-p "C:/Program Files/GnuPG/bin") "C:/Program Files/GnuPG/bin")
+                   (and (file-directory-p "C:/Program Files (x86)/GnuPG/bin") "C:/Program Files (x86)/GnuPG/bin"))))
+  (cond (gpg4win (push gpg4win exec-path))
+        ((or (eq system-type 'windows-nt) (not (executable-find "gpg")))
+         (setq package-check-signature nil))))
 
 (when (featurep 'native-compile)
   (startup-redirect-eln-cache (expand-file-name "eln-cache/" uwumacs-cache-dir))
