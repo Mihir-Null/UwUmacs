@@ -12,8 +12,9 @@ UwUmacs is a user-friendly, batteries-included, opinionated and extensible Emacs
 early-init.el, init.el   generated from literate/10-startup.org (86 lines together)
 literate/*.org           19 chapters + index + manifest.json; the source of truth
 lisp/uwumacs-*.el        21 generated modules (2,789 lines); keybindings.org; themes/; private.el
-tests/                   tangle-tests (8), uwumacs-leader-tests (6), verify-config, frames-tests (5, GUI)
+tests/                   tangle-tests (8), uwumacs-platform-tests (8), uwumacs-leader-tests (6), verify-config, frames-tests (5, GUI)
 tools/tangle.el          stages, validates and copies generated outputs (125 lines)
+flake.nix, nix/          nix-darwin and home-manager modules, tool list, dev shell, example host
 var/                     packages, caches, custom.el; ignored
 ```
 
@@ -57,6 +58,9 @@ Agent decisions, with the reason:
 - **GNU ELPA needs a native gpg.** Emacs verifies the signed GNU ELPA index with the `gpg` that `gpgconf` reports; on Windows that is Git for Windows' MSYS `gpg`, which cannot open a Windows keyring directory, so the import yields nothing and every signature fails as "no public key" while the archive silently disappears. `epg` honours `epg-gpg-program` only when set through Customize and otherwise takes the first `gpg` on `exec-path`, so `early-init.el` puts Gpg4win's directory (the documented Windows dependency) first on `exec-path` and `PATH` when it is installed, and skips the check on Windows without it or anywhere without `gpg`. Verified: with that in place both GNU archives verify from a fresh keyring.
 - **Options are set with `setopt`, so values must satisfy the option's type.** Org 9.7 (Emacs 30/31) spells "open unfolded" as `nofold` and wants `org-agenda-start-with-log-mode` to be a list of items rather than `t`; the old values raised two `*Warnings*` on every start of a fresh Windows install. Fixed at the source in `70-org.org`; the rule is to read the `:type` when a warning names an option.
 - **The home page is the first landing page.** It carries the UwUmacs `:3` banner, buttons for every place the README sends a new user (cheat sheet, reading guide, keys chapter, Meow tutor) and a six-key guide at the bottom, so a fresh install explains itself before anything is opened. The verifier still presses the Config and cheat-sheet buttons.
+- **macOS is a section of the platform chapter, not a module** (2026-09-14). Lambda's `lem-setup-macos` was the model and its choices were kept where they still fit a frames-first Meow configuration: Option is Meta and Command is Super with the right Option left to macOS (one `uwumacs-macos-modifiers` option), non-native full screen so a full-screen frame does not take its own Space, a UTF-8 `LANG` when the Dock supplied none, the Trash through the `trash` tool or `~/.Trash`, Keychain in `auth-sources`, `⌘⇧Z` redo, `⌘Q` that closes a frame while others remain, and `C-⌘-f` full screen. Not carried: Fn as Hyper (it turns Fn-arrow paging into Hyper chords), `reveal-in-osx-finder`, `grab-mac-link` and `osx-lib` (a twelve-line `uwumacs-reveal-in-file-manager` covers Finder, Explorer and xdg-open on `SPC f o`), and the Mitsuharu-only anti-aliasing flag. "macOS appearance sync" stays dropped in the sense it was dropped (the theme does not follow the system); the reverse, the title bar following the theme, is small and is in. Zero packages were added. Because `system-type` is a plain variable, `tests/uwumacs-platform-tests.el` binds it per test and exercises every operating system's branch on any machine without packages.
+- **A Dock-launched Emacs.app sees no shell `PATH`**, so `early-init.el` puts the Nix profiles and Homebrew on `exec-path` on macOS before the GNU ELPA signature check, the same way it puts Gpg4win first on Windows, and `exec-path-from-shell` asks a login shell there (where `path_helper` and Homebrew's `shellenv` run) rather than the plain shell it asks on Linux. Dired uses GNU `ls` as `gls` when coreutils is installed, since BSD `ls` has no `--group-directories-first`.
+- **Nix installs what surrounds the configuration, never the configuration.** `flake.nix` exposes a nix-darwin module, a home-manager module, a `tools` environment and a dev shell, all drawing from one list in `nix/tools.nix` (Emacs, git, ripgrep, fd, gnupg, hunspell with a dictionary, and on macOS `gls` and `trash`, plus the Nerd symbols font). The configuration itself is cloned somewhere writable, because it installs packages under `var/` and keeps `private.el` beside the modules; the home-manager module links that clone to `~/.config/emacs` through an out-of-store symlink. `nix/example/flake.nix` is a full nix-darwin host that CI evaluates on Linux with the `uwumacs` input overridden to the checkout, so the module's option set is exercised without a Mac. `x86_64-darwin` is not in the flake's systems: nixpkgs-unstable dropped it in 26.11.
 - **Licence is GPL-3.0-or-later**, matching the sources the code is distilled from; the old MIT file from Colin's tooling is replaced.
 - **Kept from Lambda**, attributed per module header: sane defaults, scrolling and mouse settings, persistent scratch, the completion stack configuration, Helpful/Info setup, Dired extensions, Magit settings, project/tab/workspace setup with workspace-filtered buffers, Org display and agenda defaults, programming aids, Eshell settings and aliases, Tramp, the highlighting packages.
 
@@ -67,17 +71,19 @@ Batch, from the repository root (`EMACS_DOTS_TEST_PACKAGES` points at an existin
 ```sh
 emacs -Q --batch -l tools/tangle.el -- --check
 emacs -Q --batch -l tests/tangle-tests.el -f ert-run-tests-batch-and-exit
+emacs -Q --batch -l tests/uwumacs-platform-tests.el -f ert-run-tests-batch-and-exit
 emacs -Q --batch -l tests/uwumacs-leader-tests.el -f ert-run-tests-batch-and-exit
 emacs -Q --batch -l tests/verify-config.el
 ```
 
-All four pass at every commit on this branch, and `.github/workflows/ci.yml` runs them on GitHub for every push and pull request: the tangle check on Emacs 31.1, and a fresh clone that installs its packages by starting `init.el` in batch, then the leader tests and the verifier, on Emacs 30.1 and 31.1 (Linux) with an informational Windows job; a weekly run skips the package cache. The verifier starts the real configuration in an isolated copy with installation forbidden and asserts: `private.el` loads once and its overrides survive, `custom.el` loads from `var/etc`, every module feature is present, `SPC` is `uwumacs-leader-map` in both Meow state maps, `SPC l` and `SPC s l` owners, the dashboard's two buttons open the guide and the cheat sheet, theme toggling never stacks themes, and every cheat-sheet `SPC` row resolves to its command.
+All five pass at every commit on this branch, and `.github/workflows/ci.yml` runs them on GitHub for every push and pull request: the tangle check and the platform tests on Emacs 31.1, and a fresh clone that installs its packages by starting `init.el` in batch, then the leader tests and the verifier, on Emacs 30.1 and 31.1 (Linux) with informational Windows and macOS jobs; a Nix job runs `nix flake check` and evaluates the nix-darwin example against the checkout; a weekly run skips the package cache. The verifier starts the real configuration in an isolated copy with installation forbidden and asserts: `private.el` loads once and its overrides survive, `custom.el` loads from `var/etc`, every module feature is present, `SPC` is `uwumacs-leader-map` in both Meow state maps, `SPC l` and `SPC s l` owners, the dashboard's two buttons open the guide and the cheat sheet, theme toggling never stacks themes, and every cheat-sheet `SPC` row resolves to its command.
 
 Not verified here, for the user to check on the real host:
 
 - A graphical startup and the five frame tests (`M-x ert RET ^dots-frames- RET`).
 - First start on a fresh clone (package installation path).
 - Emacs 30.1: the stated floor; only 31.1 exists on this machine.
+- macOS on a real Mac: the modifier keys, the Trash, the title bar and the Dock-launched `PATH`. The platform tests cover the branches with `system-type` bound to `darwin`; the informational macOS CI job covers batch startup; `darwin-rebuild switch` with the module has been evaluated on Linux but not built.
 
 ## 6. Open items
 
@@ -111,3 +117,4 @@ All on branch `dev/uwumacs-config-review-dc1bee`, each commit verified with the 
 | `cd0127a` | Sidebars restored and `diff-hl` gutter added after the user clarified that frames apply to full buffers, not panels |
 | `5e60d4a` | Org polish, avy, meow-tree-sitter, vundo, keycast, Casual menus, spelling wiring, GPL-3.0-or-later licence |
 | `d40cf20` | Gpg4win first on `exec-path` so GNU ELPA signatures verify on Windows |
+| (this branch) | macOS section of the platform chapter, `SPC f o`, platform tests, Nix flake with nix-darwin and home-manager modules |

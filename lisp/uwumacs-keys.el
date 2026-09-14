@@ -52,7 +52,8 @@
   "d" (cons "directory" #'dired-jump)
   "D" (cons "switch directory" #'consult-dir)
   "R" (cons "rename" #'rename-visited-file)
-  "y" (cons "copy file name" #'uwumacs-copy-file-name))
+  "y" (cons "copy file name" #'uwumacs-copy-file-name)
+  "o" (cons "show in file manager" #'uwumacs-reveal-in-file-manager))
 
 (defvar-keymap uwumacs-search-map
   :doc "Search."
@@ -207,7 +208,7 @@
   :doc "Open applications."
   "e" (cons "terminal (EAT)" #'uwumacs-eat)
   "p" (cons "project terminal" #'uwumacs-eat-project)
-  "m" (cons "MSYS2 terminal" #'uwumacs-eat-msys2-ucrt64)
+  "m" (cons "MSYS2 terminal (Windows)" #'uwumacs-eat-msys2-ucrt64)
   "s" (cons "eshell (project)" #'uwumacs-eshell-project)
   "S" (cons "eshell" #'eshell)
   "a" (cons "agenda dashboard" #'uwumacs-org-dashboard)

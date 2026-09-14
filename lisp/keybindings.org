@@ -89,6 +89,7 @@ Press =SPC=, then:
 | SPC f s | Save | save-buffer |
 | SPC f r | Recent files | consult-recent-file |
 | SPC f b | Bookmarks | consult-bookmark |
+| SPC f o | Show in Finder or Explorer | uwumacs-reveal-in-file-manager |
 | SPC b b | Switch buffer | consult-buffer |
 | SPC b k | Close this buffer | kill-current-buffer |
 | SPC b a | List all buffers | ibuffer |

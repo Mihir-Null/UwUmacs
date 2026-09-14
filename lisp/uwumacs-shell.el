@@ -15,7 +15,7 @@
   :ensure t
   :if (not (eq system-type 'windows-nt))
   :custom
-  (exec-path-from-shell-arguments nil)
+  (exec-path-from-shell-arguments (and (eq system-type 'darwin) '("-l")))
   :config
   (when (or window-system (daemonp))
     (exec-path-from-shell-initialize)))

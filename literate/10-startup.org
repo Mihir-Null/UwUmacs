@@ -25,8 +25,11 @@ order. Nothing else is special.
    as is. GNU ELPA's index is signed, and Emacs verifies it with =gpg=;
    install [[https://gpg4win.org/][Gpg4win]] on Windows so that check can run; the startup file puts it
    first on =exec-path=, because the =gpg= that Git for Windows ships comes
-   first otherwise and cannot use a Windows keyring directory. Without a native
-   =gpg= the check is skipped rather than silently losing the archive.
+   first otherwise and cannot use a Windows keyring directory. On macOS an
+   Emacs started from the Dock has no shell =PATH=, so the startup file puts
+   the Nix profiles and Homebrew's directory on =exec-path= when they exist;
+   =brew install gnupg= or the [[file:../nix/README.org][Nix module]] is enough. Without a native =gpg=
+   the check is skipped rather than silently losing the archive.
 
 * early-init.el
 :PROPERTIES:
@@ -63,6 +66,23 @@ frames created without the toolbar rather than with one that is then removed.
 (setopt package-archives '(("gnu" . "https://elpa.gnu.org/packages/")
                            ("nongnu" . "https://elpa.nongnu.org/nongnu/")
                            ("melpa" . "https://melpa.org/packages/")))
+;; An Emacs.app started from the Dock inherits no shell PATH, so the gpg,
+;; git and language servers that Nix or Homebrew installed are invisible
+;; until the shells chapter imports the login environment.  Put those
+;; directories on `exec-path' now (later entries win) so the archive check
+;; below can find gpg.  The title bar is made transparent here, before the
+;; first frame; the platform chapter gives it the theme's appearance.
+(when (eq system-type 'darwin)
+  (dolist (directory (list "/usr/local/bin"
+                           "/opt/homebrew/bin"
+                           "/nix/var/nix/profiles/default/bin"
+                           (expand-file-name "~/.nix-profile/bin")
+                           (concat "/etc/profiles/per-user/" (user-login-name) "/bin")
+                           "/run/current-system/sw/bin"))
+    (when (and (file-directory-p directory) (not (member directory exec-path)))
+      (push directory exec-path)))
+  (push '(ns-transparent-titlebar . t) default-frame-alist))
+
 ;; GNU ELPA signs its archive index and Emacs verifies it with the first
 ;; gpg on `exec-path'.  On Windows that is Git for Windows' MSYS gpg, which
 ;; cannot open a Windows keyring directory: every signature then fails and

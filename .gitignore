@@ -12,6 +12,8 @@
 /tabsession.el
 /elfeed/
 *.elc
+/result
+/nix/example/flake.lock
 *~
 .#*
 #*#

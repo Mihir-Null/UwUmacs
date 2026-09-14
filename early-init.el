@@ -21,6 +21,23 @@
 (setopt package-archives '(("gnu" . "https://elpa.gnu.org/packages/")
                            ("nongnu" . "https://elpa.nongnu.org/nongnu/")
                            ("melpa" . "https://melpa.org/packages/")))
+;; An Emacs.app started from the Dock inherits no shell PATH, so the gpg,
+;; git and language servers that Nix or Homebrew installed are invisible
+;; until the shells chapter imports the login environment.  Put those
+;; directories on `exec-path' now (later entries win) so the archive check
+;; below can find gpg.  The title bar is made transparent here, before the
+;; first frame; the platform chapter gives it the theme's appearance.
+(when (eq system-type 'darwin)
+  (dolist (directory (list "/usr/local/bin"
+                           "/opt/homebrew/bin"
+                           "/nix/var/nix/profiles/default/bin"
+                           (expand-file-name "~/.nix-profile/bin")
+                           (concat "/etc/profiles/per-user/" (user-login-name) "/bin")
+                           "/run/current-system/sw/bin"))
+    (when (and (file-directory-p directory) (not (member directory exec-path)))
+      (push directory exec-path)))
+  (push '(ns-transparent-titlebar . t) default-frame-alist))
+
 ;; GNU ELPA signs its archive index and Emacs verifies it with the first
 ;; gpg on `exec-path'.  On Windows that is Git for Windows' MSYS gpg, which
 ;; cannot open a Windows keyring directory: every signature then fails and

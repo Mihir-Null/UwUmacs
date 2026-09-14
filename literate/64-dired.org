@@ -52,8 +52,15 @@ directories itself, a variable does.
     (setopt ls-lisp-use-insert-directory-program nil
             ls-lisp-dirs-first t
             dired-listing-switches "-lah")
-  (setopt dired-listing-switches
-          (if (eq system-type 'gnu/linux) "-lahv --group-directories-first" "-lah")))
+  ;; macOS ships BSD ls, which has neither -v nor --group-directories-first;
+  ;; Homebrew's coreutils installs GNU ls as gls, and Dired uses it when present.
+  (let ((gls (and (eq system-type 'darwin) (executable-find "gls"))))
+    (when gls
+      (setopt insert-directory-program gls))
+    (setopt dired-listing-switches
+            (if (or gls (eq system-type 'gnu/linux))
+                "-lahv --group-directories-first"
+              "-lah"))))
 
 (defun uwumacs-dired-up-directory ()
   "Go to the parent directory in this buffer."

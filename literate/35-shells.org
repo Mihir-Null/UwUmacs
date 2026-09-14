@@ -40,15 +40,19 @@ machines over SSH as if they were local.
 
 A graphical Emacs started from a launcher does not run your shell's
 profile, so =PATH= can be wrong. =exec-path-from-shell= copies the
-variables from a login shell. Windows inherits its environment correctly,
-and [[file:30-platform.org][the platform chapter]] turns this off there.
+variables from your shell. On Linux it asks a plain non-interactive shell,
+which reads =~/.zshenv= or =$BASH_ENV=. On macOS it asks a login shell,
+because that is where the system's =path_helper= and Homebrew's =shellenv=
+line in =~/.zprofile= run; the startup chapter already put Homebrew on
+=exec-path= so this import only refines it. Windows inherits its environment
+correctly, and [[file:30-platform.org][the platform chapter]] turns this off there.
 
 #+begin_src emacs-lisp
 (use-package exec-path-from-shell
   :ensure t
   :if (not (eq system-type 'windows-nt))
   :custom
-  (exec-path-from-shell-arguments nil)
+  (exec-path-from-shell-arguments (and (eq system-type 'darwin) '("-l")))
   :config
   (when (or window-system (daemonp))
     (exec-path-from-shell-initialize)))
