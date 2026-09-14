@@ -1,24 +1,3 @@
-#+TITLE: Appearance: fonts, theme, mode line and icons
-#+OPTIONS: toc:3 num:nil
-#+STARTUP: overview
-#+PROPERTY: header-args:emacs-lisp :tangle ../lambda-library/lambda-user/uwumacs-ui.el :eval never :comments no :padline no :mkdirp yes
-
-[[file:index.org][Reading guide]] · [[file:55-dashboard.org][Dashboard]] · [[file:45-frames.org][Frames]]
-
-Ownership: *user configuration*. The font and theme choices are the user's;
-the highlighting defaults are distilled from Lambda-Emacs by Colin McLear
-(=lem-setup-theme=, =-fonts=, =-faces=). This module loads before anything
-is drawn, so the first frame already has the right font and colours.
-
-* What this gives you
-
-Google Sans Code with Nerd Font icons when it is installed, the platform
-font otherwise; the Sonokai theme, tracked in this repository, with a
-light theme one toggle away (=SPC t t=); a compact mode line; icons in
-completion, Corfu and Dired that switch off automatically when the icon
-font is missing so a fresh machine never shows boxes.
-
-#+begin_src emacs-lisp
 ;;; uwumacs-ui.el --- Fonts, theme, mode line and icons -*- lexical-binding: t; -*-
 ;; Generated from literate/50-appearance.org; edit the Org source, then tangle.
 
@@ -58,19 +37,6 @@ Use t for a terminal configured with a Nerd Font, or nil to disable icons."
 (defcustom uwumacs-line-numbers-in-programming t
   "Whether programming buffers show line numbers."
   :type 'boolean)
-
-#+end_src
-
-* Fonts
-
-The editing font is resolved by family, including the shorter name
-Windows registers for the same font. Icons come from a single patched
-font that =nerd-icons= maps onto its own code points; mapping only those
-ranges keeps ordinary Unicode in the editing font. Symbols fall back to a
-platform symbol font. Fonts are applied to every new frame, which matters
-when Emacs runs as a daemon.
-
-#+begin_src emacs-lisp
 (defun uwumacs-resolve-font-family ()
   "Return the installed family for `uwumacs-font-family', or nil."
   (when (display-graphic-p)
@@ -118,17 +84,6 @@ when Emacs runs as a daemon.
 (add-hook 'after-setting-font-hook #'uwumacs--apply-icon-font)
 (add-hook 'after-make-frame-functions #'uwumacs-apply-font)
 (uwumacs-apply-font)
-
-#+end_src
-
-* Theme
-
-Sonokai is a tracked port in =themes/= so it does not depend on a package
-update. Loading a theme disables the previous one first, so themes never
-stack. Anything that must be recomputed when colours change hangs on
-Emacs's own =enable-theme-functions=.
-
-#+begin_src emacs-lisp
 (setopt custom-safe-themes t)
 (add-to-list 'custom-theme-load-path
              (expand-file-name "themes/" (file-name-directory (or load-file-name buffer-file-name))))
@@ -154,15 +109,6 @@ Emacs's own =enable-theme-functions=.
   (doom-themes-enable-italic t)
   :config
   (uwumacs-load-theme uwumacs-theme))
-
-#+end_src
-
-* Mode line and tabs
-
-=doom-modeline= is compact and shows the Meow state. The built-in tab bar
-appears once a second workspace exists and borrows the mode line's faces.
-
-#+begin_src emacs-lisp
 (use-package doom-modeline
   :ensure t
   :custom
@@ -185,14 +131,6 @@ appears once a second workspace exists and borrows the mode line's faces.
   (setopt tab-bar-show 1)
   (uwumacs--tab-bar-faces)
   (add-hook 'enable-theme-functions #'uwumacs--tab-bar-faces))
-
-#+end_src
-
-* Icons in completion, Corfu and Dired
-
-Each is enabled only when the icon font is usable.
-
-#+begin_src emacs-lisp
 (use-package nerd-icons-completion
   :ensure t
   :after marginalia
@@ -217,17 +155,6 @@ Each is enabled only when the icon font is usable.
   :ensure t
   :commands nerd-icons-dired-mode
   :hook (dired-mode . uwumacs--maybe-dired-icons))
-
-#+end_src
-
-* Spacing and highlights
-
-A little padding around the frame. Inactive windows dim so the active one
-is obvious, the current line pulses when you change window or page, and
-=TODO=, =FIXME= and numbers stand out in code. Recent edits flash briefly
-so you see what a command changed.
-
-#+begin_src emacs-lisp
 (use-package spacious-padding
   :ensure t
   :custom
@@ -284,14 +211,6 @@ so you see what a command changed.
 (use-package outline-minor-faces
   :ensure t
   :hook ((emacs-lisp-mode lisp-interaction-mode lisp-mode) . outline-minor-faces-mode))
-
-#+end_src
-
-* Programming buffers
-
-Line numbers and a highlighted current line in code; neither in prose.
-
-#+begin_src emacs-lisp
 (defun uwumacs--programming-presentation ()
   "Visual aids for programming buffers."
   (when uwumacs-line-numbers-in-programming
@@ -302,10 +221,3 @@ Line numbers and a highlighted current line in code; neither in prose.
 
 (provide 'uwumacs-ui)
 ;;; uwumacs-ui.el ends here
-#+end_src
-
-* Try it
-
-- =SPC t t= flips to the light theme and back.
-- =C-x C-+= grows the text one point at a time; =C-x C-0= resets.
-- Set =uwumacs-icons= to =nil= in =private.el= to run without icon fonts.

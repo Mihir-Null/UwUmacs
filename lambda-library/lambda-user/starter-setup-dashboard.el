@@ -7,7 +7,7 @@
 
 ;;; Code:
 
-(require 'starter-setup-fonts)
+(require 'uwumacs-ui)
 (defun starter-dashboard-open-cheatsheet (&rest _)
   "Open the local keybindings and commands cheat sheet."
   (interactive)
@@ -91,7 +91,7 @@ Exclude trailing padding and compensate for leading indentation."
         dashboard-icon-type 'nerd-icons
         dashboard-set-heading-icons t
         dashboard-set-file-icons t
-        dashboard-display-icons-p #'starter-ui-icons-available-p
+        dashboard-display-icons-p #'uwumacs-icons-available-p
         dashboard-heading-icon-height 1.0
         dashboard-show-shortcuts t
         dashboard-projects-backend 'project-el
@@ -147,7 +147,7 @@ Exclude trailing padding and compensate for leading indentation."
 
   (add-hook 'window-setup-hook #'starter-dashboard-recenter 100)
   (add-hook 'after-setting-font-hook #'starter-dashboard-recenter 100)
-  (add-hook 'lem-after-load-theme-hook #'starter-dashboard-recenter 100)
+  (add-hook 'enable-theme-functions #'starter-dashboard-recenter 100)
 
   ;; Skip the home page when Emacs was invoked with a file argument.
   (dashboard-setup-startup-hook))

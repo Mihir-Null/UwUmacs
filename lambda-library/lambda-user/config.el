@@ -26,10 +26,7 @@
 ;;;; Base framework
 (message "Loading Lambda base modules...")
 (measure-time
- (cl-dolist (mod '(lem-setup-functions
-                   lem-setup-theme
-                   lem-setup-fonts
-                   lem-setup-faces))
+ (cl-dolist (mod '(lem-setup-functions))
    (require mod nil t)))
 ;; Sane defaults, state directories and small helpers (literate/25-defaults.org).
 (require 'uwumacs-defaults)
@@ -50,7 +47,7 @@
     (load-file private)))
 (starter-platform-apply)
 ;; Establish final font metrics and icon mappings before dashboard measures text.
-(require 'starter-setup-fonts)
+(require 'uwumacs-ui)
 ;; Explicit authoring commands; ordinary startup loads generated Lisp only.
 (require 'starter-setup-literate)
 ;; Install the startup home page before after-init/startup hooks run. The dashboard
@@ -62,6 +59,9 @@
   "Load completion, navigation, projects, keymaps, and modal editing."
   (message "Loading Lambda interactive modules...")
   (measure-time
+   ;; Lambda's keybinding module defines transients at load time; it goes
+   ;; away with the keys chapter.
+   (require 'transient)
    (cl-dolist (mod '(lem-setup-keybindings))
      (require mod nil t)))
 
@@ -98,7 +98,6 @@
   ;; UI is intentionally a user module rather than Lambda's `lem-setup-modeline'.
   ;; It supplies Sonokai, doom-modeline, workspace-tab presentation, optional
   ;; Nerd Icons, and modest spacing while retaining ordinary OS-managed frames.
-  (require 'starter-setup-ui)
 
   ;; Apply frame policy after Lambda's Help, Org and UI defaults.
   (require 'starter-setup-frames)
