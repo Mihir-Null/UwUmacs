@@ -1,73 +1,19 @@
 ;;; starter-setup-meow.el --- Selection-first editing -*- lexical-binding: t; -*-
 ;; Generated from literate/40-editing.org; edit the Org source, then tangle.
 
-;; Adapted from Colin McLear's cpm-setup-meow.el (GPL-3.0-or-later).
-
-;;; Commentary:
-;; Reduced Meow configuration derived from Colin McLear's Lambda setup.
-;;
-;; The important architectural choice is to expose Lambda's existing semantic
-;; `lem+leader-map' through Meow. SPC therefore shows the user-facing command
-;; hierarchy in which-key while ordinary Emacs keymaps remain underneath it.
+;; Grammar adapted from Colin McLear's cpm-setup-meow.el (GPL-3.0-or-later).
 
 ;;; Code:
 
+(require 'uwumacs-leader)
 (defun starter-meow-setup ()
-  "Install starter Meow motion, leader, and normal-state bindings."
-
-  ;; Motion state is for special buffers where the major mode should keep most keys.
-  (meow-motion-overwrite-define-key
+  "Install the QWERTY selection grammar and the Motion-state basics."
+  ;; Motion state: application buffers keep their own keys; only j/k move.
+  (meow-motion-define-key
    '("j" . meow-next)
    '("k" . meow-prev))
-
-  ;; Colin's useful integration trick: make Lambda's actual leader map the map
-  ;; Meow/which-key sees rather than duplicating the hierarchy.
-  (add-to-list 'meow-keymap-alist (cons 'leader lem+leader-map))
-  ;; SPC is a semantic leader here, not a generic modifier translator.
-  ;;
-  ;; Meow declares the three prefix variables below as character-valued Custom
-  ;; options. `nil' is nevertheless a useful runtime sentinel here: no input event
-  ;; can equal it, so the modifier translations are disabled. Use `setq' rather
-  ;; than `setopt' because Custom type validation would (correctly) warn that nil is
-  ;; not a character even though Meow's runtime code handles this use safely.
-  (setq meow-keypad-meta-prefix nil
-        meow-keypad-ctrl-meta-prefix nil
-        meow-keypad-literal-prefix nil
-        meow-keypad-start-keys nil)
-
-  (meow-leader-define-key
-   '("?" . consult-apropos)
-   '("/" . meow-keypad-describe-key)
-   '("SPC" . execute-extended-command)
-   '(";" . comment-line)
-   '("[" . lem-previous-user-buffer)
-   '("]" . lem-next-user-buffer)
-   '("{" . tab-bar-switch-to-prev-tab)
-   '("}" . tab-bar-switch-to-next-tab)
-   '("TAB" . lem-tab-bar-select-tab-dwim)
-   '("b" . lem+buffer-keys)
-   '("c" . lem+comment-wrap-keys)
-   '("C" . lem+config-keys)
-   '("d" . dired-jump)
-   '("e" . lem+eval-keys)
-   '("f" . lem+file-keys)
-   '("F" . lem+flymake-keys)
-   '("i" . lem-find-lambda-file)
-   '("k" . consult-yank-from-kill-ring)
-   '("l" . vertico-repeat)
-   `("p" . ,project-prefix-map)
-   '("q" . lem+quit-keys)
-   '("r" . consult-register)
-   '("R" . consult-recent-file)
-   '("s" . lem+search-keys)
-   '("t" . lem+toggle-keys)
-   '("v" . lem+vc-keys)
-   '("w" . lem+window-keys)
-   '("W" . lem+workspace-keys))
-
-  ;; Colin's QWERTY Meow grammar, kept close to the documented/recommended Meow
-  ;; vocabulary so `meow-tutor' and upstream documentation transfer cleanly.
   (meow-normal-define-key
+   ;; Numbered expansion hints and counts.
    '("0" . meow-expand-0)
    '("9" . meow-expand-9)
    '("8" . meow-expand-8)
@@ -79,58 +25,62 @@
    '("2" . meow-expand-2)
    '("1" . meow-expand-1)
    '("-" . negative-argument)
-   '(";" . meow-reverse)
-   '(":" . meow-goto-line)
-   '("," . meow-inner-of-thing)
-   '("." . meow-bounds-of-thing)
-   '("[" . meow-beginning-of-thing)
-   '("]" . meow-end-of-thing)
-   '("a" . meow-append)
-   '("A" . meow-open-below)
-   '("b" . meow-back-word)
-   '("B" . meow-back-symbol)
-   '("c" . meow-change)
-   '("d" . meow-delete)
-   '("D" . meow-backward-delete)
-   '("e" . meow-next-word)
-   '("E" . meow-next-symbol)
-   '("f" . meow-find)
-   '("g" . beginning-of-buffer)
-   '("G" . end-of-buffer)
+   ;; Move; the shifted key extends the selection instead.
    '("h" . meow-left)
    '("H" . meow-left-expand)
-   '("i" . meow-insert)
-   '("I" . meow-open-above)
    '("j" . meow-next)
    '("J" . meow-next-expand)
    '("k" . meow-prev)
    '("K" . meow-prev-expand)
    '("l" . meow-right)
    '("L" . meow-right-expand)
-   '("m" . meow-join)
-   '("n" . meow-search)
-   '("o" . meow-block)
-   '("O" . meow-to-block)
-   '("p" . meow-yank)
-   '("q" . meow-quit)
-   '("r" . meow-replace)
-   '("R" . overwrite-mode)
-   '("s" . meow-kill)
-   '("t" . meow-till)
-   '("u" . meow-undo)
-   '("U" . meow-undo-in-selection)
-   '("v" . meow-visit)
+   '("b" . meow-back-word)
+   '("B" . meow-back-symbol)
+   '("e" . meow-next-word)
+   '("E" . meow-next-symbol)
+   '("g" . beginning-of-buffer)
+   '("G" . end-of-buffer)
+   ;; Select a thing: word, symbol, line, block, or by character.
    '("w" . meow-mark-word)
    '("W" . meow-mark-symbol)
    '("x" . meow-line)
-   '("X" . meow-swap-grab)
+   '("o" . meow-block)
+   '("O" . meow-to-block)
+   '("f" . meow-find)
+   '("t" . meow-till)
+   '("n" . meow-search)
+   '("v" . meow-visit)
+   '(";" . meow-reverse)
+   '(":" . meow-goto-line)
+   '("," . meow-inner-of-thing)
+   '("." . meow-bounds-of-thing)
+   '("[" . meow-beginning-of-thing)
+   '("]" . meow-end-of-thing)
+   ;; Act on the selection.
+   '("a" . meow-append)
+   '("A" . meow-open-below)
+   '("i" . meow-insert)
+   '("I" . meow-open-above)
+   '("c" . meow-change)
+   '("d" . meow-delete)
+   '("D" . meow-backward-delete)
+   '("s" . meow-kill)
+   '("r" . meow-replace)
+   '("R" . overwrite-mode)
+   '("m" . meow-join)
+   '("p" . meow-yank)
    '("y" . meow-clipboard-save)
-   '("Y" . meow-sync-grab)
+   '("u" . meow-undo)
+   '("U" . meow-undo-in-selection)
    '("z" . meow-pop-selection)
+   '("q" . meow-quit)
    '("'" . repeat)
    '("&" . meow-query-replace-regexp)
    '("%" . meow-query-replace)
+   ;; Grab: keep a second selection in sync (see meow-tutor).
    '("=" . meow-grab)
+   '("X" . meow-swap-grab)
+   '("Y" . meow-sync-grab)
    '("<escape>" . meow-cancel-selection)))
 (use-package meow
   :ensure t
@@ -140,19 +90,14 @@
   (meow-goto-line-function #'consult-goto-line)
   :config
   (setopt meow-use-dynamic-face-color nil)
-
-  ;; Useful extra semantic "thing" retained from Colin's config.
   (meow-thing-register 'angle '(regexp "<" ">") '(regexp "<" ">"))
   (add-to-list 'meow-char-thing-table '(?a . angle))
-
-  ;; Predictable starting states for application-like modes.
   (dolist (entry '((magit-status-mode . normal)
                    (magit-log-mode . normal)
                    (eshell-mode . insert)
                    (shell-mode . insert)
                    (term-mode . insert)))
     (add-to-list 'meow-mode-state-list entry))
-
   (with-eval-after-load 'magit
     (add-to-list 'meow-grab-fill-commands 'magit-discard)
     (add-hook 'magit-mode-hook
@@ -162,9 +107,30 @@
   (with-eval-after-load 'org
     ;; Treat @ as part of symbols/words during Meow movement in Org.
     (modify-syntax-entry ?@ "_" org-mode-syntax-table))
-
   (starter-meow-setup)
   (meow-global-mode 1)
-  (require 'starter-setup-key-hints))
+  (uwumacs-leader-enable))
+(keymap-set uwumacs-leader-map "SPC" #'execute-extended-command)
+(keymap-set uwumacs-leader-map "/" #'uwumacs-describe-leader)
+(keymap-set uwumacs-leader-map "?" #'consult-apropos)
+(keymap-set uwumacs-leader-map ";" #'comment-line)
+(keymap-set uwumacs-leader-map "d" #'dired-jump)
+(keymap-set uwumacs-leader-map "i" #'lem-find-lambda-file)
+(keymap-set uwumacs-leader-map "k" #'consult-yank-from-kill-ring)
+(keymap-set uwumacs-leader-map "r" #'consult-register)
+(keymap-set uwumacs-leader-map "R" #'consult-recent-file)
+(keymap-set uwumacs-leader-map "[" #'lem-previous-user-buffer)
+(keymap-set uwumacs-leader-map "]" #'lem-next-user-buffer)
+(keymap-set uwumacs-leader-map "{" #'tab-bar-switch-to-prev-tab)
+(keymap-set uwumacs-leader-map "}" #'tab-bar-switch-to-next-tab)
+(keymap-set uwumacs-leader-map "TAB" #'lem-tab-bar-select-tab-dwim)
+(with-eval-after-load 'lem-setup-keybindings
+  (define-key lem+leader-map (kbd "m") nil)
+  (set-keymap-parent uwumacs-leader-map lem+leader-map)
+  (setf (alist-get 'leader meow-keymap-alist) uwumacs-leader-map)
+  (keymap-global-set lem-prefix uwumacs-leader-map)
+  (keymap-set uwumacs-leader-map "p" (cons "project" project-prefix-map))
+  (keymap-set uwumacs-leader-map "v" (cons "version control" lem+vc-keys)))
+
 (provide 'starter-setup-meow)
 ;;; starter-setup-meow.el ends here

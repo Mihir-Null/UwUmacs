@@ -101,3 +101,8 @@ Open (for the user): see the numbered questions in the review message of 2026-09
 ## 9. Status
 
 All components: *existing*. Nothing has been verified against a contract written after the review.
+
+## 10. Refactor log
+
+- **Phase A (c0e7c97)** — Deleted the prototype core, GUI runner, unloaded Lambda modules and the ADR/catalogue/validator layer. 100 files, −22,383 lines.
+- **Phase B** — Literal leader landed: `literate/41-leader.org` → `uwumacs-leader.el` (95 lines) makes `SPC` a real keymap in Normal and Motion and adds per-mode localleaders under `SPC m`; `literate/40-editing.org` rewritten as a proper chapter; hint adapter and its tests deleted; `SPC l` double-writer resolved (LSP owns it, history is `SPC s l`); Lambda's dead mail menu cleared from `m`. Bridge: the leader inherits `lem+leader-map` until the keys chapter owns the tree. Tests: `tests/uwumacs-leader-tests.el`.

@@ -59,7 +59,7 @@
       (dots-test-check (string-suffix-p "var/etc/custom.el" custom-file)
                        "Customize file is not in persistent state")
       (dolist (feature '(config starter-setup-literate starter-setup-dashboard starter-setup-meow
-                        starter-setup-key-hints starter-setup-treesit starter-setup-languages
+                        uwumacs-leader starter-setup-treesit starter-setup-languages
                         starter-setup-terminal starter-setup-org starter-setup-ui starter-setup-frames))
         (dots-test-check (featurep feature) (format "Missing feature %s" feature)))
       (dots-test-check (equal custom-enabled-themes '(doom-sonokai)) "Theme changed")
@@ -76,10 +76,21 @@
       (dots-test-check (featurep 'starter-setup-fonts) "Early font module missing")
       (dots-test-check (not (memq #'lem-font--init-nerd-icons-fonts after-setting-font-hook))
                        "Broad Unicode icon-font hook still installed")
-      (dots-test-check (eq (lookup-key lem+leader-map (kbd "H"))
+      (dots-test-check (not (featurep 'starter-setup-key-hints)) "Hint adapter still loads")
+      (dots-test-check (eq (lookup-key meow-normal-state-keymap (kbd "SPC")) uwumacs-leader-map)
+                       "SPC is not the literal leader in Normal state")
+      (dots-test-check (eq (lookup-key meow-motion-state-keymap (kbd "SPC")) uwumacs-leader-map)
+                       "SPC is not the literal leader in Motion state")
+      (dots-test-check (null (lookup-key lem+leader-map (kbd "m")))
+                       "Localleader key m is shadowed by Lambda's mail map")
+      (dots-test-check (eq (lookup-key uwumacs-leader-map (kbd "l e")) #'starter-eglot)
+                       "SPC l is not the language-server menu")
+      (dots-test-check (eq (lookup-key uwumacs-leader-map (kbd "s l")) #'vertico-repeat)
+                       "SPC s l is not completion history")
+      (dots-test-check (eq (lookup-key uwumacs-leader-map (kbd "H"))
                            #'starter-dashboard-open-cheatsheet)
                        "Cheat-sheet leader binding was overwritten")
-      (dots-test-check (eq (lookup-key lem+leader-map (kbd "h")) #'dashboard-open)
+      (dots-test-check (eq (lookup-key uwumacs-leader-map (kbd "h")) #'dashboard-open)
                        "Home leader binding was overwritten")
       (save-window-excursion
         (let ((recentf-list (list lem-config-file))
@@ -109,7 +120,7 @@
           (while (re-search-forward "^| \\(SPC [^|]+?\\) +|[^|]+| \\([a-z][a-z0-9-]+\\) +|" nil t)
             (let* ((key (string-trim (match-string 1)))
                    (command (intern (match-string 2))))
-              (dots-test-check (eq (lookup-key lem+leader-map (kbd (substring key 4))) command)
+              (dots-test-check (eq (lookup-key uwumacs-leader-map (kbd (substring key 4))) command)
                                (format "Cheat sheet binding mismatch: %s -> %s" key command)))))))
   (error (push (format "Startup error: %S" err) dots-test-failures)))
 ;; Check syntax without running installed packages' programming-mode hooks.

@@ -300,7 +300,7 @@ SPC v ...   version control
 SPC w ...   windows
 SPC W ...   tabs/workspaces
 SPC SPC     M-x
-SPC /       describe Meow/keypad key
+SPC /       describe the leader and localleader bindings
 ```
 
 The important architectural point is:

@@ -126,7 +126,7 @@
 ;; M-x meow-tutor
 ;; M-x dashboard-open -> return to the home page
 ;; SPC SPC        -> M-x
-;; SPC /          -> describe Meow/keypad key
+;; SPC /          -> describe the leader and this buffer's localleader
 ;; SPC o m        -> MSYS2 UCRT64 in EAT (Windows)
 ;; C-h k          -> describe key
 ;; C-h m          -> describe active modes
