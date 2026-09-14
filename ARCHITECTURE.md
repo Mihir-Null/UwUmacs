@@ -50,6 +50,7 @@ Agent decisions, with the reason:
 - **Buffer-local emulation entry over a `menu-item :filter`.** Both work; only the emulation entry is visible to `where-is`, which Marginalia uses for M-x annotations.
 - **Motion state for Magit and Dired** (was Normal for Magit). In Normal state Meow's grammar shadows Magit's `s`, `u`, `c`; Motion keeps the package's keys and adds only `j`/`k` and the leader.
 - **UI loads first.** Theme and fonts before the first frame is drawn; the old two-theme startup (Lambda's dark fallback, then Sonokai) is gone. Theme-dependent faces hang on Emacs 29's `enable-theme-functions`.
+- **Meow colours its own expansion hints** (2026-09-14). `meow-use-dynamic-face-color` was `nil`, copied from a setup whose theme styled Meow's faces; doom-themes and the Sonokai port style none of them, so the numbered hints rendered as plain text. The option is back at its default: Meow derives the hint backgrounds from the cursor and region colours of the active theme and recomputes them through its `enable-theme` advice, so the light theme is covered without a UwUmacs hook.
 - **Packages declared where used** with `:ensure t`; `init.el` refreshes archives once when none are cached. `embark-consult`, previously assumed to install transitively and absent, is now declared and installed. `kind-icon` dropped so `nerd-icons-corfu` is the one Corfu formatter.
 - **Tangle with tracked outputs** kept: startup never tangles, a clone works, and `tools/tangle.el` (125 lines) is proportionate.
 - **Frames mean full buffers, not panels.** The user's frames preference covers buffers you read or edit; sidebars, menus, gutters and the minibuffer stay inside each frame. `dired-sidebar` and `imenu-list` are kept as side windows and `diff-hl` is the git gutter (all under `SPC t`).
@@ -118,3 +119,4 @@ All on branch `dev/uwumacs-config-review-dc1bee`, each commit verified with the 
 | `5e60d4a` | Org polish, avy, meow-tree-sitter, vundo, keycast, Casual menus, spelling wiring, GPL-3.0-or-later licence |
 | `d40cf20` | Gpg4win first on `exec-path` so GNU ELPA signatures verify on Windows |
 | (this branch) | macOS section of the platform chapter, `SPC f o`, platform tests, Nix flake with nix-darwin and home-manager modules |
+| (this branch) | Meow expansion hints coloured from the theme (`meow-use-dynamic-face-color` at its default) |
