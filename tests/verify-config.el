@@ -60,7 +60,7 @@
                        "Customize file is not in persistent state")
       (dolist (feature '(config starter-setup-literate starter-setup-dashboard starter-setup-meow
                         uwumacs-leader starter-setup-treesit starter-setup-languages
-                        starter-setup-terminal starter-setup-org starter-setup-ui starter-setup-frames))
+                        starter-setup-terminal uwumacs-org starter-setup-ui starter-setup-frames))
         (dots-test-check (featurep feature) (format "Missing feature %s" feature)))
       (dots-test-check (equal custom-enabled-themes '(doom-sonokai)) "Theme changed")
       ;; Exercise the real loader in both directions: themes must not stack.

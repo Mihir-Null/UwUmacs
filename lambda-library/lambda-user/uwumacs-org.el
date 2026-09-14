@@ -1,24 +1,3 @@
-#+TITLE: Org: notes, tasks and the agenda
-#+OPTIONS: toc:3 num:nil
-#+STARTUP: overview
-#+PROPERTY: header-args:emacs-lisp :tangle ../lambda-library/lambda-user/uwumacs-org.el :eval never :comments no :padline no :mkdirp yes
-
-[[file:index.org][Reading guide]] · [[file:30-platform.org][Platform]] · [[file:41-leader.org][Leader]]
-
-Ownership: *user configuration*. The directory and capture templates are the
-user's own minimal policy; the defaults are distilled from Lambda-Emacs by
-Colin McLear (=lem-setup-org-base=, =lem-setup-org-settings=), without his
-personal files and export workflows.
-
-* What this gives you
-
-One inbox file under a portable Org directory, two capture templates, and
-an agenda. Org is configured to look clean (hidden markup, indented
-headings, pretty entities) and to behave predictably (no editing inside
-folded text, tasks log when they are done). =SPC m= in an Org buffer lists
-the structure commands; =SPC m a= opens the agenda from anywhere.
-
-#+begin_src emacs-lisp
 ;;; uwumacs-org.el --- Notes, tasks and the agenda -*- lexical-binding: t; -*-
 ;; Generated from literate/70-org.org; edit the Org source, then tangle.
 
@@ -29,17 +8,6 @@ the structure commands; =SPC m a= opens the agenda from anywhere.
 (require 'starter-platform)
 (require 'uwumacs-defaults)
 (require 'uwumacs-leader)
-
-#+end_src
-
-* Where notes live
-
-=starter-org-directory= comes from [[file:30-platform.org][the platform chapter]] so a machine can
-override it in =private.el=. Everything captured lands in =inbox.org=;
-the agenda reads every file in the directory. Done tasks are archived
-into a dated tree in one archive file.
-
-#+begin_src emacs-lisp
 (make-directory starter-org-directory t)
 (setopt org-directory starter-org-directory
         org-default-notes-file (expand-file-name "inbox.org" starter-org-directory)
@@ -52,18 +20,6 @@ into a dated tree in one archive file.
 (setopt org-capture-templates
         `(("t" "Inbox TODO" entry (file ,org-default-notes-file) "* TODO %?\n  %U\n")
           ("n" "Inbox note" entry (file ,org-default-notes-file) "* %?\n  %U\n")))
-
-#+end_src
-
-* How Org looks and behaves
-
-Markup is hidden and headings are indented, so a document reads like a
-document. Editing inside folded text is refused rather than silently
-mangling it. New headings go after the current subtree's content, =RET=
-follows links, and =C-a=/=C-e= respect heading stars. Source blocks use
-their language's colours and indentation.
-
-#+begin_src emacs-lisp
 (setopt org-hide-emphasis-markers t
         org-hide-leading-stars t
         org-startup-indented t
@@ -103,19 +59,6 @@ their language's colours and indentation.
                 (let ((inherited electric-pair-inhibit-predicate))
                   (lambda (char) (or (char-equal char ?<) (funcall inherited char))))))
   (add-hook 'org-mode-hook #'uwumacs--org-no-angle-pairs))
-
-#+end_src
-
-* Tasks and the agenda
-
-A task is =TODO=, then maybe =NEXT= or =WAITING=, then =DONE= or
-=CANCELED=. Finishing a task records the time in a drawer, and a parent
-cannot be done while its children are not. The agenda starts on today,
-hides scheduled items that are done, and offers a =d= dashboard with
-today's agenda and the next actions. Refiling completes across every
-agenda file to eight levels deep.
-
-#+begin_src emacs-lisp
 (setopt org-todo-keywords '((sequence "TODO(t)" "NEXT(n)" "WAITING(w@/!)" "|" "DONE(d)" "CANCELED(c@)"))
         org-use-fast-todo-selection 'expert
         org-enforce-todo-dependencies t
@@ -173,16 +116,6 @@ agenda file to eight levels deep.
   (when-let* ((buffer (get-buffer "*Org Agenda*")))
     (with-current-buffer buffer (org-agenda-redo))))
 (add-hook 'org-capture-after-finalize-hook #'uwumacs--org-agenda-refresh)
-
-#+end_src
-
-* Export and files
-
-Exports get smart quotes, tolerate broken links and omit the HTML
-postamble. Headings tagged =:ignore:= export their contents but not
-their title. Office documents open in their default application.
-
-#+begin_src emacs-lisp
 (setopt org-export-with-smart-quotes t
         org-export-with-broken-links t
         org-html-postamble nil
@@ -219,18 +152,6 @@ their title. Office documents open in their default application.
             (goto-char start) (insert "#+begin_" type "\n"))
         (insert "#+begin_" type "\n")
         (save-excursion (insert "#+end_" (car (split-string type))))))))
-
-#+end_src
-
-* Meow in Org
-
-Org buffers are text, so they start in Normal state with the full grammar;
-=@= counts as part of a word so tags select cleanly. The agenda is a
-special buffer and starts in Motion state. The localleader collects the
-structure commands a new user needs; every one of them also has Org's
-own =C-c= key, which =C-h m= lists.
-
-#+begin_src emacs-lisp
 (with-eval-after-load 'meow
   (add-to-list 'meow-mode-state-list '(org-agenda-mode . motion)))
 (with-eval-after-load 'org
@@ -272,10 +193,3 @@ own =C-c= key, which =C-h m= lists.
 
 (provide 'uwumacs-org)
 ;;; uwumacs-org.el ends here
-#+end_src
-
-* Try it
-
-- =SPC m c t= from anywhere captures a task into the inbox.
-- In =inbox.org=, =SPC m t= cycles its state; =SPC m s= schedules it.
-- =SPC m a= shows today, due-soon and next actions together.

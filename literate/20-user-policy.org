@@ -52,7 +52,7 @@ This allowlist avoids installing unrelated Lambda workflows just because their s
 #+name: early-config-03-1
 #+begin_src emacs-lisp
 (defconst starter-package-topics
-  '(dashboard eshell faces fonts functions org-settings programming shell)
+  '(dashboard faces fonts functions)
   "Lambda package topics used by the personal configuration.")
 #+end_src
 
@@ -296,14 +296,10 @@ The following blocks are consecutive fragments of this source section. Some shar
 ;;;; After startup — useful editing subsystems
 (defun starter-after-startup ()
   "Load programming, shell, Org, and the starter presentation layer."
-  (message "Loading Lambda editing modules...")
-  (measure-time
-   (cl-dolist (mod '(lem-setup-programming
-                     lem-setup-shell
-                     lem-setup-eshell
-                     lem-setup-org-base
-                     lem-setup-org-settings))
-     (require mod nil t)))
+  ;; Shells, programming and Org are ours (literate/35-shells.org,
+  ;; 72-programming.org, 70-org.org).
+  (require 'uwumacs-shell)
+  (require 'uwumacs-programming)
 
   ;; Replace Lambda's moving Tree-sitter grammar recipes and unconditional mode
   ;; remaps with reproducible Emacs-30-compatible pins and availability checks.
@@ -317,7 +313,7 @@ The following blocks are consecutive fragments of this source section. Some shar
   ;; such as the Windows MSYS2 UCRT64 environment.
   (require 'starter-setup-terminal)
 
-  (require 'starter-setup-org)
+  (require 'uwumacs-org)
 #+end_src
 
 *** Add editing subsystems after initialization: continued 2

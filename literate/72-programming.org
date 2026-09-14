@@ -1,0 +1,227 @@
+#+TITLE: Programming: delimiters, structure, linting and compiling
+#+OPTIONS: toc:3 num:nil
+#+STARTUP: overview
+#+PROPERTY: header-args:emacs-lisp :tangle ../lambda-library/lambda-user/uwumacs-programming.el :eval never :comments no :padline no :mkdirp yes
+
+[[file:index.org][Reading guide]] · [[file:60-programming.org][Languages: Tree-sitter and Eglot]] · [[file:41-leader.org][Leader]]
+
+Ownership: *user configuration*, distilled from Lambda-Emacs by Colin McLear
+(=lem-setup-programming=, compilation from =lem-setup-shell=). Language
+parsers and language servers are in [[file:60-programming.org][their own chapter]]; this one is what
+every programming buffer gets regardless of language.
+
+* What this gives you
+
+Matching delimiters in rainbow colours, pairs that close themselves, and
+structural editing that never leaves a paren unbalanced. Flymake shows
+problems in the fringe as you type. =SPC m= in any programming buffer
+offers compile, recompile, the error list and a formatter; in Emacs Lisp
+it adds evaluation and debugging.
+
+#+begin_src emacs-lisp
+;;; uwumacs-programming.el --- What every programming buffer gets -*- lexical-binding: t; -*-
+;; Generated from literate/72-programming.org; edit the Org source, then tangle.
+
+;; Distilled from Lambda-Emacs by Colin McLear (GPL-3.0-or-later).
+
+;;; Code:
+
+(require 'uwumacs-defaults)
+(require 'uwumacs-leader)
+
+#+end_src
+
+* Delimiters and structure
+
+=rainbow-delimiters= colours each nesting level. =electric-pair-mode= inserts
+the closing bracket. Puni is structural editing for every language: deleting
+never breaks a pair, and =C-)= and =C-(= slurp the next or previous
+expression into the current one. Embrace adds, changes and removes
+surrounding pairs (=SPC c s=). =iedit= edits every occurrence of a symbol at
+once (=SPC s c=).
+
+#+begin_src emacs-lisp
+(setopt prettify-symbols-unprettify-at-point t
+        show-paren-delay 0
+        show-paren-context-when-offscreen t)
+(global-prettify-symbols-mode 1)
+(electric-pair-mode 1)
+
+(use-package rainbow-delimiters
+  :ensure t
+  :hook (prog-mode . rainbow-delimiters-mode))
+
+(use-package rainbow-identifiers
+  :ensure t
+  :commands rainbow-identifiers-mode)
+
+(use-package puni
+  :ensure t
+  :hook ((prog-mode tex-mode org-mode markdown-mode eval-expression-minibuffer-setup) . puni-mode)
+  :bind (:map puni-mode-map
+         ("C-(" . puni-slurp-backward)
+         ("C-)" . puni-slurp-forward)
+         ("C-{" . puni-barf-backward)
+         ("C-}" . puni-barf-forward)))
+
+(use-package embrace
+  :ensure t
+  :commands (embrace-commander embrace-add embrace-change embrace-delete)
+  :hook (org-mode . embrace-org-mode-hook)
+  :config
+  (defun uwumacs--embrace-markdown ()
+    "Markdown pairs for Embrace."
+    (dolist (pair '((?* "*" . "*") (?_ "_" . "_") (?` "`" . "`") (?$ "$" . "$")))
+      (embrace-add-pair (car pair) (cadr pair) (cddr pair))))
+  (add-hook 'markdown-mode-hook #'uwumacs--embrace-markdown))
+
+(use-package iedit
+  :ensure t
+  :commands iedit-mode)
+
+#+end_src
+
+* Indentation guides and aggressive indentation
+
+Guides draw a thin line at each indentation level. In Lisp buffers,
+=aggressive-indent= re-indents as you type, which is how Lisp is meant to
+feel; in other languages it fights with formatters, so it stays off.
+
+#+begin_src emacs-lisp
+(use-package highlight-indent-guides
+  :ensure t
+  :hook (prog-mode . highlight-indent-guides-mode)
+  :custom
+  (highlight-indent-guides-method 'character)
+  (highlight-indent-guides-character ?│)
+  (highlight-indent-guides-responsive 'top)
+  (highlight-indent-guides-auto-odd-face-perc 5)
+  (highlight-indent-guides-auto-even-face-perc 5)
+  (highlight-indent-guides-auto-character-face-perc 15))
+
+(use-package aggressive-indent
+  :ensure t
+  :hook ((emacs-lisp-mode lisp-interaction-mode lisp-mode) . aggressive-indent-mode)
+  :custom
+  (aggressive-indent-comments-too nil)
+  :config
+  (add-to-list 'aggressive-indent-protected-commands 'comment-dwim))
+
+#+end_src
+
+* Linting: Flymake
+
+Flymake is built in and runs a checker for the current language when one
+is available: Eglot provides one for any language server, =package-lint=
+checks Emacs Lisp packages, and =flymake-collection= adds checkers for
+common tools. Problems show in the left fringe and in the mode line;
+=SPC F= lists them.
+
+#+begin_src emacs-lisp
+(use-package flymake
+  :ensure nil
+  :hook (prog-mode . flymake-mode)
+  :custom
+  (flymake-fringe-indicator-position 'left-fringe)
+  (flymake-suppress-zero-counters t)
+  (flymake-no-changes-timeout nil)
+  (flymake-start-on-save-buffer t)
+  (flymake-wrap-around nil)
+  (flymake-mode-line-counter-format '("" flymake-mode-line-error-counter flymake-mode-line-warning-counter flymake-mode-line-note-counter ""))
+  (flymake-mode-line-format '(" " flymake-mode-line-exception flymake-mode-line-counters)))
+
+(use-package package-lint
+  :ensure t
+  :commands (package-lint-current-buffer package-lint-buffer)
+  :config
+  (with-eval-after-load 'savehist
+    (add-to-list 'savehist-additional-variables 'package-archive-contents)))
+
+(use-package flymake-collection
+  :ensure t
+  :hook (after-init . flymake-collection-hook-setup))
+
+#+end_src
+
+* Compiling
+
+=compile= runs a command and links errors to source lines. A new
+compilation kills the old one, buffers save first, and the output scrolls
+to the first error.
+
+#+begin_src emacs-lisp
+(setopt compilation-always-kill t
+        compilation-ask-about-save nil
+        compilation-scroll-output 'first-error)
+(with-eval-after-load 'compile
+  (add-hook 'compilation-filter-hook #'comint-truncate-buffer))
+
+#+end_src
+
+* Emacs Lisp
+
+Lisp buffers get documentation in the echo area at once, =elisp-def= for
+jumping to definitions, and snippets. Shell scripts named like zsh files
+open in =sh-mode=.
+
+#+begin_src emacs-lisp
+(setopt eldoc-idle-delay 0)
+
+(use-package elisp-def
+  :ensure t
+  :hook ((emacs-lisp-mode ielm-mode lisp-interaction-mode) . elisp-def-mode))
+
+(defun uwumacs--lisp-buffer-setup ()
+  "Visual aids for Lisp buffers."
+  (setq show-trailing-whitespace t)
+  (prettify-symbols-mode 1))
+(dolist (hook '(emacs-lisp-mode-hook ielm-mode-hook lisp-interaction-mode-hook))
+  (add-hook hook #'uwumacs--lisp-buffer-setup))
+
+(dolist (pattern '("\\.zsh\\'" "zlogin\\'" "zlogout\\'" "zprofile\\'" "zshenv\\'" "zshrc\\'"))
+  (add-to-list 'auto-mode-alist (cons pattern 'sh-mode)))
+
+#+end_src
+
+* Meow in programming buffers
+
+Programming buffers are ordinary text buffers, so they start in Normal
+state and the whole selection grammar applies. The localleader gives every
+language the same first menu, and Emacs Lisp adds its evaluation commands
+on top; a language chapter can add more for its own mode.
+
+#+begin_src emacs-lisp
+(uwumacs-define-localleader 'prog-mode
+  "c" (cons "compile" #'compile)
+  "r" (cons "recompile" #'recompile)
+  "e" (cons "errors" #'consult-flymake)
+  "E" (cons "error list" #'flymake-show-buffer-diagnostics)
+  "f" (cons "format" #'indent-region)
+  ";" (cons "comment" #'comment-dwim)
+  "s" (cons "surround" #'embrace-commander)
+  "i" (cons "edit all occurrences" #'iedit-mode)
+  "d" (cons "definition" #'xref-find-definitions)
+  "D" (cons "references" #'xref-find-references))
+
+(uwumacs-define-localleader 'emacs-lisp-mode
+  "e" (cons "eval last sexp" #'eval-last-sexp)
+  "d" (cons "eval defun" #'eval-defun)
+  "b" (cons "eval buffer" #'eval-buffer)
+  "r" (cons "eval region" #'eval-region)
+  "x" (cons "eval expression" #'eval-expression)
+  "i" (cons "ielm" #'ielm)
+  "g" (cons "edebug defun" #'edebug-defun)
+  "c" (cons "byte compile" #'emacs-lisp-byte-compile)
+  "l" (cons "package lint" #'package-lint-current-buffer)
+  "m" (cons "macroexpand" #'pp-macroexpand-last-sexp)
+  "D" (cons "find definition" #'elisp-def))
+
+(provide 'uwumacs-programming)
+;;; uwumacs-programming.el ends here
+#+end_src
+
+* Try it
+
+- In a Lisp buffer, put point after a form and press =SPC m e=.
+- Type =(= inside code: the =)= appears. Select an expression with =o=, press =d=: it is gone, balanced.
+- Break something on purpose: the fringe marks it; =SPC m e= lists it.

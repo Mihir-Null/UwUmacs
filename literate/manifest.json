@@ -4,6 +4,7 @@
     "20-user-policy.org",
     "25-defaults.org",
     "30-platform.org",
+    "35-shells.org",
     "40-editing.org",
     "41-leader.org",
     "45-frames.org",
@@ -16,6 +17,7 @@
     "68-navigation.org",
     "60-programming.org",
     "70-org.org",
+    "72-programming.org",
     "80-maintenance.org"
   ],
   "outputs": [
@@ -26,6 +28,7 @@
     "lambda-library/lambda-user/uwumacs-defaults.el",
     "lambda-library/lambda-user/starter-platform.el",
     "lambda-library/lambda-user/starter-setup-terminal.el",
+    "lambda-library/lambda-user/uwumacs-shell.el",
     "lambda-library/lambda-user/starter-setup-meow.el",
     "lambda-library/lambda-user/uwumacs-leader.el",
     "lambda-library/lambda-user/uwumacs-completion.el",
@@ -39,7 +42,8 @@
     "lambda-library/lambda-user/starter-setup-dashboard.el",
     "lambda-library/lambda-user/starter-setup-treesit.el",
     "lambda-library/lambda-user/starter-setup-languages.el",
-    "lambda-library/lambda-user/starter-setup-org.el",
+    "lambda-library/lambda-user/uwumacs-org.el",
+    "lambda-library/lambda-user/uwumacs-programming.el",
     "lambda-library/lambda-user/private.example.el",
     "lambda-library/lambda-user/starter-setup-literate.el"
   ]

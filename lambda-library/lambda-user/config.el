@@ -77,14 +77,10 @@
 ;;;; After startup — useful editing subsystems
 (defun starter-after-startup ()
   "Load programming, shell, Org, and the starter presentation layer."
-  (message "Loading Lambda editing modules...")
-  (measure-time
-   (cl-dolist (mod '(lem-setup-programming
-                     lem-setup-shell
-                     lem-setup-eshell
-                     lem-setup-org-base
-                     lem-setup-org-settings))
-     (require mod nil t)))
+  ;; Shells, programming and Org are ours (literate/35-shells.org,
+  ;; 72-programming.org, 70-org.org).
+  (require 'uwumacs-shell)
+  (require 'uwumacs-programming)
 
   ;; Replace Lambda's moving Tree-sitter grammar recipes and unconditional mode
   ;; remaps with reproducible Emacs-30-compatible pins and availability checks.
@@ -98,7 +94,7 @@
   ;; such as the Windows MSYS2 UCRT64 environment.
   (require 'starter-setup-terminal)
 
-  (require 'starter-setup-org)
+  (require 'uwumacs-org)
   ;; UI is intentionally a user module rather than Lambda's `lem-setup-modeline'.
   ;; It supplies Sonokai, doom-modeline, workspace-tab presentation, optional
   ;; Nerd Icons, and modest spacing while retaining ordinary OS-managed frames.

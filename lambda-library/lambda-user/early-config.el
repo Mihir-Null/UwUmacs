@@ -14,7 +14,7 @@
 (require 'seq)
 (setopt lem-load-extras t)
 (defconst starter-package-topics
-  '(dashboard eshell faces fonts functions org-settings programming shell)
+  '(dashboard faces fonts functions)
   "Lambda package topics used by the personal configuration.")
 (setq lem-packages-alist
       (seq-filter (lambda (entry) (memq (car entry) starter-package-topics))
