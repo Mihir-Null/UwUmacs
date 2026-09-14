@@ -1,0 +1,170 @@
+#+TITLE: Help, Info and menus
+#+OPTIONS: toc:3 num:nil
+#+STARTUP: overview
+#+PROPERTY: header-args:emacs-lisp :tangle ../lambda-library/lambda-user/uwumacs-help.el :eval never :comments no :padline no :mkdirp yes
+
+[[file:index.org][Reading guide]] · [[file:60-completion.org][Completion]] · [[file:41-leader.org][Leader]]
+
+Ownership: *user configuration*, distilled from Lambda-Emacs by Colin McLear
+(=lem-setup-help=). Emacs is self-documenting; this chapter makes that
+documentation nicer to read and easier to reach.
+
+* What this gives you
+
+=C-h k= then a key tells you what it does; =C-h f= and =C-h v= describe a
+function or variable. Helpful replaces those views with richer ones that
+include the source, examples and references. Info manuals get colour, and
+the leader's help menu collects the commands a learner needs most. Popup
+menus (Transient, used by Magit) open at the top of the frame, and no OS
+dialog boxes ever appear.
+
+#+begin_src emacs-lisp
+;;; uwumacs-help.el --- Help, Info and menus -*- lexical-binding: t; -*-
+;; Generated from literate/62-help.org; edit the Org source, then tangle.
+
+;; Distilled from Lambda-Emacs by Colin McLear (GPL-3.0-or-later).
+
+;;; Code:
+
+(require 'uwumacs-defaults)
+(require 'uwumacs-leader)
+
+(setopt use-file-dialog nil
+        use-dialog-box nil
+        confirm-nonexistent-file-or-buffer nil
+        help-window-select t
+        help-at-pt-timer-delay 0.1
+        help-at-pt-display-when-idle '(flymake-diagnostic))
+(menu-bar-mode -1)
+
+#+end_src
+
+* Helpful, examples and coloured Info
+
+Helpful takes over the standard describe commands through =remap=, so the
+usual =C-h= keys keep working and simply show more. =elisp-demos= injects
+worked examples into those pages. =info-colors= makes manuals readable.
+
+#+begin_src emacs-lisp
+(use-package helpful
+  :ensure t
+  :bind (([remap display-local-help] . helpful-at-point)
+         ([remap describe-function] . helpful-callable)
+         ([remap describe-variable] . helpful-variable)
+         ([remap describe-symbol] . helpful-symbol)
+         ([remap describe-key] . helpful-key)
+         ([remap describe-command] . helpful-command)
+         ("C-h C-l" . find-library)
+         ("C-h C-c" . finder-commentary)))
+
+(use-package elisp-demos
+  :ensure t
+  :after helpful
+  :config
+  (advice-add 'helpful-update :after #'elisp-demos-advice-helpful-update))
+
+(use-package info-colors
+  :ensure t
+  :hook (Info-selection . info-colors-fontify-node))
+
+#+end_src
+
+* Transient menus
+
+Magit and a few other packages draw their menus with Transient. Its state
+files go under the cache, and the menu opens in a side window at the top so
+it never replaces the buffer you are looking at.
+
+#+begin_src emacs-lisp
+(use-package transient
+  :ensure nil
+  :defer t
+  :custom
+  (transient-levels-file (expand-file-name "transient/levels.el" uwumacs-cache-dir))
+  (transient-values-file (expand-file-name "transient/values.el" uwumacs-cache-dir))
+  (transient-history-file (expand-file-name "transient/history.el" uwumacs-cache-dir))
+  (transient-detect-key-conflicts t)
+  (transient-force-fixed-pitch t)
+  (transient-display-buffer-action '(display-buffer-in-side-window
+                                     (side . top)
+                                     (dedicated . t)
+                                     (inhibit-same-window . t)
+                                     (window-parameters (no-other-window . t)))))
+
+#+end_src
+
+* The help menu
+
+A keymap, so which-key shows it. It gathers describe commands, source
+lookup, manuals and the UwUmacs and Meow tutorials. [[file:42-keys.org][The keys chapter]] puts
+it on =SPC h=.
+
+#+begin_src emacs-lisp
+(defvar-keymap uwumacs-help-map
+  :doc "Help, documentation and tutorials."
+  "h" (cons "home" #'dashboard-open)
+  "k" (cons "key" #'helpful-key)
+  "f" (cons "function" #'helpful-callable)
+  "v" (cons "variable" #'helpful-variable)
+  "o" (cons "symbol" #'helpful-symbol)
+  "c" (cons "command" #'helpful-command)
+  "." (cons "at point" #'helpful-at-point)
+  "m" (cons "mode" #'describe-mode)
+  "b" (cons "bindings here" #'embark-bindings)
+  "B" (cons "all bindings" #'describe-bindings)
+  "l" (cons "leader" #'uwumacs-describe-leader)
+  "F" (cons "face" #'describe-face)
+  "w" (cons "where is" #'where-is)
+  "e" (cons "messages" #'view-echo-area-messages)
+  "L" (cons "lossage" #'view-lossage)
+  "i" (cons "info" #'info)
+  "s" (cons "search manuals" #'uwumacs-search-manuals)
+  "S" (cons "find source" #'find-function)
+  "V" (cons "find variable" #'find-variable)
+  "K" (cons "find key" #'find-function-on-key)
+  "t" (cons "meow tutor" #'meow-tutor)
+  "C" (cons "meow cheatsheet" #'meow-cheatsheet))
+
+#+end_src
+
+* Meow in help buffers
+
+Help, Helpful and Info buffers open in Motion state: their own keys work,
+plus =j=/=k= and the leader. The localleaders below label the navigation
+keys those modes already have, so =SPC m= in an Info buffer shows how to
+move around the manual.
+
+#+begin_src emacs-lisp
+(uwumacs-define-localleader 'Info-mode
+  "n" (cons "next node" #'Info-next)
+  "p" (cons "previous node" #'Info-prev)
+  "u" (cons "up" #'Info-up)
+  "t" (cons "top" #'Info-top-node)
+  "d" (cons "directory" #'Info-directory)
+  "g" (cons "go to node" #'Info-goto-node)
+  "i" (cons "index" #'Info-index)
+  "s" (cons "search" #'Info-search)
+  "m" (cons "menu" #'Info-menu)
+  "l" (cons "back" #'Info-history-back)
+  "r" (cons "forward" #'Info-history-forward))
+
+(uwumacs-define-localleader 'help-mode
+  "l" (cons "back" #'help-go-back)
+  "r" (cons "forward" #'help-go-forward)
+  "s" (cons "source" #'help-view-source)
+  "i" (cons "info" #'help-goto-info))
+
+(with-eval-after-load 'helpful
+  (uwumacs-define-localleader 'helpful-mode
+    "u" (cons "update" #'helpful-update)
+    "s" (cons "source" #'helpful-visit-reference)))
+
+(provide 'uwumacs-help)
+;;; uwumacs-help.el ends here
+#+end_src
+
+* Try it
+
+- =C-h k SPC f f=: Helpful describes =find-file= and names the key you pressed.
+- =C-h B= in any buffer: every key that works right now, searchable.
+- Open a manual with =C-h i=, then =SPC m= to see how to move.

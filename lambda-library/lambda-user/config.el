@@ -62,9 +62,7 @@
   "Load completion, navigation, projects, keymaps, and modal editing."
   (message "Loading Lambda interactive modules...")
   (measure-time
-   (cl-dolist (mod '(lem-setup-completion
-                     lem-setup-keybindings
-                     lem-setup-help
+   (cl-dolist (mod '(lem-setup-keybindings
                      lem-setup-navigation
                      lem-setup-dired
                      lem-setup-search
@@ -73,6 +71,9 @@
                      lem-setup-tabs))
      (require mod nil t)))
 
+  ;; Completion and help are ours (literate/60-completion.org, 62-help.org).
+  (require 'uwumacs-completion)
+  (require 'uwumacs-help)
   ;; Lambda keymaps must exist before Meow exposes `lem+leader-map' through SPC.
   (require 'starter-setup-meow))
 (add-hook 'after-init-hook #'starter-after-init)

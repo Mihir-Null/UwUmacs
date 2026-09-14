@@ -14,7 +14,7 @@
 (require 'seq)
 (setopt lem-load-extras t)
 (defconst starter-package-topics
-  '(completion dashboard dired eshell faces fonts functions help
+  '(dashboard dired eshell faces fonts functions
     navigation org-settings programming search shell tabs)
   "Lambda package topics used by the personal configuration.")
 (setq lem-packages-alist

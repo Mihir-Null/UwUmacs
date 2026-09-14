@@ -52,7 +52,7 @@ This allowlist avoids installing unrelated Lambda workflows just because their s
 #+name: early-config-03-1
 #+begin_src emacs-lisp
 (defconst starter-package-topics
-  '(completion dashboard dired eshell faces fonts functions help
+  '(dashboard dired eshell faces fonts functions
     navigation org-settings programming search shell tabs)
   "Lambda package topics used by the personal configuration.")
 #+end_src
@@ -264,9 +264,7 @@ Completion, project and keybinding modules must exist before Meow points at Lamb
   "Load completion, navigation, projects, keymaps, and modal editing."
   (message "Loading Lambda interactive modules...")
   (measure-time
-   (cl-dolist (mod '(lem-setup-completion
-                     lem-setup-keybindings
-                     lem-setup-help
+   (cl-dolist (mod '(lem-setup-keybindings
                      lem-setup-navigation
                      lem-setup-dired
                      lem-setup-search
@@ -275,6 +273,9 @@ Completion, project and keybinding modules must exist before Meow points at Lamb
                      lem-setup-tabs))
      (require mod nil t)))
 
+  ;; Completion and help are ours (literate/60-completion.org, 62-help.org).
+  (require 'uwumacs-completion)
+  (require 'uwumacs-help)
   ;; Lambda keymaps must exist before Meow exposes `lem+leader-map' through SPC.
   (require 'starter-setup-meow))
 #+end_src
