@@ -104,4 +104,4 @@ All on branch `dev/uwumacs-config-review-dc1bee`, each commit verified with the 
 | `8785b63` | Keys chapter owns the whole tree; Lambda's last modules gone |
 | `0eea287` | Own 86-line startup replaces Lambda's bootstrap and the composition root |
 | `210f91a` | `lisp/` and `uwumacs-*` names throughout |
-| (next) | Sidebars restored and `diff-hl` gutter added after the user clarified that frames apply to full buffers, not panels |
+| `cd0127a` | Sidebars restored and `diff-hl` gutter added after the user clarified that frames apply to full buffers, not panels |
