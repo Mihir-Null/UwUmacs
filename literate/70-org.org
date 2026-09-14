@@ -61,7 +61,9 @@ Markup is hidden and headings are indented, so a document reads like a
 document. Editing inside folded text is refused rather than silently
 mangling it. New headings go after the current subtree's content, =RET=
 follows links, and =C-a=/=C-e= respect heading stars. Source blocks use
-their language's colours and indentation.
+their language's colours and indentation. Files open unfolded: Org 9.7
+spells that =nofold= and no longer accepts =nil=, and =setopt= checks the
+type at startup, so the symbol matters.
 
 #+begin_src emacs-lisp
 (setopt org-hide-emphasis-markers t
@@ -75,7 +77,7 @@ their language's colours and indentation.
         org-cycle-separator-lines 0
         org-fontify-quote-and-verse-blocks t
         org-image-actual-width 500
-        org-startup-folded nil
+        org-startup-folded 'nofold
         org-catch-invisible-edits 'show-and-error
         org-insert-heading-respect-content t
         org-M-RET-may-split-line '((default . nil))
@@ -112,8 +114,10 @@ A task is =TODO=, then maybe =NEXT= or =WAITING=, then =DONE= or
 =CANCELED=. Finishing a task records the time in a drawer, and a parent
 cannot be done while its children are not. The agenda starts on today,
 hides scheduled items that are done, and offers a =d= dashboard with
-today's agenda and the next actions. Refiling completes across every
-agenda file to eight levels deep.
+today's agenda and the next actions. Log mode is on from the start and
+lists closed and clocked items, which is what =t= used to mean before
+the option's type asked for the list itself. Refiling completes across
+every agenda file to eight levels deep.
 
 #+begin_src emacs-lisp
 (setopt org-todo-keywords '((sequence "TODO(t)" "NEXT(n)" "WAITING(w@/!)" "|" "DONE(d)" "CANCELED(c@)"))
@@ -125,7 +129,7 @@ agenda file to eight levels deep.
         org-log-redeadline nil
         org-log-reschedule nil)
 
-(setopt org-agenda-start-with-log-mode t
+(setopt org-agenda-start-with-log-mode '(closed clock)
         org-agenda-tags-column 0
         org-agenda-block-separator " "
         org-agenda-skip-scheduled-if-done t

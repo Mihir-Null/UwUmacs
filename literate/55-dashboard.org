@@ -5,7 +5,7 @@
 
 [[file:index.org][Reading guide]] · [[file:framework.org][Framework provenance]]
 
-Ownership: *subsequent development*. The external dashboard package presents core recentf, project.el and bookmarks. Our additions supply the home layout, callbacks, local cheat sheet, font-aware centering and literate Config destination. No second project or workspace database is introduced.
+Ownership: *subsequent development*. The external dashboard package presents core recentf, project.el and bookmarks. Our additions supply the UwUmacs banner, the home layout, callbacks to the landing pages (the cheat sheet, the reading guide, the leader tree and Meow's tutor), a short guide to the first keys, font-aware centering and the literate Config destination. No second project or workspace database is introduced.
 
 * uwumacs-dashboard
 :PROPERTIES:
@@ -42,6 +42,26 @@ The dashboard callback accepts widget arguments and opens the local Org cheat sh
   "Open the local keybindings and commands cheat sheet."
   (interactive)
   (find-file (expand-file-name "keybindings.org" uwumacs-lisp-dir)))
+#+end_src
+
+** The other landing pages
+
+Three more buttons open the places a new user is sent to from the README
+and the reading guide: Meow's interactive tutorial, the [[file:42-keys.org][keys chapter]] that
+lists the whole =SPC= tree, and the reading guide itself (the Config button
+below). Each is a plain command so it also works from =M-x=.
+
+#+name: uwumacs-dashboard-02-2
+#+begin_src emacs-lisp
+(defun uwumacs-dashboard-open-tutor (&rest _)
+  "Start Meow's interactive tutorial."
+  (interactive)
+  (call-interactively #'meow-tutor))
+
+(defun uwumacs-dashboard-open-keys-chapter (&rest _)
+  "Open the keys chapter: the whole SPC tree, group by group."
+  (interactive)
+  (find-file (expand-file-name "literate/42-keys.org" user-emacs-directory)))
 #+end_src
 
 ** Dashboard open file
@@ -173,9 +193,37 @@ Only a visible dashboard needs measuring. Font, theme and initial window setup h
         (uwumacs-dashboard-center-lines)))))
 #+end_src
 
+** A guide to the first keys
+
+The home page ends with the six keys the README and the cheat sheet
+teach first, in two columns, so a fresh install says where to go before
+anything has been opened. Keys use the navigator face and descriptions
+the comment face; the centering pass below aligns each line like the rest
+of the page. The rows are data, so adding one is adding a pair.
+
+#+name: uwumacs-dashboard-09-2
+#+begin_src emacs-lisp
+(defvar uwumacs-dashboard-key-guide
+  '(("SPC SPC" "run a command by name" "SPC h ?" "the cheat sheet")
+    ("SPC f f" "open a file"           "SPC h t" "Meow's tutorial")
+    ("SPC m"   "menu for this mode"    "SPC C c" "the reading guide"))
+  "Rows of (KEY WHAT KEY WHAT) shown at the bottom of the home page.")
+
+(defun uwumacs-dashboard-insert-key-guide ()
+  "Insert the short guide to the first keys."
+  (insert "\n")
+  (dolist (row uwumacs-dashboard-key-guide)
+    (pcase-let ((`(,left-key ,left-what ,right-key ,right-what) row))
+      (insert (propertize (format "%-8s" left-key) 'face 'dashboard-navigator)
+              (propertize (format "%-24s" left-what) 'face 'font-lock-comment-face)
+              (propertize (format "%-8s" right-key) 'face 'dashboard-navigator)
+              (propertize right-what 'face 'font-lock-comment-face)
+              "\n"))))
+#+end_src
+
 ** Assemble the home page
 
-Fonts have already initialized. The dashboard renders a text banner, three button rows and bounded lists from core editor facilities; the last insertion pass applies pixel-based centering.
+Fonts have already initialized. The dashboard renders the UwUmacs banner, three button rows, bounded lists from core editor facilities and the key guide; the last insertion pass applies pixel-based centering.
 
 The following blocks are consecutive fragments of this source section. Some share an open Lisp form; edit them here and rebuild the whole chapter rather than evaluating a fragment on its own.
 
@@ -188,8 +236,14 @@ The following blocks are consecutive fragments of this source section. Some shar
   (setq dashboard-buffer-name "*home*"
         dashboard-startup-banner 'ascii
         dashboard-banner-ascii
-        "╭──────────────────────────╮\n│            λ             │\n│       EMACS · DOTS       │\n╰──────────────────────────╯"
-        dashboard-banner-logo-title "selection first · systems visible"
+        (mapconcat #'identity
+                   '("╭────────────────────────────╮"
+                     "│                            │"
+                     "│     U w U m a c s   :3     │"
+                     "│                            │"
+                     "╰────────────────────────────╯")
+                   "\n")
+        dashboard-banner-logo-title "select · extend · act"
         dashboard-center-content t
         dashboard-vertically-center-content nil
         dashboard-navigation-cycle t
@@ -227,6 +281,7 @@ Continue the same definition in its original scope. This fragment follows the pr
                                     dashboard-insert-newline
                                     dashboard-insert-init-info
                                     dashboard-insert-items
+                                    uwumacs-dashboard-insert-key-guide
                                     uwumacs-dashboard-center-lines)
         dashboard-init-info
         (lambda ()
@@ -237,12 +292,17 @@ Continue the same definition in its original scope. This fragment follows the pr
         '((("+" "File" "Open a file" uwumacs-dashboard-open-file)
            ("◆" "Project" "Switch project" uwumacs-dashboard-open-project)
            ("↺" "Recent" "Open a recent file" uwumacs-dashboard-open-recent))
-          (("λ" "Config" "Open Emacs-Dots config" uwumacs-dashboard-open-config)
-           ("◎" "Agenda" "Open Org agenda" uwumacs-dashboard-open-agenda)
-           ("*" "Scratch" "Open scratch buffer"
-            (lambda (&rest _) (switch-to-buffer "*scratch*"))))
-          (("?" "Keys & commands" "Open the local cheat sheet (or press ?)"
-            uwumacs-dashboard-open-cheatsheet))))
+          (("◎" "Agenda" "Open the Org agenda" uwumacs-dashboard-open-agenda)
+           ("*" "Scratch" "Open the scratch buffer"
+            (lambda (&rest _) (switch-to-buffer "*scratch*")))
+           ("λ" "Config" "Open the UwUmacs reading guide (SPC C c)"
+            uwumacs-dashboard-open-config))
+          (("?" "Keys & commands" "Open the local cheat sheet (SPC h ?, or ? here)"
+            uwumacs-dashboard-open-cheatsheet)
+           ("»" "Meow tutor" "Learn select, extend, act (SPC h t)"
+            uwumacs-dashboard-open-tutor)
+           ("§" "Leader tree" "Every SPC key, group by group"
+            uwumacs-dashboard-open-keys-chapter))))
   :config
   (set-face-attribute 'dashboard-text-banner nil
                       :inherit 'font-lock-keyword-face

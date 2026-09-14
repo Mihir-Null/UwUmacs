@@ -73,7 +73,7 @@ from [[https://codeberg.org/Lambda-Emacs/lambda-emacs][Lambda-Emacs]] by Colin M
 
 1. Edit the chapter: the prose and the code block together.
 2. =SPC C t= (or =M-x uwumacs-literate-tangle=) rebuilds the generated files in
-   a clean Emacs subprocess and reports in =*Emacs-Dots literate build*=.
+   a clean Emacs subprocess and reports in =*UwUmacs literate build*=.
    Unsaved chapters are refused, so a build never uses a stale file.
 3. =SPC C k= checks that chapters and generated files agree without writing.
 4. Restart Emacs. Commit the chapter and the generated file together.
