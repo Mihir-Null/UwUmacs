@@ -3,7 +3,7 @@
 
 ;;; Code:
 (use-package frames-only-mode
-  :when (and lem-load-extras (locate-library "frames-only-mode"))
+  :ensure t
   :demand t
   :custom
   (frames-only-mode-use-windows-for-completion t)

@@ -43,9 +43,6 @@
 (condition-case err
     (progn
       (load (expand-file-name "early-init.el" user-emacs-directory) nil t)
-      (dots-test-check (not (seq-intersection (mapcar #'car lem-packages-alist)
-                                              '(citation elfeed notes macos writing lsp)))
-                       "Disabled module package topics selected")
       (load user-init-file nil t)
       (run-hooks 'after-init-hook)
       (run-hooks 'emacs-startup-hook)
@@ -58,7 +55,7 @@
                        "Persistent Customize file was not loaded")
       (dots-test-check (string-suffix-p "var/etc/custom.el" custom-file)
                        "Customize file is not in persistent state")
-      (dolist (feature '(config starter-setup-literate starter-setup-dashboard starter-setup-meow
+      (dolist (feature '(starter-setup-literate starter-setup-dashboard starter-setup-meow
                         uwumacs-leader uwumacs-keys starter-setup-treesit starter-setup-languages
                         starter-setup-terminal uwumacs-org uwumacs-ui starter-setup-frames))
         (dots-test-check (featurep feature) (format "Missing feature %s" feature)))
@@ -89,7 +86,7 @@
                        "Home leader binding was overwritten")
       (require 'bookmark) (require 'recentf) (require 'project)
       (save-window-excursion
-        (let ((recentf-list (list lem-config-file))
+        (let ((recentf-list (list user-init-file))
               (project--list nil) (bookmark-alist nil))
           (dashboard-open) (set-buffer dashboard-buffer-name)
           (run-hooks 'post-command-hook)
@@ -100,7 +97,7 @@
           (widget-button-press (1- (point)))
           (dots-test-check (and (derived-mode-p 'org-mode)
                                 (file-equal-p buffer-file-name
-                                              (expand-file-name "literate/index.org" lem-emacs-dir)))
+                                              (expand-file-name "literate/index.org" user-emacs-directory)))
                            "Dashboard Config did not open the literate guide")
           (dashboard-open) (set-buffer dashboard-buffer-name)
           (run-hooks 'post-command-hook)
@@ -110,7 +107,7 @@
           (widget-button-press (1- (point)))
           (dots-test-check (and (derived-mode-p 'org-mode)
                                 (file-equal-p buffer-file-name
-                                              (expand-file-name "keybindings.org" lem-user-dir)))
+                                              (expand-file-name "keybindings.org" uwumacs-lisp-dir)))
                            "Dashboard button did not open the cheat sheet")
           (goto-char (point-min))
           (while (re-search-forward "^| \\(SPC [^|]+?\\) +|[^|]+| \\([a-z][a-z0-9-]+\\) +|" nil t)

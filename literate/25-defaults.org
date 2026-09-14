@@ -31,23 +31,17 @@ adds a few small helpers the leader menus use.
 * Where Emacs keeps its state
 
 Everything Emacs writes on its own (backups, history, caches, saved
-customizations) lives under =var/=, which Git ignores. Two subdirectories
-separate throwaway caches from state you might back up. The Customize file
-is state, not cache: preferences you set through =M-x customize= persist
-there across restarts.
+customizations) lives under =var/=, which Git ignores; [[file:10-startup.org][the startup chapter]]
+defines the three directories. Two subdirectories separate throwaway caches
+from state you might back up. The Customize file is state, not cache:
+preferences you set through =M-x customize= persist there across restarts.
 
 #+begin_src emacs-lisp
-(defvar uwumacs-var-dir
-  (if (boundp 'lem-var-dir) lem-var-dir (expand-file-name "var/" user-emacs-directory))
-  "Directory for everything Emacs writes on its own.  Ignored by Git.")
-
-(defvar uwumacs-cache-dir
-  (if (boundp 'lem-cache-dir) lem-cache-dir (expand-file-name "cache/" uwumacs-var-dir))
-  "Directory for caches that can be deleted at any time.")
-
-(defvar uwumacs-etc-dir
-  (if (boundp 'lem-etc-dir) lem-etc-dir (expand-file-name "etc/" uwumacs-var-dir))
-  "Directory for state worth keeping: saved customizations, shell history.")
+;; The three directories are defined in early-init.el (see the startup chapter);
+;; these defaults only apply when a module is loaded on its own.
+(defvar uwumacs-var-dir (expand-file-name "var/" user-emacs-directory))
+(defvar uwumacs-cache-dir (expand-file-name "cache/" uwumacs-var-dir))
+(defvar uwumacs-etc-dir (expand-file-name "etc/" uwumacs-var-dir))
 
 (dolist (directory (list uwumacs-var-dir uwumacs-cache-dir uwumacs-etc-dir))
   (make-directory directory t))

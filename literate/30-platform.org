@@ -183,7 +183,7 @@ The core require/provide protocol records that this file loaded. Later requires 
 #+name: starter-platform-10-1
 #+begin_src emacs-lisp
 ;; Do not force a font here. Inheriting the platform default makes first boot robust.
-;; Set `lem-ui-default-font' later once you know which fonts are available everywhere.
+;; Fonts are chosen in the appearance chapter.
 
 (provide 'starter-platform)
 ;;; starter-platform.el ends here

@@ -52,7 +52,7 @@ disabled. The leader's =SPC w h= and =SPC w v= remain real in-frame splits.
 
 #+begin_src emacs-lisp
 (use-package frames-only-mode
-  :when (and lem-load-extras (locate-library "frames-only-mode"))
+  :ensure t
   :demand t
   :custom
   (frames-only-mode-use-windows-for-completion t)

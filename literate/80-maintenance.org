@@ -26,7 +26,7 @@ The following blocks are consecutive fragments of this source section. Some shar
 ;; Generated from literate/80-maintenance.org; edit the Org source, then tangle.
 
 ;; Copy to private.el for account/machine-specific values that should not be committed.
-;; config.el loads private.el after the portable platform variables are defined and
+;; init.el loads private.el after the portable platform variables are defined and
 ;; before the later UI/programming modules consume their policy variables.
 
 ;; Identity
@@ -57,16 +57,16 @@ UI preserve these pre-bound values. starter-ui-light-theme 'doom-one-light
 #+name: private.example-01-2
 #+begin_src emacs-lisp
 ;; UI
-;; `starter-setup-ui' is loaded later, so use `setq' here; its `defcustom' forms will
+;; `uwumacs-ui' is loaded later, so use `setq' here; its `defcustom' forms will
 ;; preserve these pre-bound values.
-;; (setq starter-ui-theme 'doom-dark+
-;;       starter-ui-light-theme 'doom-one-light
-;;       starter-ui-font-family "GoogleSansCode Nerd Font"
-;;       starter-ui-icons 'auto
-;;       starter-ui-nerd-font "Symbols Nerd Font Mono")
+;; (setq uwumacs-theme 'doom-dark+
+;;       uwumacs-light-theme 'doom-one-light
+;;       uwumacs-font-family "GoogleSansCode Nerd Font"
+;;       uwumacs-icons 'auto
+;;       uwumacs-nerd-font "Symbols Nerd Font Mono")
 
 ;; The primary programming font and the dedicated Nerd Icons symbol font are kept
-;; separate. `starter-ui-font-family' changes only the default face family, preserving
+;; separate. `uwumacs-font-family' changes only the default face family, preserving
 ;; the platform's existing point size. If the family is absent, the starter keeps the
 ;; platform default rather than failing startup.
 #+end_src
@@ -93,7 +93,7 @@ The path is relative to Lambda's resolved configuration root, so it works from a
 (defun starter-literate-open (&rest _)
   "Open the literate configuration's reading guide."
   (interactive)
-  (find-file (expand-file-name "literate/index.org" lem-emacs-dir)))
+  (find-file (expand-file-name "literate/index.org" user-emacs-directory)))
 #+end_src
 
 ** Build in a clean Emacs subprocess
@@ -104,7 +104,7 @@ Unsaved Org buffers are rejected before reading files from disk. A separate -Q p
 #+begin_src emacs-lisp
 (defun starter-literate--build (write)
   "Run the isolated literate builder; WRITE selects generation over checking."
-  (let ((source-dir (expand-file-name "literate/" lem-emacs-dir))
+  (let ((source-dir (expand-file-name "literate/" user-emacs-directory))
         (output (get-buffer-create "*Emacs-Dots literate build*")))
     (dolist (buffer (buffer-list))
       (when-let* ((file (buffer-file-name buffer)))
@@ -117,7 +117,7 @@ Unsaved Org buffers are rejected before reading files from disk. A separate -Q p
            (call-process (expand-file-name invocation-name invocation-directory)
                          nil (list output t) nil
                          "-Q" "--batch" "-l"
-                         (expand-file-name "tools/tangle.el" lem-emacs-dir)
+                         (expand-file-name "tools/tangle.el" user-emacs-directory)
                          "--" (if write "--write" "--check"))))
       (display-buffer output)
       (unless (equal status 0)

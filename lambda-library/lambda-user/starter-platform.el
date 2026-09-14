@@ -79,7 +79,7 @@ USERPROFILE for user-owned projects and documents."
       (setopt exec-path-from-shell-variables
               '("PATH" "MANPATH" "NIX_PATH" "NIX_PROFILES")))))
 ;; Do not force a font here. Inheriting the platform default makes first boot robust.
-;; Set `lem-ui-default-font' later once you know which fonts are available everywhere.
+;; Fonts are chosen in the appearance chapter.
 
 (provide 'starter-platform)
 ;;; starter-platform.el ends here

@@ -4,17 +4,11 @@
 ;; Distilled from Lambda-Emacs by Colin McLear (GPL-3.0-or-later).
 
 ;;; Code:
-(defvar uwumacs-var-dir
-  (if (boundp 'lem-var-dir) lem-var-dir (expand-file-name "var/" user-emacs-directory))
-  "Directory for everything Emacs writes on its own.  Ignored by Git.")
-
-(defvar uwumacs-cache-dir
-  (if (boundp 'lem-cache-dir) lem-cache-dir (expand-file-name "cache/" uwumacs-var-dir))
-  "Directory for caches that can be deleted at any time.")
-
-(defvar uwumacs-etc-dir
-  (if (boundp 'lem-etc-dir) lem-etc-dir (expand-file-name "etc/" uwumacs-var-dir))
-  "Directory for state worth keeping: saved customizations, shell history.")
+;; The three directories are defined in early-init.el (see the startup chapter);
+;; these defaults only apply when a module is loaded on its own.
+(defvar uwumacs-var-dir (expand-file-name "var/" user-emacs-directory))
+(defvar uwumacs-cache-dir (expand-file-name "cache/" uwumacs-var-dir))
+(defvar uwumacs-etc-dir (expand-file-name "etc/" uwumacs-var-dir))
 
 (dolist (directory (list uwumacs-var-dir uwumacs-cache-dir uwumacs-etc-dir))
   (make-directory directory t))

@@ -7,10 +7,10 @@
 (defun starter-literate-open (&rest _)
   "Open the literate configuration's reading guide."
   (interactive)
-  (find-file (expand-file-name "literate/index.org" lem-emacs-dir)))
+  (find-file (expand-file-name "literate/index.org" user-emacs-directory)))
 (defun starter-literate--build (write)
   "Run the isolated literate builder; WRITE selects generation over checking."
-  (let ((source-dir (expand-file-name "literate/" lem-emacs-dir))
+  (let ((source-dir (expand-file-name "literate/" user-emacs-directory))
         (output (get-buffer-create "*Emacs-Dots literate build*")))
     (dolist (buffer (buffer-list))
       (when-let* ((file (buffer-file-name buffer)))
@@ -23,7 +23,7 @@
            (call-process (expand-file-name invocation-name invocation-directory)
                          nil (list output t) nil
                          "-Q" "--batch" "-l"
-                         (expand-file-name "tools/tangle.el" lem-emacs-dir)
+                         (expand-file-name "tools/tangle.el" user-emacs-directory)
                          "--" (if write "--write" "--check"))))
       (display-buffer output)
       (unless (equal status 0)

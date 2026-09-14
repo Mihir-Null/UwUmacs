@@ -11,7 +11,7 @@
 (defun starter-dashboard-open-cheatsheet (&rest _)
   "Open the local keybindings and commands cheat sheet."
   (interactive)
-  (find-file (expand-file-name "keybindings.org" lem-user-dir)))
+  (find-file (expand-file-name "keybindings.org" uwumacs-lisp-dir)))
 (defun starter-dashboard-open-file (&rest _)
   "Prompt for a file from a dashboard button."
   (interactive)

@@ -2,7 +2,7 @@
 ;; Generated from literate/80-maintenance.org; edit the Org source, then tangle.
 
 ;; Copy to private.el for account/machine-specific values that should not be committed.
-;; config.el loads private.el after the portable platform variables are defined and
+;; init.el loads private.el after the portable platform variables are defined and
 ;; before the later UI/programming modules consume their policy variables.
 
 ;; Identity
@@ -25,15 +25,15 @@
 ;; (setq starter-eglot-auto-start-modes '(python-mode python-ts-mode)
 ;;       starter-language-packages '(nix racket guile))
 ;; UI
-;; `starter-setup-ui' is loaded later, so use `setq' here; its `defcustom' forms will
+;; `uwumacs-ui' is loaded later, so use `setq' here; its `defcustom' forms will
 ;; preserve these pre-bound values.
-;; (setq starter-ui-theme 'doom-dark+
-;;       starter-ui-light-theme 'doom-one-light
-;;       starter-ui-font-family "GoogleSansCode Nerd Font"
-;;       starter-ui-icons 'auto
-;;       starter-ui-nerd-font "Symbols Nerd Font Mono")
+;; (setq uwumacs-theme 'doom-dark+
+;;       uwumacs-light-theme 'doom-one-light
+;;       uwumacs-font-family "GoogleSansCode Nerd Font"
+;;       uwumacs-icons 'auto
+;;       uwumacs-nerd-font "Symbols Nerd Font Mono")
 
 ;; The primary programming font and the dedicated Nerd Icons symbol font are kept
-;; separate. `starter-ui-font-family' changes only the default face family, preserving
+;; separate. `uwumacs-font-family' changes only the default face family, preserving
 ;; the platform's existing point size. If the family is absent, the starter keeps the
 ;; platform default rather than failing startup.

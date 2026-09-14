@@ -1,0 +1,145 @@
+#+TITLE: Startup: early-init.el and init.el
+#+OPTIONS: toc:3 num:nil
+#+STARTUP: overview
+#+PROPERTY: header-args:emacs-lisp :eval never :comments no :padline no :mkdirp yes
+
+[[file:index.org][Reading guide]] · [[file:25-defaults.org][Defaults]] · [[file:80-maintenance.org][Maintenance]]
+
+Ownership: *user configuration*. These are the only two files Emacs reads on
+its own. Together they are about a hundred lines: the first decides where
+files live and how packages are fetched, the second loads the chapters in
+order. Nothing else is special.
+
+* What happens when Emacs starts
+
+1. Emacs reads =early-init.el= *before* it creates a frame or activates
+   packages. That is the moment to say where packages live, to switch off
+   toolbars so they never flash, and to postpone garbage collection.
+2. Emacs then reads =init.el=. It activates the installed packages, loads
+   =use-package=, and requires each generated module in dependency order:
+   defaults and platform first, then the look, then editing and the
+   integrations, then the applications, and frames policy last so nothing
+   later can undo it.
+3. Packages are declared where they are used, with =use-package … :ensure t=.
+   A fresh clone installs them on first start; an existing =var/elpa= is used
+   as is.
+
+* early-init.el
+:PROPERTIES:
+:header-args:emacs-lisp: :tangle ../early-init.el :eval never :comments no :padline no :mkdirp yes
+:END:
+
+Everything Emacs writes goes under =var/=, which Git ignores: packages,
+caches, native-compiled files, saved settings. Package activation is left to
+=init.el= so it happens in one known place. Three settings make startup
+quicker: no garbage collection until the end, no implied frame resizing, and
+frames created without the toolbar rather than with one that is then removed.
+
+#+begin_src emacs-lisp
+;;; early-init.el --- Before the first frame -*- lexical-binding: t; -*-
+;; Generated from literate/10-startup.org; edit the Org source, then tangle.
+
+;;; Code:
+
+(defvar uwumacs-lisp-dir (expand-file-name "lambda-library/lambda-user/" user-emacs-directory)
+  "Directory of the generated configuration modules.")
+
+(defvar uwumacs-var-dir (expand-file-name "var/" user-emacs-directory)
+  "Directory for everything Emacs writes on its own.  Ignored by Git.")
+
+(defvar uwumacs-cache-dir (expand-file-name "cache/" uwumacs-var-dir)
+  "Directory for caches that can be deleted at any time.")
+
+(defvar uwumacs-etc-dir (expand-file-name "etc/" uwumacs-var-dir)
+  "Directory for state worth keeping: saved customizations, shell history.")
+
+(setq package-user-dir (expand-file-name "elpa/" uwumacs-var-dir)
+      package-gnupghome-dir (expand-file-name "gnupg/" package-user-dir)
+      package-enable-at-startup nil)
+(setopt package-archives '(("gnu" . "https://elpa.gnu.org/packages/")
+                           ("nongnu" . "https://elpa.nongnu.org/nongnu/")
+                           ("melpa" . "https://melpa.org/packages/")))
+
+(when (featurep 'native-compile)
+  (startup-redirect-eln-cache (expand-file-name "eln-cache/" uwumacs-cache-dir))
+  (setopt native-comp-async-report-warnings-errors 'silent))
+
+(setq gc-cons-threshold most-positive-fixnum)
+(add-hook 'emacs-startup-hook (lambda () (setq gc-cons-threshold (* 64 1024 1024))))
+
+(setopt frame-inhibit-implied-resize t
+        inhibit-startup-screen t
+        initial-scratch-message nil
+        load-prefer-newer t)
+(push '(tool-bar-lines . 0) default-frame-alist)
+(push '(menu-bar-lines . 0) default-frame-alist)
+(push '(vertical-scroll-bars) default-frame-alist)
+
+(when (eq system-type 'windows-nt)
+  (setq w32-get-true-file-attributes nil
+        inhibit-compacting-font-caches t))
+
+;;; early-init.el ends here
+#+end_src
+
+* init.el
+:PROPERTIES:
+:header-args:emacs-lisp: :tangle ../init.el :eval never :comments no :padline no :mkdirp yes
+:END:
+
+The composition root. Each =require= is one chapter of this guide. The
+order matters only where a module uses another: defaults define the
+directories, the platform chapter defines the paths that =private.el= may
+override, the UI must exist before the dashboard measures text, Meow must be
+up before the keys chapter binds the leader, and frames policy goes last.
+
+#+begin_src emacs-lisp
+;;; init.el --- UwUmacs -*- lexical-binding: t; -*-
+;; Generated from literate/10-startup.org; edit the Org source, then tangle.
+
+;;; Code:
+
+(add-to-list 'load-path uwumacs-lisp-dir)
+(package-initialize)
+(unless package-archive-contents
+  (package-refresh-contents))
+(require 'use-package)
+(setopt use-package-enable-imenu-support t)
+
+;; Foundation: defaults, platform paths, machine overrides, the look.
+(require 'uwumacs-defaults)
+(require 'starter-platform)
+(let ((private (expand-file-name "private.el" uwumacs-lisp-dir)))
+  (when (file-exists-p private)
+    (load private nil t)))
+(starter-platform-apply)
+(require 'uwumacs-ui)
+(require 'starter-setup-literate)
+(require 'starter-setup-dashboard)
+
+;; Editing: completion, help, files, git, navigation, then Meow and the leader.
+(require 'uwumacs-completion)
+(require 'uwumacs-help)
+(require 'uwumacs-dired)
+(require 'uwumacs-vc)
+(require 'uwumacs-navigation)
+(require 'starter-setup-meow)
+(require 'uwumacs-keys)
+
+;; Applications: shells, programming, Org, and finally frame policy.
+(require 'uwumacs-shell)
+(require 'uwumacs-programming)
+(require 'starter-setup-treesit)
+(require 'starter-setup-languages)
+(require 'starter-setup-terminal)
+(require 'uwumacs-org)
+(require 'starter-setup-frames)
+
+;;; init.el ends here
+#+end_src
+
+* Machine-specific settings
+
+=private.el= next to the generated modules is loaded once, after the
+platform variables exist and before anything reads them. It is ignored by
+Git. Copy =private.example.el= to start one, or press =SPC C p=.

@@ -41,7 +41,7 @@ The dashboard callback accepts widget arguments and opens the local Org cheat sh
 (defun starter-dashboard-open-cheatsheet (&rest _)
   "Open the local keybindings and commands cheat sheet."
   (interactive)
-  (find-file (expand-file-name "keybindings.org" lem-user-dir)))
+  (find-file (expand-file-name "keybindings.org" uwumacs-lisp-dir)))
 #+end_src
 
 ** Dashboard open file

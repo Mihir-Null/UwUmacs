@@ -30,9 +30,6 @@ group reserved for your own keys.
 (require 'uwumacs-help)
 (require 'uwumacs-completion)
 
-(defvar uwumacs-lisp-dir (file-name-directory (or load-file-name buffer-file-name))
-  "Directory holding the generated configuration modules.")
-
 #+end_src
 
 * which-key

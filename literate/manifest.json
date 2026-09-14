@@ -1,7 +1,6 @@
 {
   "sources": [
-    "10-bootstrap.org",
-    "20-user-policy.org",
+    "10-startup.org",
     "25-defaults.org",
     "30-platform.org",
     "35-shells.org",
@@ -24,8 +23,6 @@
   "outputs": [
     "early-init.el",
     "init.el",
-    "lambda-library/lambda-user/early-config.el",
-    "lambda-library/lambda-user/config.el",
     "lambda-library/lambda-user/uwumacs-defaults.el",
     "lambda-library/lambda-user/starter-platform.el",
     "lambda-library/lambda-user/starter-setup-terminal.el",

@@ -6,9 +6,6 @@
 (require 'uwumacs-leader)
 (require 'uwumacs-help)
 (require 'uwumacs-completion)
-
-(defvar uwumacs-lisp-dir (file-name-directory (or load-file-name buffer-file-name))
-  "Directory holding the generated configuration modules.")
 (setopt which-key-idle-delay 0.45
         which-key-idle-secondary-delay 0.05
         which-key-show-early-on-C-h t
