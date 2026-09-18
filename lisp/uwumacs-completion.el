@@ -242,6 +242,14 @@
   "a" #'cape-abbrev
   "w" #'cape-dict
   "e" #'cape-elisp-symbol)
+(use-package flyspell-correct
+  :ensure t
+  :after flyspell
+  :bind (:map flyspell-mode-map ("C-;" . flyspell-correct-wrapper)))
+
+(use-package consult-flyspell
+  :ensure t
+  :commands consult-flyspell)
 (defvar uwumacs-snippets-dir (expand-file-name "snippets/" uwumacs-etc-dir)
   "Directory of personal snippets, one subdirectory per major mode.")
 

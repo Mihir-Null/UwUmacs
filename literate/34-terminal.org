@@ -1,3 +1,30 @@
+#+TITLE: The terminal: ghostel
+#+OPTIONS: toc:3 num:nil
+#+STARTUP: overview
+#+PROPERTY: header-args:emacs-lisp :tangle ../lisp/uwumacs-terminal.el :eval never :comments no :padline no :mkdirp yes
+
+[[file:index.org][Reading guide]] · [[file:30-platform.org][Platform]] · [[file:35-shells.org][Shells]] · [[file:41-leader.org][Leader]]
+
+Ownership: *user configuration*. [[https://github.com/dakra/ghostel][ghostel]] by Daniel Kraus is the terminal
+emulator; this chapter chooses its settings, wires it to the packages this
+configuration already uses, and teaches it Meow's states. The integration
+recipes follow ghostel's own manual.
+
+* What this gives you
+
+=SPC o e= opens a real terminal inside Emacs. Real means a program running
+there cannot tell the difference from a terminal window: =htop=, =vim=, =less=,
+=lazygit=, a TUI coding agent, a test runner that draws progress bars and asks
+=y/n= — they all behave. The terminal knows where it is (=cd= moves Emacs's
+directory with it), what you ran (=SPC m n= jumps between prompts), and what it
+printed (links are clickable, colours are exact).
+
+Ghostel is a thin Emacs layer over =libghostty-vt=, the terminal engine behind
+[[https://ghostty.org/][Ghostty]]. The engine is a small native library, so the first =SPC o e= offers to
+download it — about a megabyte, once per machine. Everything else is Emacs
+Lisp.
+
+#+begin_src emacs-lisp
 ;;; uwumacs-terminal.el --- The terminal -*- lexical-binding: t; -*-
 ;; Generated from literate/34-terminal.org; edit the Org source, then tangle.
 
@@ -24,6 +51,21 @@
 (defgroup uwumacs-terminal nil
   "The integrated terminal."
   :group 'uwumacs)
+
+#+end_src
+
+* Where the native module lives
+
+Ghostel keeps its native module next to its own package directory by default.
+This configuration installs packages under =var/elpa/=, which =M-x package-upgrade=
+rewrites, so the module is kept in =var/ghostel/= instead: upgrading ghostel
+then never deletes a library that this Emacs has already mapped into memory.
+It is also the one thing this chapter must decide *before* ghostel loads.
+
+The module is downloaded on the first =SPC o e=, after asking. Nothing is
+fetched when Emacs starts, and nothing is fetched when this file loads.
+
+#+begin_src emacs-lisp
 (defcustom uwumacs-terminal-module-directory
   (expand-file-name "ghostel/" uwumacs-var-dir)
   "Directory holding ghostel's native module.
@@ -39,6 +81,23 @@ is what the terminal needs."
        (file-exists-p
         (expand-file-name (concat "ghostel-module" module-file-suffix)
                           uwumacs-terminal-module-directory))))
+
+#+end_src
+
+* The terminal
+
+A terminal closes its buffer when the shell exits, but asks first if a command
+is still running. Terminals opened with =SPC o p= carry their project's name;
+set =ghostel-buffer-name-function= if you would rather they follow the title or
+the directory. Five megabytes of scrollback is
+kept and searchable with =consult-line= and =isearch= like any other buffer.
+
+OSC 52 is left off: it lets a program running in the terminal write your
+system clipboard, which is convenient over SSH and unpleasant when the output
+you just =cat='d was hostile. Turn it on per machine in =private.el= if you
+want it.
+
+#+begin_src emacs-lisp
 (use-package ghostel
   :ensure t
   :defer t
@@ -76,6 +135,25 @@ is what the terminal needs."
   (require 'ghostel-desktop nil t)
   (when (require 'ghostel-ime nil t)
     (add-hook 'ghostel-mode-hook #'ghostel-ime-mode)))
+
+#+end_src
+
+* Meow in the terminal
+
+A terminal is the one buffer where the keys are not ours: =d= must delete a
+character in =vim=, not a selection. So terminals start in *Insert* state and
+ghostel's semi-char mode forwards almost everything to the program. Emacs
+keeps =C-c=, =C-x=, =C-u=, =C-h=, =M-x= and =M-:= (ghostel's
+=ghostel-keymap-exceptions=), so =C-c C-SPC= still opens the leader.
+
+Press =ESC= and the terminal *freezes*: Meow enters Normal state, ghostel
+enters copy mode, and the whole scrollback becomes an ordinary read-only
+buffer you can select, search and copy from with the grammar you already
+know. Press =i= and it thaws — output resumes and the keys go back to the
+shell. The two hooks below are what keep those two ideas in step; they are
+buffer-local, so they only ever apply to a terminal.
+
+#+begin_src emacs-lisp
 (defun uwumacs-terminal--freeze ()
   "Freeze the terminal when Meow leaves Insert state.
 The buffer becomes read-only, so Meow's grammar can select its output."
@@ -93,6 +171,22 @@ The buffer becomes read-only, so Meow's grammar can select its output."
   (add-hook 'meow-insert-enter-hook #'uwumacs-terminal--thaw nil t))
 
 (add-hook 'ghostel-mode-hook #'uwumacs-terminal--meow-setup)
+
+#+end_src
+
+** Where the escape key goes
+
+=ESC= is the one genuinely ambiguous key. In a shell it should leave Insert
+state. In =vim=, =less=, =htop= or a full-screen coding agent it *is* the program's
+most important key, and stealing it makes the program unusable.
+
+Those programs all announce themselves the same way: they switch the terminal
+to its /alternate screen/. So =auto= sends =ESC= to the program exactly while one
+is running, and otherwise leaves Insert state. When the guess is wrong,
+=SPC m ESC= toggles this buffer for as long as it lives. Outside a terminal
+this command is plain =meow-insert-exit=, so nothing else changes.
+
+#+begin_src emacs-lisp
 (defcustom uwumacs-terminal-escape 'auto
   "Where the escape key goes in a terminal while Meow is in Insert state.
 `auto'     to the program while it is drawing a full-screen interface
@@ -132,11 +226,43 @@ The buffer becomes read-only, so Meow's grammar can select its output."
            (if (eq uwumacs-terminal--escape 'terminal)
                "now goes to the program in the terminal"
              "now leaves Insert state")))
+
+#+end_src
+
+Terminals start in Insert; a finished =ghostel-compile= run is a report, so it
+starts in Motion like every other application buffer. Rebinding =ESC= in
+Meow's Insert-state map is what lets the command above run at all: that map is
+an emulation map and is consulted before the terminal's own keys.
+
+#+begin_src emacs-lisp
 (with-eval-after-load 'meow
   (dolist (entry '((ghostel-mode . insert)
                    (ghostel-compile-view-mode . motion)))
     (add-to-list 'meow-mode-state-list entry))
   (keymap-set meow-insert-state-keymap "<escape>" #'uwumacs-terminal-escape-dwim))
+
+#+end_src
+
+* Opening one
+
+=SPC o e= and =SPC o p= are thin wrappers over =ghostel= and =ghostel-project=.
+They exist for one reason: the native module is downloaded on first use, and a
+user who declines that offer would otherwise meet
+=Symbol's function definition is void: ghostel--new= rather than a sentence
+saying what is missing and which command installs it.
+
+** MSYS2 on Windows
+
+PowerShell stays the ordinary shell. =SPC o m= is the separate, explicit
+choice of an MSYS2 UCRT64 login shell, which is where a Windows machine keeps
+its Unix tools. =MSYSTEM= selects the environment and =CHERE_INVOKING= keeps the
+directory you were in; both are set for the child process only, so Emacs's own
+environment is untouched. [[file:30-platform.org][The platform chapter]] owns =uwumacs-msys2-root=.
+
+Unlike the terminal this replaces, nothing here has to translate paths or
+substitute a POSIX helper: ghostel talks to Windows ConPTY directly.
+
+#+begin_src emacs-lisp
 (defun uwumacs-terminal--without-module (error)
   "Re-signal ERROR, or explain that the native module is missing."
   (if (uwumacs-terminal-module-installed-p)
@@ -173,6 +299,24 @@ With prefix ARG, create another one instead of reusing the existing buffer."
                                        ghostel-environment))
           (ghostel-buffer-name "*ghostel: msys2*"))
       (ghostel arg))))
+
+#+end_src
+
+* Integrations with the rest of this configuration
+
+*Projects.* =ghostel-project= opens a terminal at the project root and names it
+after the project, so =SPC o p= in any file lands where builds are run. It
+joins the menu =SPC p p= offers when you switch project.
+
+*Consult.* =consult-ghostel= picks a terminal with live preview, the way
+=SPC b b= picks a buffer, and creates one when you type a name that does not
+exist yet. =consult-ghostel-history= completes against the *shell's own*
+history — bash, zsh, fish and nushell — and types the choice at the prompt
+without submitting it, so you can edit before running. Loading it also
+teaches =consult-line= about soft-wrapped terminal rows, so a path that wrapped
+mid-word is still findable.
+
+#+begin_src emacs-lisp
 (with-eval-after-load 'project
   (add-to-list 'project-switch-commands '(ghostel-project "Terminal") t))
 
@@ -182,6 +326,23 @@ With prefix ARG, create another one instead of reusing the existing buffer."
   :demand t
   :bind (:map ghostel-semi-char-mode-map
          ("C-c h" . consult-ghostel-history)))
+
+#+end_src
+
+*Eshell.* [[file:35-shells.org][Eshell]] is a Lisp shell and cannot draw a full-screen program, so it
+hands those to a real terminal: the commands in =eshell-visual-commands= (=htop=,
+=less=, =vim=, =git log=) open in a ghostel buffer. =ghostel foo= at the Eshell
+prompt does the same for anything else, once.
+
+*M-M-x shell and REPLs.* Comint's own colour handling understands the eight
+ANSI colours; ghostel's parser understands everything a modern program emits —
+true colour, curly and coloured underlines, clickable =OSC 8= links, and the
+directory the shell reports. It is a stream filter, not a terminal, so
+full-screen programs still belong in =SPC o e=. It needs the native module, so
+it is switched on only once that exists; a machine that has never opened a
+terminal keeps Emacs's own handling and nothing breaks.
+
+#+begin_src emacs-lisp
 (with-eval-after-load 'eshell
   (when (require 'ghostel-eshell nil t)
     (ghostel-eshell-visual-command-mode 1)))
@@ -193,6 +354,19 @@ With prefix ARG, create another one instead of reusing the existing buffer."
     (ghostel-comint-mode 1)))
 
 (add-hook 'shell-mode-hook #'uwumacs-terminal-comint-colours)
+
+#+end_src
+
+*Compiling.* =ghostel-compile= runs a build in a real terminal and then presents
+it as a =compilation-mode= report: coloured output and progress bars while it
+runs, =next-error= and clickable file references when it finishes, and =C-c C-j=
+mid-run when the command turns out to want an answer. =SPC m t= runs it in any
+programming buffer. Emacs's own =compile= is left alone, because it is what
+=SPC m c=, Flymake and =project-compile= all go through; put
+=(ghostel-compile-global-mode 1)= in =private.el= to route those through the
+terminal too.
+
+#+begin_src emacs-lisp
 ;; `ghostel-recompile' carries no autoload cookie, and `SPC m t' must work
 ;; before the terminal has ever been opened.
 (autoload 'ghostel-compile "ghostel-compile" "Run a command in a terminal." t)
@@ -207,6 +381,24 @@ With prefix ARG, create another one instead of reusing the existing buffer."
     (keymap-set map "t" (cons "compile in a terminal" #'ghostel-compile))
     (keymap-set map "T" (cons "recompile in a terminal" #'ghostel-recompile))
     (uwumacs-refresh-localleaders)))
+
+#+end_src
+
+*Themes.* Ghostel paints the terminal's sixteen colours from the active theme
+and repaints them on Emacs's own =enable-theme-functions=, so =SPC t t= changes
+the terminal with everything else. Nothing is needed here.
+
+*Frames.* A terminal is a buffer you work in, so [[file:45-frames.org][frames-only mode]] gives it its
+own OS window like any other. =SPC o e= from a second project therefore puts
+its terminal beside that project's code, not on top of it.
+
+* The mode menu
+
+=ESC= first — the menu lives in Normal state, like every other =SPC m=. Every
+entry here is also on a =C-c= key that works while you are typing, which is what
+ghostel's own manual documents; these are the labelled versions.
+
+#+begin_src emacs-lisp
 (uwumacs-define-localleader 'ghostel-mode
   "i" (cons "type in the terminal" #'ghostel-semi-char-mode)
   "I" (cons "send every key (char mode)" #'ghostel-char-mode)
@@ -229,3 +421,17 @@ With prefix ARG, create another one instead of reusing the existing buffer."
 
 (provide 'uwumacs-terminal)
 ;;; uwumacs-terminal.el ends here
+#+end_src
+
+* Try it
+
+- =SPC o e=, then =htop=. =q= quits it. Now =SPC o e= and =vim=: =ESC= reaches vim,
+  because vim is drawing a full screen; =:q= leaves, and =ESC= goes back to
+  meaning Meow again.
+- Run something long, press =ESC=: output freezes and you are in Normal state.
+  Select a line with =x=, copy it with =y=, press =i= to thaw.
+- =cd= somewhere in the terminal, then =SPC f f=: Emacs offers files from the
+  directory the shell is in.
+- Type =ghostel_cmd find-file README.md= in the terminal: Emacs opens the file.
+- =SPC o E= lists every terminal with a preview; type a name that does not
+  exist and you get a new one.

@@ -1,4 +1,4 @@
-;;; uwumacs-shell.el --- Eshell, EAT and Tramp -*- lexical-binding: t; -*-
+;;; uwumacs-shell.el --- Eshell and Tramp -*- lexical-binding: t; -*-
 ;; Generated from literate/35-shells.org; edit the Org source, then tangle.
 
 ;; Distilled from Lambda-Emacs by Colin McLear (GPL-3.0-or-later).
@@ -7,6 +7,8 @@
 
 (require 'uwumacs-defaults)
 (require 'uwumacs-leader)
+
+(declare-function consult-history "consult" (&optional history))
 
 (setenv "PAGER" "cat")
 (setopt kill-buffer-query-functions
@@ -19,18 +21,6 @@
   :config
   (when (or window-system (daemonp))
     (exec-path-from-shell-initialize)))
-(use-package eat
-  :ensure t
-  :commands (eat eat-project eat-eshell-mode)
-  :custom
-  (eat-kill-buffer-on-exit t)
-  (eat-enable-yank-to-terminal t)
-  (eat-enable-directory-tracking t)
-  (eat-enable-shell-command-history t)
-  (eat-enable-shell-prompt-annotation t)
-  :config
-  (with-eval-after-load 'eshell
-    (eat-eshell-mode 1)))
 (defvar uwumacs-eshell-dir (expand-file-name "eshell/" uwumacs-etc-dir)
   "Directory for Eshell history, aliases and the directory ring.")
 
@@ -155,7 +145,7 @@ With REGEXP, go to the most recent directory matching it."
         tramp-copy-size-limit nil
         tramp-use-ssh-controlmaster-options nil)
 (with-eval-after-load 'meow
-  (dolist (entry '((eshell-mode . insert) (eat-mode . insert) (shell-mode . insert) (term-mode . insert)))
+  (dolist (entry '((eshell-mode . insert) (shell-mode . insert) (term-mode . insert)))
     (add-to-list 'meow-mode-state-list entry)))
 
 (uwumacs-define-localleader 'eshell-mode

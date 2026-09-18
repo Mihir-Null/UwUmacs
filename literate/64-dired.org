@@ -3,7 +3,7 @@
 #+STARTUP: overview
 #+PROPERTY: header-args:emacs-lisp :tangle ../lisp/uwumacs-dired.el :eval never :comments no :padline no :mkdirp yes
 
-[[file:index.org][Reading guide]] · [[file:41-leader.org][Leader]] · [[file:60-completion.org][Completion]]
+[[file:index.org][Reading guide]] · [[file:65-treemacs.org][Treemacs]] · [[file:41-leader.org][Leader]] · [[file:60-completion.org][Completion]]
 
 Ownership: *user configuration*, distilled from Lambda-Emacs by Colin McLear
 (=lem-setup-dired=). Dired is built into Emacs; three small packages colour
@@ -105,25 +105,11 @@ copies run in the background.
 
 * A file tree at the side
 
-=dired-sidebar= shows the project tree in a side window of the current frame;
-=SPC t d= toggles it and it follows the file you are editing. It is a Dired
-buffer underneath, so the keys and =SPC m= menu above apply, and it draws
-icons when the icon font is available.
-
-#+begin_src emacs-lisp
-(use-package dired-sidebar
-  :ensure t
-  :commands (dired-sidebar-toggle-sidebar dired-sidebar-show-sidebar)
-  :custom
-  (dired-sidebar-width 36)
-  (dired-sidebar-resize-on-open t)
-  (dired-sidebar-should-follow-file t)
-  (dired-sidebar-theme (if (uwumacs-icons-available-p) 'nerd-icons 'ascii))
-  :config
-  (with-eval-after-load 'meow
-    (add-to-list 'meow-mode-state-list '(dired-sidebar-mode . motion))))
-
-#+end_src
+The sidebar that shows a project's directory structure is [[file:65-treemacs.org][Treemacs]], on the same
+=SPC t d= as before. Dired remains the place to *operate* on files — mark a
+dozen, rename them all, copy between two directories — and Treemacs the place
+to *see* where they are. =SPC f t= points the tree at the file you are editing;
+=SPC m o= in the tree opens a directory in Dired.
 
 * Meow in Dired
 

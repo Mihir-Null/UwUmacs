@@ -39,9 +39,22 @@ The following blocks are consecutive fragments of this source section. Some shar
 ;; (setopt uwumacs-org-directory (expand-file-name "~/Documents/my-org/"))
 
 ;; Terminal
-;; `uwumacs-terminal' is loaded later, so pre-bind its installation root with
-;; `setq' if MSYS2 is not installed at the normal C:/msys64/ location.
-;; (setq uwumacs-msys2-root "D:/Tools/msys64/")
+;; MSYS2's location, when it is not the normal C:/msys64/.  The platform
+;; chapter defines this before private.el loads, so `setopt' works.
+;; (setopt uwumacs-msys2-root "D:/Tools/msys64/")
+;;
+;; Which shell the terminal runs, and where the escape key goes while a
+;; full-screen program is drawing (`auto', `terminal' or `meow').
+;; (setopt ghostel-shell '("/bin/zsh" "--login"))
+;; (setopt uwumacs-terminal-escape 'terminal)
+;;
+;; Let programs in the terminal write the system clipboard (OSC 52).  Handy
+;; over SSH; it also lets anything you `cat' set your clipboard.
+;; (setopt ghostel-enable-osc52 t)
+;;
+;; Route every `compile', `recompile' and `project-compile' through a real
+;; terminal instead of Emacs's own compilation buffer.
+;; (with-eval-after-load 'ghostel (ghostel-compile-global-mode 1))
 
 ;; macOS
 ;; Modifier keys are applied after this file loads, so `setopt' works here.

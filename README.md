@@ -29,13 +29,14 @@ git clone https://github.com/Mihir-Null/UwUmacs.git ~/.emacs.d
 emacs --init-directory=/path/to/UwUmacs
 ```
 
-The first start installs the Emacs Lisp packages it needs into `var/elpa/`. Emacs verifies GNU ELPA's signed index with `gpg`, so install [Gpg4win](https://gpg4win.org/) if on Windows (GnuPG is usually already present on Linux, and `brew install gnupg` provides it on macOS); the startup file points Emacs at it, because the `gpg` that Git for Windows ships cannot verify anything from Emacs. Without a native `gpg` the check is skipped. Language servers, `ripgrep`, Git, a spell checker (`hunspell`, on Windows most simply from MSYS2) and fonts are yours to install; On windows these are easiest to configure and install via msys2 or wsl. On macOS, [the Nix flake](nix/README.org) installs Emacs and every one of them in one `darwin-rebuild`, and Homebrew works too. The configuration checks for dependencies and degrades quietly. Icons need [Symbols Nerd Font Mono](https://www.nerdfonts.com/); the editing font is Google Sans Code if present, otherwise the platform default.
+The first start installs the Emacs Lisp packages it needs into `var/elpa/`. Emacs verifies GNU ELPA's signed index with `gpg`, so install [Gpg4win](https://gpg4win.org/) if on Windows (GnuPG is usually already present on Linux, and `brew install gnupg` provides it on macOS); the startup file points Emacs at it, because the `gpg` that Git for Windows ships cannot verify anything from Emacs. Without a native `gpg` the check is skipped. Language servers, `ripgrep`, Git, a spell checker (`hunspell`, on Windows most simply from MSYS2), `python3` (Treemacs colours directories by Git status with it) and fonts are yours to install; On windows these are easiest to configure and install via msys2 or wsl. On macOS, [the Nix flake](nix/README.org) installs Emacs and every one of them in one `darwin-rebuild`, and Homebrew works too. The configuration checks for dependencies and degrades quietly. Icons need [Symbols Nerd Font Mono](https://www.nerdfonts.com/); the editing font is Google Sans Code if present, otherwise the platform default.
 
 ## Dive in
 
 - `SPC SPC` runs any command by name. `SPC` then a letter opens a group; wait for the popup or press `C-h`.
 - `SPC h ?` opens the cheat sheet; `SPC h t` starts Meow's interactive tutorial; `SPC h k` explains any key.
 - `SPC f f` opens a file, `SPC b b` switches buffers, `SPC s s` searches lines, `SPC v s` opens Magit.
+- `SPC o e` opens a real terminal ([ghostel](https://github.com/dakra/ghostel)) and `SPC t d` the project tree ([Treemacs](https://github.com/Alexander-Miller/treemacs)).
 - `SPC m` is the menu for the current mode: in Org it schedules and captures, in Dired it copies and renames, in Magit it stages and commits.
 - `SPC C c` opens the reading guide when you want to change something.
 
@@ -87,7 +88,7 @@ The verifier copies the configuration to a temporary directory, forbids package 
 
 ## Windows notes
 
-Windows Emacs resolves `~` to `AppData/Roaming` when `HOME` is unset, so a `.emacs.d` under your profile folder is not found by default. On the machine this was built on, `AppData/Roaming/.emacs.d` is a directory junction to the repository at `C:/Users/walnu/.config/emacs-dots/`; `--init-directory` is the alternative. PowerShell is the default shell; `SPC o m` opens an MSYS2 UCRT64 shell in EAT when MSYS2 is at `C:/msys64/` (set `uwumacs-msys2-root` in `private.el` otherwise). Do not recursively delete a junction or its target.
+Windows Emacs resolves `~` to `AppData/Roaming` when `HOME` is unset, so a `.emacs.d` under your profile folder is not found by default. On the machine this was built on, `AppData/Roaming/.emacs.d` is a directory junction to the repository at `C:/Users/walnu/.config/emacs-dots/`; `--init-directory` is the alternative. PowerShell is the default shell; `SPC o m` opens an MSYS2 UCRT64 shell when MSYS2 is at `C:/msys64/` (set `uwumacs-msys2-root` in `private.el` otherwise). The terminal talks to Windows ConPTY directly, so no POSIX helper is needed. Do not recursively delete a junction or its target.
 
 ## macOS notes
 

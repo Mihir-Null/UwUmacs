@@ -125,7 +125,8 @@ The composition root. Each =require= is one chapter of this guide. The
 order matters only where a module uses another: defaults define the
 directories, the platform chapter defines the paths that =private.el= may
 override, the UI must exist before the dashboard measures text, Meow must be
-up before the keys chapter binds the leader, and frames policy goes last.
+up before the keys chapter binds the leader, the terminal comes after the
+programming chapter whose mode menu it extends, and frames policy goes last.
 
 #+begin_src emacs-lisp
 ;;; init.el --- UwUmacs -*- lexical-binding: t; -*-
@@ -155,6 +156,7 @@ up before the keys chapter binds the leader, and frames policy goes last.
 (require 'uwumacs-completion)
 (require 'uwumacs-help)
 (require 'uwumacs-dired)
+(require 'uwumacs-treemacs)
 (require 'uwumacs-vc)
 (require 'uwumacs-navigation)
 (require 'uwumacs-meow)

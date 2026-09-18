@@ -19,6 +19,17 @@
   ;; Re-evaluating this file must not overwrite the mode's saved defaults.
   (unless frames-only-mode
     (frames-only-mode 1)))
+(dolist (pattern '("\\`\\*Warnings\\*\\'"
+                   "\\`\\*Compile-Log\\*\\'"
+                   "\\`\\*Backtrace\\*\\'"
+                   "\\`\\*Native-compile-Log\\*\\'"
+                   "\\`\\*Async-native-compile-log\\*\\'"))
+  (add-to-list 'display-buffer-alist
+               `(,pattern
+                 (display-buffer-reuse-window display-buffer-at-bottom)
+                 (window-height . 0.25)
+                 (dedicated . t)
+                 (reusable-frames . visible))))
 
 (provide 'uwumacs-frames)
 ;;; uwumacs-frames.el ends here

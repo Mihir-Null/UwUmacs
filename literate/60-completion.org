@@ -355,6 +355,25 @@ particular kind of candidate.
 
 #+end_src
 
+* Correcting spelling
+
+[[file:30-platform.org][The platform chapter]] finds the spell checker and turns Flyspell on; these two
+put its suggestions through the completion stack. =C-;= corrects the word at
+point, and =SPC s p= lists every mistake in the buffer with preview, the same
+way =SPC s s= lists lines.
+
+#+begin_src emacs-lisp
+(use-package flyspell-correct
+  :ensure t
+  :after flyspell
+  :bind (:map flyspell-mode-map ("C-;" . flyspell-correct-wrapper)))
+
+(use-package consult-flyspell
+  :ensure t
+  :commands consult-flyspell)
+
+#+end_src
+
 * Templates: Yasnippet
 
 Snippets are text templates with fields. Type a key and press =C-'= to

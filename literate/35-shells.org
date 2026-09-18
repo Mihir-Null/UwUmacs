@@ -1,26 +1,26 @@
-#+TITLE: Shells: Eshell, EAT and remote files
+#+TITLE: Shells: Eshell and remote files
 #+OPTIONS: toc:3 num:nil
 #+STARTUP: overview
 #+PROPERTY: header-args:emacs-lisp :tangle ../lisp/uwumacs-shell.el :eval never :comments no :padline no :mkdirp yes
 
-[[file:index.org][Reading guide]] · [[file:30-platform.org][Platform and terminals]] · [[file:41-leader.org][Leader]]
+[[file:index.org][Reading guide]] · [[file:34-terminal.org][Terminal]] · [[file:30-platform.org][Platform]] · [[file:41-leader.org][Leader]]
 
 Ownership: *user configuration*, distilled from Lambda-Emacs by Colin McLear
-(=lem-setup-shell=, =lem-setup-eshell=). [[file:30-platform.org][The platform chapter]] chooses the
-system shell and provides the EAT entries under =SPC o=; this chapter
-configures the shells themselves.
+(=lem-setup-shell=, =lem-setup-eshell=). [[file:30-platform.org][The platform chapter]] chooses the system
+shell and [[file:34-terminal.org][the terminal chapter]] owns =SPC o e=; this chapter configures Eshell
+and remote files.
 
 * What this gives you
 
-Two shells. *Eshell* is a shell written in Lisp: it runs ordinary programs,
-but =cd=, =ls= and friends are Lisp, so you can call Emacs commands from the
-prompt (=ff file.txt= opens a file) and complete with the same machinery as
-everywhere else. *EAT* is a terminal emulator for programs that need a real
-terminal, such as =htop= or a TUI git client. Tramp opens files on remote
+*Eshell* is a shell written in Lisp: it runs ordinary programs, but =cd=, =ls= and
+friends are Lisp, so you can call Emacs commands from the prompt (=ff file.txt=
+opens a file) and complete with the same machinery as everywhere else. What it
+cannot do is draw a full-screen program, so it hands those to [[file:34-terminal.org][the terminal]] —
+=htop=, =less= and =git log= open there and behave. Tramp opens files on remote
 machines over SSH as if they were local.
 
 #+begin_src emacs-lisp
-;;; uwumacs-shell.el --- Eshell, EAT and Tramp -*- lexical-binding: t; -*-
+;;; uwumacs-shell.el --- Eshell and Tramp -*- lexical-binding: t; -*-
 ;; Generated from literate/35-shells.org; edit the Org source, then tangle.
 
 ;; Distilled from Lambda-Emacs by Colin McLear (GPL-3.0-or-later).
@@ -29,6 +29,8 @@ machines over SSH as if they were local.
 
 (require 'uwumacs-defaults)
 (require 'uwumacs-leader)
+
+(declare-function consult-history "consult" (&optional history))
 
 (setenv "PAGER" "cat")
 (setopt kill-buffer-query-functions
@@ -59,35 +61,14 @@ correctly, and [[file:30-platform.org][the platform chapter]] turns this off the
 
 #+end_src
 
-* EAT
-
-The terminal closes its buffer when the shell exits, tracks the current
-directory, keeps command history for completion, and annotates prompts so
-=C-c C-p= jumps between them. Inside Eshell, EAT handles programs that need
-a terminal.
-
-#+begin_src emacs-lisp
-(use-package eat
-  :ensure t
-  :commands (eat eat-project eat-eshell-mode)
-  :custom
-  (eat-kill-buffer-on-exit t)
-  (eat-enable-yank-to-terminal t)
-  (eat-enable-directory-tracking t)
-  (eat-enable-shell-command-history t)
-  (eat-enable-shell-prompt-annotation t)
-  :config
-  (with-eval-after-load 'eshell
-    (eat-eshell-mode 1)))
-
-#+end_src
-
 * Eshell
 
 History and the last-directory ring persist under =var/etc/eshell/=.
-Completion ignores case and cycles. Programs that need a terminal run
-through EAT. The prompt shows the directory, the Git branch when there is
-one, and a =λ= on its own line so long paths do not squeeze your command.
+Completion ignores case and cycles. Programs that need a terminal run in one,
+because [[file:34-terminal.org][the terminal chapter]] turns on
+=ghostel-eshell-visual-command-mode=. The prompt shows the directory, the Git
+branch when there is one, and a =λ= on its own line so long paths do not
+squeeze your command.
 
 #+begin_src emacs-lisp
 (defvar uwumacs-eshell-dir (expand-file-name "eshell/" uwumacs-etc-dir)
@@ -242,7 +223,7 @@ own menu. =C-c C-SPC= reaches the leader without leaving Insert.
 
 #+begin_src emacs-lisp
 (with-eval-after-load 'meow
-  (dolist (entry '((eshell-mode . insert) (eat-mode . insert) (shell-mode . insert) (term-mode . insert)))
+  (dolist (entry '((eshell-mode . insert) (shell-mode . insert) (term-mode . insert)))
     (add-to-list 'meow-mode-state-list entry)))
 
 (uwumacs-define-localleader 'eshell-mode
@@ -260,6 +241,7 @@ own menu. =C-c C-SPC= reaches the leader without leaving Insert.
 
 * Try it
 
-- =SPC o e= opens EAT; =SPC o m= opens an MSYS2 shell on Windows.
+- =SPC o s= opens an Eshell for this project; =SPC o e= opens a real terminal.
 - =M-x eshell=, type =ff init.el=: the file opens. =z= then pick a directory.
+- Type =htop= in Eshell: it opens in a terminal buffer and works.
 - =ESC= in Eshell, select some output with =x=, =y= copies it; =i= goes back to typing.
