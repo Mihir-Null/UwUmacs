@@ -16,6 +16,10 @@
   "Preferred editing font family; the platform default is used if it is absent."
   :type 'string)
 
+(defcustom uwumacs-font-size 14
+  "Default editing font size, in points."
+  :type 'natnum)
+
 (defcustom uwumacs-nerd-font "Symbols Nerd Font Mono"
   "Font family used for Nerd Font icons."
   :type 'string)
@@ -66,6 +70,7 @@ Use t for a terminal configured with a Nerd Font, or nil to disable icons."
     (when (display-graphic-p)
       (when-let* ((family (uwumacs-resolve-font-family)))
         (set-face-attribute 'default (selected-frame) :family family))
+      (set-face-attribute 'default (selected-frame) :height (* 10 uwumacs-font-size))
       (when-let* ((symbols (seq-find (lambda (family) (find-font (font-spec :family family)))
                                      '("Segoe UI Symbol" "Symbola" "Apple Symbols" "Symbol"))))
         (set-fontset-font t 'symbol symbols nil))
