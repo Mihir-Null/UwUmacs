@@ -97,9 +97,17 @@ system clipboard, which is convenient over SSH and unpleasant when the output
 you just =cat='d was hostile. Turn it on per machine in =private.el= if you
 want it.
 
+Ghostel is the one package here installed from its *repository* rather than an
+archive, with =:vc=, which is upstream's own documented method. Both reasons are
+practical: MELPA's ghostel build is broken at the time of writing — its index
+advertises a tarball that answers 404 — and the Consult extension below has
+never been published there at all. A =:vc= package is an ordinary Git checkout
+under =var/elpa/=, about ten megabytes, cloned once; =M-x package-vc-upgrade=
+updates it. Move both to =:ensure t= when MELPA carries them.
+
 #+begin_src emacs-lisp
 (use-package ghostel
-  :ensure t
+  :vc (:url "https://github.com/dakra/ghostel" :lisp-dir "lisp" :rev :newest)
   :defer t
   :commands (ghostel ghostel-project ghostel-other ghostel-list-buffers
              ghostel-create ghostel-exec ghostel-compile ghostel-recompile)
@@ -310,7 +318,8 @@ joins the menu =SPC p p= offers when you switch project.
 
 *Consult.* =consult-ghostel= picks a terminal with live preview, the way
 =SPC b b= picks a buffer, and creates one when you type a name that does not
-exist yet. =consult-ghostel-history= completes against the *shell's own*
+exist yet. It lives in ghostel's own repository and is fetched from there, as
+above; [[file:60-completion.org][the completion chapter]] has already installed the Consult it needs. =consult-ghostel-history= completes against the *shell's own*
 history — bash, zsh, fish and nushell — and types the choice at the prompt
 without submitting it, so you can edit before running. Loading it also
 teaches =consult-line= about soft-wrapped terminal rows, so a path that wrapped
@@ -321,7 +330,8 @@ mid-word is still findable.
   (add-to-list 'project-switch-commands '(ghostel-project "Terminal") t))
 
 (use-package consult-ghostel
-  :ensure t
+  :vc (:url "https://github.com/dakra/ghostel"
+       :lisp-dir "extensions/consult-ghostel" :rev :newest)
   :after (ghostel consult)
   :demand t
   :bind (:map ghostel-semi-char-mode-map

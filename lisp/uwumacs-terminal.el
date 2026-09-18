@@ -40,7 +40,7 @@ is what the terminal needs."
         (expand-file-name (concat "ghostel-module" module-file-suffix)
                           uwumacs-terminal-module-directory))))
 (use-package ghostel
-  :ensure t
+  :vc (:url "https://github.com/dakra/ghostel" :lisp-dir "lisp" :rev :newest)
   :defer t
   :commands (ghostel ghostel-project ghostel-other ghostel-list-buffers
              ghostel-create ghostel-exec ghostel-compile ghostel-recompile)
@@ -177,7 +177,8 @@ With prefix ARG, create another one instead of reusing the existing buffer."
   (add-to-list 'project-switch-commands '(ghostel-project "Terminal") t))
 
 (use-package consult-ghostel
-  :ensure t
+  :vc (:url "https://github.com/dakra/ghostel"
+       :lisp-dir "extensions/consult-ghostel" :rev :newest)
   :after (ghostel consult)
   :demand t
   :bind (:map ghostel-semi-char-mode-map
