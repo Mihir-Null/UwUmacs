@@ -94,6 +94,50 @@
         compilation-scroll-output 'first-error)
 (with-eval-after-load 'compile
   (add-hook 'compilation-filter-hook #'comint-truncate-buffer))
+(defcustom uwumacs-just-program "just"
+  "Program used to run justfile recipes."
+  :type 'string
+  :group 'uwumacs)
+
+(use-package just-mode
+  :ensure t
+  :mode ("/\\.?[Jj]ustfile\\'" "\\.just\\'"))
+
+(defun uwumacs-just-root ()
+  "Return the directory of the justfile governing `default-directory', or nil."
+  (or (locate-dominating-file default-directory "justfile")
+      (locate-dominating-file default-directory "Justfile")
+      (locate-dominating-file default-directory ".justfile")))
+
+(defun uwumacs-just-recipes (root)
+  "Return the recipe names offered by the justfile at ROOT.
+Nil when `uwumacs-just-program' cannot be run, so the prompt degrades to
+free text rather than failing."
+  (let ((default-directory root))
+    (with-temp-buffer
+      (ignore-errors
+        (when (zerop (call-process uwumacs-just-program nil t nil "--summary"))
+          (split-string (buffer-string) nil t))))))
+
+(defun uwumacs-just (recipe &optional terminal)
+  "Run RECIPE from the justfile above `default-directory'.
+With a prefix argument, or when TERMINAL is non-nil, run it in a terminal
+so a recipe that prompts for a password can be answered."
+  (interactive
+   (let ((root (or (uwumacs-just-root)
+                   (user-error "No justfile above %s" default-directory))))
+     (list (completing-read "just: " (uwumacs-just-recipes root))
+           current-prefix-arg)))
+  (let* ((default-directory (or (uwumacs-just-root)
+                                (user-error "No justfile above %s" default-directory)))
+         (command (format "%s %s" uwumacs-just-program recipe)))
+    (if (and terminal (fboundp 'ghostel-compile))
+        (ghostel-compile command)
+      (compile command))))
+
+(with-eval-after-load 'project
+  (keymap-set project-prefix-map "j" (cons "just" #'uwumacs-just))
+  (add-to-list 'project-switch-commands '(uwumacs-just "Just recipe") t))
 (setopt eldoc-idle-delay 0)
 
 (use-package elisp-def
