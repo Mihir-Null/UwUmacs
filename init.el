@@ -25,6 +25,7 @@
 (require 'uwumacs-completion)
 (require 'uwumacs-help)
 (require 'uwumacs-dired)
+(require 'uwumacs-treemacs)
 (require 'uwumacs-vc)
 (require 'uwumacs-navigation)
 (require 'uwumacs-meow)

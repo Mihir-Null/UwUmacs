@@ -53,6 +53,7 @@
   "D" (cons "switch directory" #'consult-dir)
   "R" (cons "rename" #'rename-visited-file)
   "y" (cons "copy file name" #'uwumacs-copy-file-name)
+  "t" (cons "reveal in file tree" #'treemacs-find-file)
   "o" (cons "show in file manager" #'uwumacs-reveal-in-file-manager))
 
 (defvar-keymap uwumacs-search-map
@@ -87,7 +88,7 @@
 
 (defvar-keymap uwumacs-vc-map
   :doc "Version control."
-  "s" (cons "status" #'magit-status)
+  "s" (cons "status" #'uwumacs-magit-status)
   "d" (cons "diff" #'magit-diff)
   "l" (cons "log" #'magit-log)
   "L" (cons "log this file" #'magit-log-buffer-file)
@@ -206,9 +207,11 @@
 
 (defvar-keymap uwumacs-open-map
   :doc "Open applications."
-  "e" (cons "terminal (EAT)" #'uwumacs-eat)
-  "p" (cons "project terminal" #'uwumacs-eat-project)
-  "m" (cons "MSYS2 terminal (Windows)" #'uwumacs-eat-msys2-ucrt64)
+  "e" (cons "terminal" #'uwumacs-terminal-open)
+  "E" (cons "pick a terminal" #'consult-ghostel)
+  "p" (cons "project terminal" #'uwumacs-terminal-project)
+  "m" (cons "MSYS2 terminal (Windows)" #'uwumacs-terminal-msys2)
+  "t" (cons "file tree" #'treemacs-select-window)
   "s" (cons "eshell (project)" #'uwumacs-eshell-project)
   "S" (cons "eshell" #'eshell)
   "a" (cons "agenda dashboard" #'uwumacs-org-dashboard)
@@ -233,7 +236,7 @@
   "r" (cons "colour names" #'rainbow-mode)
   "R" (cons "rainbow identifiers" #'rainbow-identifiers-mode)
   "f" (cons "frames-only mode" #'frames-only-mode)
-  "d" (cons "file tree sidebar" #'dired-sidebar-toggle-sidebar)
+  "d" (cons "file tree sidebar" #'treemacs)
   "o" (cons "outline sidebar" #'imenu-list-smart-toggle)
   "g" (cons "git gutter" #'diff-hl-mode)
   "D" (cons "dim other windows" #'dimmer-mode)

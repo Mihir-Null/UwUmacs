@@ -69,6 +69,34 @@ disabled. The leader's =SPC w h= and =SPC w v= remain real in-frame splits.
   (unless frames-only-mode
     (frames-only-mode 1)))
 
+#+end_src
+
+* Diagnostics are not editing surfaces
+
+A warning, a byte-compilation log or a backtrace is something Emacs is telling
+you, not a buffer you work in, so it does not deserve an operating-system
+window of its own. Left alone it gets one: the first Magit of a session used
+to raise a =*Warnings*= window on top of the Magit window it had just made,
+which looks exactly like the command having gone wrong.
+
+These appear in a small window at the bottom of the frame you are in instead.
+=q= dismisses them and the frame is untouched. This is the same rule as the
+sidebars above — a panel that serves the buffer next to it stays inside the
+frame — applied to the buffers Emacs raises on its own.
+
+#+begin_src emacs-lisp
+(dolist (pattern '("\\`\\*Warnings\\*\\'"
+                   "\\`\\*Compile-Log\\*\\'"
+                   "\\`\\*Backtrace\\*\\'"
+                   "\\`\\*Native-compile-Log\\*\\'"
+                   "\\`\\*Async-native-compile-log\\*\\'"))
+  (add-to-list 'display-buffer-alist
+               `(,pattern
+                 (display-buffer-reuse-window display-buffer-at-bottom)
+                 (window-height . 0.25)
+                 (dedicated . t)
+                 (reusable-frames . visible))))
+
 (provide 'uwumacs-frames)
 ;;; uwumacs-frames.el ends here
 #+end_src

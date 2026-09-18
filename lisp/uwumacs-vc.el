@@ -6,6 +6,12 @@
 ;;; Code:
 
 (require 'uwumacs-leader)
+(require 'uwumacs-platform)
+
+(declare-function meow--switch-state "meow-util" (state &optional no-hook))
+(declare-function magit-toplevel "magit-git" (&optional directory))
+(declare-function magit-status-setup-buffer "magit-status" (&optional directory))
+(declare-function project-root "project" (project))
 
 (setopt vc-follow-symlinks t
         vc-handled-backends '(Git)
@@ -24,14 +30,16 @@
 (defun uwumacs-magit-display-buffer (buffer)
   "Show Magit BUFFER in a frame under frames-only mode, otherwise traditionally."
   (if (and (bound-and-true-p frames-only-mode) (display-graphic-p))
-      (display-buffer buffer '((display-buffer-reuse-window display-buffer-pop-up-frame)
-                               (reusable-frames . t)))
+      (display-buffer buffer
+                      '((display-buffer-reuse-window
+                         display-buffer-pop-up-frame
+                         display-buffer-use-some-window)
+                        (reusable-frames . t)))
     (magit-display-buffer-traditional buffer)))
 
 (use-package magit
   :ensure t
   :commands (magit-status magit-log magit-diff magit-commit magit-blame magit-dispatch magit-file-dispatch)
-  :hook (git-commit-mode . flyspell-mode)
   :custom
   (magit-display-buffer-function #'uwumacs-magit-display-buffer)
   (magit-diff-refine-hunk t)
@@ -40,12 +48,38 @@
   (magit-no-message '("Turning on magit-auto-revert-mode..."))
   (git-commit-summary-max-length 50)
   :config
-  (add-hook 'after-save-hook #'magit-after-save-refresh-status t)
-  (defun uwumacs--git-commit-fill ()
-    "Wrap commit message bodies at eighty columns."
-    (setq fill-column 80)
-    (setq-local comment-auto-fill-only-comments nil))
-  (add-hook 'git-commit-setup-hook #'uwumacs--git-commit-fill))
+  (add-hook 'after-save-hook #'magit-after-save-refresh-status t))
+(defun uwumacs--repository-root (directory)
+  "Return the top level of the Git repository containing DIRECTORY, or nil."
+  (when (and directory (file-directory-p directory))
+    (let ((default-directory directory))
+      (magit-toplevel))))
+
+(defun uwumacs-magit-status ()
+  "Open Magit for this buffer's repository, or for the current project.
+Falls back to `magit-status', which asks, when neither is a repository."
+  (interactive)
+  (require 'magit)
+  (if-let* ((root (or (uwumacs--repository-root default-directory)
+                      (and (project-current)
+                           (uwumacs--repository-root
+                            (project-root (project-current)))))))
+      (magit-status-setup-buffer root)
+    (call-interactively #'magit-status)))
+(defun uwumacs-git-commit-setup ()
+  "Prepare a commit message buffer for writing."
+  (setq fill-column 80)
+  (setq-local comment-auto-fill-only-comments nil)
+  (uwumacs-flyspell-text)
+  ;; Meow's states are minor modes, but only `meow--switch-state' also moves
+  ;; the cursor and the mode line with them.
+  (when (fboundp 'meow--switch-state)
+    (meow--switch-state 'insert)))
+
+;; Never touch `git-commit-setup-hook' -- or its alias `git-commit-mode-hook'
+;; -- before git-commit.el has declared them.  See the prose above.
+(with-eval-after-load 'git-commit
+  (add-hook 'git-commit-setup-hook #'uwumacs-git-commit-setup))
 (use-package diff-hl
   :ensure t
   :hook ((prog-mode text-mode) . diff-hl-mode)
@@ -59,8 +93,7 @@
     (add-hook 'magit-pre-refresh-hook #'diff-hl-magit-pre-refresh)
     (add-hook 'magit-post-refresh-hook #'diff-hl-magit-post-refresh)))
 (with-eval-after-load 'meow
-  (add-to-list 'meow-mode-state-list '(magit-mode . motion))
-  (add-hook 'git-commit-setup-hook #'meow-insert-mode))
+  (add-to-list 'meow-mode-state-list '(magit-mode . motion)))
 
 (uwumacs-define-localleader 'magit-mode
   "s" (cons "stage" #'magit-stage)

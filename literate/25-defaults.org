@@ -185,11 +185,17 @@ right click opens a context menu.
 (global-auto-revert-mode 1)
 
 ;; A buffer that is not visiting a file still picks a major mode by its name.
-(setq-default major-mode (lambda ()
-                           (if buffer-file-name
-                               (fundamental-mode)
-                             (let ((buffer-file-name (buffer-name)))
-                               (set-auto-mode)))))
+;; This has to be a named function, not a lambda: `get-buffer-create' copies
+;; the default into the new buffer's `major-mode' without calling it, and
+;; everything that inspects a mode -- `derived-mode-p', `symbol-name', the
+;; `derived-mode-parent' property -- expects to find a symbol there.
+(defun uwumacs-guess-major-mode ()
+  "Choose a major mode for this buffer, by file name or by buffer name."
+  (if buffer-file-name
+      (fundamental-mode)
+    (let ((buffer-file-name (buffer-name)))
+      (set-auto-mode))))
+(setq-default major-mode #'uwumacs-guess-major-mode)
 
 #+end_src
 

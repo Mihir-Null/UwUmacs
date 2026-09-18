@@ -30,6 +30,10 @@ USERPROFILE for user-owned projects and documents."
   (expand-file-name "Documents/org/" (uwumacs--user-home-directory))
   "Portable starter Org directory."
   :type 'directory)
+(defcustom uwumacs-msys2-root
+  (file-name-as-directory (or (getenv "MSYS2_ROOT") "C:/msys64/"))
+  "Root directory of the MSYS2 installation on Windows."
+  :type 'directory)
 (defun uwumacs--first-executable (&rest programs)
   "Return the first executable found in PROGRAMS."
   (seq-some #'executable-find programs))
@@ -172,6 +176,40 @@ current directory."
       ('windows-nt (call-process "explorer.exe" nil 0 nil
                                  (concat "/select," (subst-char-in-string ?/ ?\\ file))))
       (_ (call-process "xdg-open" nil 0 nil directory)))))
+(defun uwumacs-spell-checker ()
+  "Return the spell-checker program to use, or nil."
+  (or (executable-find "hunspell")
+      (executable-find "aspell")
+      (let ((msys2 (expand-file-name "ucrt64/bin/hunspell.exe" uwumacs-msys2-root)))
+        (and (eq system-type 'windows-nt) (file-executable-p msys2) msys2))))
+
+(with-eval-after-load 'ispell
+  (when-let* ((program (uwumacs-spell-checker)))
+    (setopt ispell-program-name program)
+    (when (string-match-p "hunspell" program)
+      ;; Hunspell needs a default dictionary name from the environment even
+      ;; to list its dictionaries; Windows sets no LANG, so name it here.
+      (unless (getenv "DICTIONARY") (setenv "DICTIONARY" "en_US"))
+      (setopt ispell-dictionary "en_US")
+      (when (string-prefix-p (expand-file-name uwumacs-msys2-root) program)
+        (setenv "DICPATH" (expand-file-name "ucrt64/share/hunspell" uwumacs-msys2-root))))))
+
+;; A checker that exists but has no dictionary must never break startup:
+;; enable Flyspell, and on any error say so once and carry on.
+(defvar uwumacs--spell-warned nil)
+(defun uwumacs--flyspell (mode-function)
+  "Enable Flyspell with MODE-FUNCTION, reporting a broken checker instead of failing."
+  (condition-case err
+      (funcall mode-function)
+    (error (unless uwumacs--spell-warned
+             (setq uwumacs--spell-warned t)
+             (message "Spell checking off: %s" (error-message-string err))))))
+(defun uwumacs-flyspell-text () (uwumacs--flyspell #'flyspell-mode))
+(defun uwumacs-flyspell-prog () (uwumacs--flyspell #'flyspell-prog-mode))
+
+(when (uwumacs-spell-checker)
+  (add-hook 'text-mode-hook #'uwumacs-flyspell-text)
+  (add-hook 'prog-mode-hook #'uwumacs-flyspell-prog))
 ;; Do not force a font here. Inheriting the platform default makes first boot robust.
 ;; Fonts are chosen in the appearance chapter.
 

@@ -11,7 +11,7 @@ the small things such as following symlinks and annotating lines.
 
 * What this gives you
 
-=SPC v s= opens Magit's status buffer for the project. Everything happens
+=SPC v s= opens Magit's status buffer for the repository you are in. Everything happens
 from there: stage with =s=, commit with =c c=, push with =P p=, and every
 prefix opens a menu that lists its options. Diffs are refined word by
 word, and commit messages get wrapped at eighty columns.
@@ -25,6 +25,12 @@ word, and commit messages get wrapped at eighty columns.
 ;;; Code:
 
 (require 'uwumacs-leader)
+(require 'uwumacs-platform)
+
+(declare-function meow--switch-state "meow-util" (state &optional no-hook))
+(declare-function magit-toplevel "magit-git" (&optional directory))
+(declare-function magit-status-setup-buffer "magit-status" (&optional directory))
+(declare-function project-root "project" (project))
 
 (setopt vc-follow-symlinks t
         vc-handled-backends '(Git)
@@ -46,21 +52,26 @@ word, and commit messages get wrapped at eighty columns.
 * Magit
 
 Magit buffers are full buffers, so they open in their own frame when
-[[file:45-frames.org][frames-only mode]] is on, and in the other window otherwise. The status buffer refreshes when you save a
-file, and stashes and untracked files start folded.
+[[file:45-frames.org][frames-only mode]] is on, and in the other window otherwise. =display-buffer= is
+given three ways to place the buffer and the last one always succeeds, because
+Magit selects whatever window it gets back and a =nil= there is an error rather
+than a fallback. The status buffer refreshes when you save a file, and
+stashes and untracked files start folded.
 
 #+begin_src emacs-lisp
 (defun uwumacs-magit-display-buffer (buffer)
   "Show Magit BUFFER in a frame under frames-only mode, otherwise traditionally."
   (if (and (bound-and-true-p frames-only-mode) (display-graphic-p))
-      (display-buffer buffer '((display-buffer-reuse-window display-buffer-pop-up-frame)
-                               (reusable-frames . t)))
+      (display-buffer buffer
+                      '((display-buffer-reuse-window
+                         display-buffer-pop-up-frame
+                         display-buffer-use-some-window)
+                        (reusable-frames . t)))
     (magit-display-buffer-traditional buffer)))
 
 (use-package magit
   :ensure t
   :commands (magit-status magit-log magit-diff magit-commit magit-blame magit-dispatch magit-file-dispatch)
-  :hook (git-commit-mode . flyspell-mode)
   :custom
   (magit-display-buffer-function #'uwumacs-magit-display-buffer)
   (magit-diff-refine-hunk t)
@@ -69,12 +80,88 @@ file, and stashes and untracked files start folded.
   (magit-no-message '("Turning on magit-auto-revert-mode..."))
   (git-commit-summary-max-length 50)
   :config
-  (add-hook 'after-save-hook #'magit-after-save-refresh-status t)
-  (defun uwumacs--git-commit-fill ()
-    "Wrap commit message bodies at eighty columns."
-    (setq fill-column 80)
-    (setq-local comment-auto-fill-only-comments nil))
-  (add-hook 'git-commit-setup-hook #'uwumacs--git-commit-fill))
+  (add-hook 'after-save-hook #'magit-after-save-refresh-status t))
+
+#+end_src
+
+** Opening the status buffer from anywhere
+
+=magit-status= works out which repository you mean from =default-directory=. A
+buffer visiting a file has the right one. The home page, a terminal, the
+scratch buffer and =*Messages*= do not: they keep whatever directory they
+happened to be created in. When that directory is not a repository,
+=magit-status= asks for one, or offers to /create/ one — and declining leaves you
+where you started, which reads as the key having done nothing at all.
+
+So ask the question in a better order: this buffer's repository first, then
+the repository of the project you are working in, and only then Magit's own
+prompt. From the home page =SPC v s= now opens the project you last touched
+instead of interrogating you.
+
+#+begin_src emacs-lisp
+(defun uwumacs--repository-root (directory)
+  "Return the top level of the Git repository containing DIRECTORY, or nil."
+  (when (and directory (file-directory-p directory))
+    (let ((default-directory directory))
+      (magit-toplevel))))
+
+(defun uwumacs-magit-status ()
+  "Open Magit for this buffer's repository, or for the current project.
+Falls back to `magit-status', which asks, when neither is a repository."
+  (interactive)
+  (require 'magit)
+  (if-let* ((root (or (uwumacs--repository-root default-directory)
+                      (and (project-current)
+                           (uwumacs--repository-root
+                            (project-root (project-current)))))))
+      (magit-status-setup-buffer root)
+    (call-interactively #'magit-status)))
+
+#+end_src
+
+** The commit message buffer
+
+A commit message is prose you are about to write, so the buffer wraps at
+eighty columns, checks spelling when [[file:30-platform.org][a checker is installed]], and starts in
+Meow's Insert state rather than Normal.
+
+All three hang on =git-commit-setup-hook=, and *when* they are added matters.
+
+Magit keeps the older name =git-commit-mode-hook= working by making it a
+=defvaralias= of =git-commit-setup-hook=. Aliasing a variable that already has a
+value throws that value away, and says so:
+
+: Warning (defvaralias): Overwriting value of ‘git-commit-mode-hook’ by
+: aliasing to ‘git-commit-setup-hook’
+
+Which is exactly what =use-package='s =:hook (git-commit-mode . flyspell-mode)=
+caused. Magit is deferred, so the hook was added at startup, hours of
+wall-clock time before =git-commit.el= loaded to alias it — and the spell
+checker it asked for was silently discarded on the way. The warning then cost
+more than it looked: a warning buffer is displayed, and [[file:45-frames.org][under frames-only mode]] a
+displayed buffer is an *operating-system window*, so the first =SPC v s= of a
+session opened a warning window over the Magit window you asked for.
+
+Magit itself is careful here — it gives the hook a =:get= function that merges a
+value set before the library loaded with its own defaults, so nothing Magit
+needs was lost. Waiting for the library is still the rule: add to a package's
+hooks after the file that declares them has loaded.
+
+#+begin_src emacs-lisp
+(defun uwumacs-git-commit-setup ()
+  "Prepare a commit message buffer for writing."
+  (setq fill-column 80)
+  (setq-local comment-auto-fill-only-comments nil)
+  (uwumacs-flyspell-text)
+  ;; Meow's states are minor modes, but only `meow--switch-state' also moves
+  ;; the cursor and the mode line with them.
+  (when (fboundp 'meow--switch-state)
+    (meow--switch-state 'insert)))
+
+;; Never touch `git-commit-setup-hook' -- or its alias `git-commit-mode-hook'
+;; -- before git-commit.el has declared them.  See the prose above.
+(with-eval-after-load 'git-commit
+  (add-hook 'git-commit-setup-hook #'uwumacs-git-commit-setup))
 
 #+end_src
 
@@ -103,15 +190,14 @@ there is no fringe. =SPC t g= toggles it in a buffer.
 * Meow in Magit
 
 Magit buffers start in Motion state: Magit's keys are the interface, so
-Meow steps back and adds only =j=/=k= and the leader. Commit message
-buffers are for typing, so they start in Insert state. The localleader
-labels the most common Magit commands for anyone who does not yet know
-them; each opens Magit's own menu.
+Meow steps back and adds only =j=/=k= and the leader. Commit message buffers
+are for typing, and the section above starts them in Insert state. The
+localleader labels the most common Magit commands for anyone who does not yet
+know them; each opens Magit's own menu.
 
 #+begin_src emacs-lisp
 (with-eval-after-load 'meow
-  (add-to-list 'meow-mode-state-list '(magit-mode . motion))
-  (add-hook 'git-commit-setup-hook #'meow-insert-mode))
+  (add-to-list 'meow-mode-state-list '(magit-mode . motion)))
 
 (uwumacs-define-localleader 'magit-mode
   "s" (cons "stage" #'magit-stage)
