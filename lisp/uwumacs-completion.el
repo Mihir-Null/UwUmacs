@@ -58,7 +58,8 @@
         minibuffer-prompt-properties '(read-only t cursor-intangible t face minibuffer-prompt)
         read-file-name-completion-ignore-case t
         read-buffer-completion-ignore-case t
-        completion-ignore-case t)
+        completion-ignore-case t
+        read-extended-command-predicate #'command-completion-default-include-p)
 (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
 (use-package orderless
   :ensure t
